@@ -20,8 +20,11 @@ pre-commit:
       glob: "{src/*.ts,src/**/*.ts,tests/*.ts,tests/**/*.ts}"
       run: npx eslint {staged_files}
     audit:
-      run: npm audit
+      run: just audit
+    build:
+      run: just build
     test:
+      depends_on: build
       run: just test
 
 pre-push:

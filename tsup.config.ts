@@ -37,26 +37,29 @@ const scssPlugin = {
 
 const plugins = [yamlPlugin, scssPlugin]
 
-export default defineConfig([
-  {
-    entry: ['src/index.ts'],
-    outDir: 'dist',
-    clean: true,
-    format: ['esm'] as const,
-    dts: false,
-    platform: 'browser' as const,
-    target: 'es2022' as const,
-    esbuildPlugins: plugins
-  },
-  {
-    entry: ['tests/index.test.ts'],
-    outDir: 'dist/test',
-    clean: false,
-    format: ['esm'] as const,
-    dts: false,
-    platform: 'node' as const,
-    target: 'es2022' as const,
-    removeNodeProtocol: false,
-    esbuildPlugins: plugins
-  }
-])
+const isTestBuild = process.env.TEST_BUILD === '1'
+
+export default defineConfig(
+  isTestBuild
+    ? {
+        entry: ['tests/index.test.ts'],
+        outDir: 'dist/test',
+        clean: false,
+        format: ['esm'] as const,
+        dts: false,
+        platform: 'node' as const,
+        target: 'es2022' as const,
+        removeNodeProtocol: false,
+        esbuildPlugins: plugins
+      }
+    : {
+        entry: ['src/index.ts'],
+        outDir: 'dist',
+        clean: true,
+        format: ['esm'] as const,
+        dts: false,
+        platform: 'browser' as const,
+        target: 'es2022' as const,
+        esbuildPlugins: plugins
+      }
+)

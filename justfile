@@ -11,6 +11,9 @@ default:
 build:
     npm run build
 
+build-test:
+    npm run build:test
+
 test:
     npm test
 
@@ -22,6 +25,7 @@ coverage:
 
 lint:
     npm run lint
+    reuse lint --lines
 
 fix:
     npm run fix
@@ -33,9 +37,9 @@ format-check:
     npm run format:check
 
 audit:
-    npm audit
+    npm run audit
 
-pipeline: format lint test build
+pipeline: format lint build build-test test
 
 publish:
     npm publish

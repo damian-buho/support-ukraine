@@ -23,13 +23,14 @@ TypeScript ESM package.
 ## Commands
 
 ```
-just build         # rm -rf dist && tsup
-just lint          # ESLint (typescript-eslint, unicorn, import-x, promise, n, tsdoc)
+just build         # tsup && tsc --emitDeclarationOnly (library only)
+just build-test    # tsup test entry (TEST_BUILD=1)
+just lint          # ESLint (typescript-eslint, unicorn, import-x, promise, n, tsdoc) + reuse
 just format        # Prettier write
 just format-check  # Prettier check (CI)
-just test          # build → node --test 'dist/test/index.test.js'
-just audit         # npm audit
-just pipeline      # format → lint → test → build  (full CI gate)
+just test          # node --test 'dist/test/index.test.js'
+just audit         # npm run audit
+just pipeline      # format → lint → build → build-test → test  (full CI gate)
 ```
 
 ## TypeScript strictness
@@ -148,7 +149,7 @@ git push origin main && git push origin X.Y.Z
 
 ## Lefthook hooks
 
-- **pre-commit**: prettier (staged files), eslint (staged files), npm audit
+- **pre-commit**: prettier (staged files), eslint (staged files), audit, build, test
 - **pre-push**: `just pipeline` (full CI gate)
 
 ## Community docs
