@@ -4,7 +4,13 @@
 
 $prefix: support-ukraine-block;
 
-.#{$prefix} {
+header.#{$prefix} {
+  margin: 0;
+  padding: 0;
+  padding-block: 0;
+  border: none;
+  border-radius: 0;
+  font-size: 16px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -14,7 +20,7 @@ $prefix: support-ukraine-block;
   box-sizing: border-box;
   line-height: 1.4;
   z-index: 2147483647;
-  background-color: #0057b7;
+  background: #0057b7 none;
 
   @media (prefers-color-scheme: dark) {
     background-color: #ffd700;
@@ -30,7 +36,7 @@ $prefix: support-ukraine-block;
     left: 0;
   }
 
-  &__link {
+  .#{$prefix}__link {
     display: inline-flex;
     align-items: center;
     flex-wrap: wrap;
@@ -40,7 +46,7 @@ $prefix: support-ukraine-block;
     height: 100%;
     justify-content: flex-start;
     text-align: left;
-    padding: 1rem 2rem;
+    padding: 0.5rem 1rem;
     box-sizing: border-box;
     color: #ffffff;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -55,21 +61,21 @@ $prefix: support-ukraine-block;
     }
   }
 
-  &__prefix {
+  .#{$prefix}__prefix {
     white-space: nowrap;
   }
 
-  &__info {
+  .#{$prefix}__info {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  &__all {
+  .#{$prefix}__all {
     display: inline-flex;
     align-items: center;
     text-decoration: none;
-    padding: 1rem 2rem;
+    padding: 0.5rem 1rem;
     box-sizing: border-box;
     color: #ffffff;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -86,19 +92,19 @@ $prefix: support-ukraine-block;
     }
   }
 
-  &__all-ellipsis {
+  .#{$prefix}__all-ellipsis {
     display: none;
   }
 
   @media (max-width: 640px) {
     flex-wrap: wrap;
 
-    &__link {
+    .#{$prefix}__link {
       flex: 1 1 100%;
       padding: 0.75rem 1.25rem;
     }
 
-    &__info {
+    .#{$prefix}__info {
       flex: 1 1 100%;
       white-space: normal;
       overflow: visible;
@@ -106,13 +112,13 @@ $prefix: support-ukraine-block;
       padding-left: 1.5em;
     }
 
-    &__all {
+    .#{$prefix}__all {
       display: none;
     }
   }
 }
 
-// RTL support — separate rule ( Sass can't nest BEM inside attribute selectors )
+// RTL support — separate rule (Sass can't nest BEM inside attribute selectors)
 [dir="rtl"] .#{$prefix}__link {
   text-align: right;
   justify-content: flex-end;
@@ -127,4 +133,33 @@ $prefix: support-ukraine-block;
     padding-left: 0;
     padding-right: 1.5em;
   }
+}
+
+// data-theme support — for sites that toggle theme via attribute
+[data-theme="dark"] header.#{$prefix} {
+  background-color: #ffd700;
+}
+
+[data-theme="dark"] header.#{$prefix} .#{$prefix}__link {
+  color: #000000;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="dark"] header.#{$prefix} .#{$prefix}__all {
+  color: #000000;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="light"] header.#{$prefix} {
+  background-color: #0057b7;
+}
+
+[data-theme="light"] header.#{$prefix} .#{$prefix}__link {
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] header.#{$prefix} .#{$prefix}__all {
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
