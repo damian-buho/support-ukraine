@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: Apoya a Ucrania
+allCharities: Todas las organizaciones
+donate: Donar
+charities:
+  united24:
+    tagline: Plataforma oficial de recaudación de Ucrania
+  come-back-alive:
+    tagline: Apoyando a las fuerzas armadas ucranianas desde 2014
+  razom-for-ukraine:
+    tagline: Respuesta de emergencia y ayuda humanitaria
+  ukrainian-red-cross:
+    tagline: Asistencia humanitaria en zonas de conflicto
+  nova-ukraine:
+    tagline: Ayuda humanitaria y defensa de derechos
+  voices-of-children:
+    tagline: Apoyo psicológico para niños afectados por la guerra
+  prytula-foundation:
+    tagline: Tecnología de defensa y equipamiento para Ucrania
+  medical-hilfe:
+    tagline: Suministros médicos para hospitales ucranianos
+  army-of-drones:
+    tagline: Drones de reconocimiento para el frente
+  world-central-kitchen:
+    tagline: Comidas frescas para personas en zonas de conflicto
+  cats-of-kyiv:
+    tagline: Refugio que rescata y reubicia gatos en Kyiv
+  uanimals:
+    tagline: Organización de rescate animal y defensa de derechos en Ucrania
+  hospitallers:
+    tagline: Paramédicos voluntarios ucranianos que prestan primeros auxilios y evacuación
+  sternenko-fund:
+    tagline: Suministro de drones FPV para las fuerzas de defensa ucranianas
+  life-robots-ukraine:
+    tagline: Robots para la desminación de Ucrania
+  sirius-shelter:
+    tagline: El mayor refugio de animales de Ucrania para perros y gatos

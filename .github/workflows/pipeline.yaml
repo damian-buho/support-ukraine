@@ -1,0 +1,69 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+name: Pipeline
+# Validation pipeline. Runs on PRs and pushes to main.
+# Release.yaml fires via workflow_run on the branch-push Pipeline run;
+# the tag must be pushed before the pipeline finishes (normal cog flow).
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  # PRs collapse to one in-flight run per branch; main pushes never cancel each
+  # other so we keep a full history of green/red on the default branch.
+  group: pipeline-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  checks:
+    name: Checks
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Audit
+        run: npm audit --audit-level=critical
+
+  test:
+    name: Test (Node ${{ matrix.node-version }} / ${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ['24']
+        os: [ubuntu-26.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - run: npm test

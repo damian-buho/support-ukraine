@@ -1,0 +1,179 @@
+<!--
+SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+
+SPDX-License-Identifier: MIT
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>support-ukraine — dev</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #fafafa;
+      color: #222;
+    }
+    .page { padding: 2rem; }
+    h1 { margin-top: 0; }
+    .controls {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      z-index: 2147483646;
+      font-size: 0.875rem;
+    }
+    .controls label { display: block; margin-bottom: 0.5rem; cursor: pointer; }
+    .controls button {
+      display: block;
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.4rem 0.8rem;
+      border: 1px solid #005BBB;
+      background: #005BBB;
+      color: #FFD500;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .controls button:hover { opacity: 0.9; }
+    .placeholder {
+      background: #e8e8e8;
+      border: 2px dashed #ccc;
+      border-radius: 0.5rem;
+      padding: 3rem;
+      text-align: center;
+      color: #888;
+      margin-top: 1rem;
+    }
+    html[data-theme="dark"] body { background: #1a1a1a; color: #eee; }
+    html[data-theme="dark"] .controls { background: #2a2a2a; border-color: #444; color: #eee; }
+    html[data-theme="dark"] .placeholder { background: #333; border-color: #555; color: #aaa; }
+    html[data-theme="dark"] .controls select,
+    html[data-theme="dark"] .controls input[type="radio"] { accent-color: #FFD500; }
+    html[data-theme="light"] body { background: #fafafa; color: #222; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>support-ukraine — dev page</h1>
+    <p>The banner is injected at the top. Reload to get a different random charity.</p>
+    <div class="placeholder">Page content below the banner (shift mode pushes this down)</div>
+    <div class="placeholder">Scroll area filler</div>
+    <div class="placeholder">Scroll area filler</div>
+  </div>
+
+  <div class="controls">
+    <label>
+      <strong>Locale</strong>
+    </label>
+    <select id="locale" style="display:block;width:100%;margin-bottom:0.5rem;padding:0.3rem;border:1px solid #ccc;border-radius:0.25rem">
+      <option value="">Auto-detect</option>
+      <option value="en">English</option>
+      <option value="es">Español</option>
+      <option value="fr">Français</option>
+      <option value="de">Deutsch</option>
+      <option value="pt">Português</option>
+      <option value="it">Italiano</option>
+      <option value="pl">Polski</option>
+      <option value="nl">Nederlands</option>
+      <option value="sv">Svenska</option>
+      <option value="uk">Українська</option>
+      <option value="ar">العربية</option>
+      <option value="zh">中文</option>
+      <option value="hi">हिन्दी</option>
+      <option value="th">ไทย</option>
+      <option value="ja">日本語</option>
+      <option value="ko">한국어</option>
+    </select>
+    <label>
+      <strong>Color scheme</strong>
+    </label>
+    <label><input type="radio" name="theme" value="auto" checked> auto (system)</label>
+    <label><input type="radio" name="theme" value="light"> light</label>
+    <label><input type="radio" name="theme" value="dark"> dark</label>
+    <label>
+      <strong>Mode</strong>
+    </label>
+    <label><input type="radio" name="mode" value="shift" checked> shift (pushes content)</label>
+    <label><input type="radio" name="mode" value="overlap"> overlap (fixed on top)</label>
+    <label>
+      <strong>Tags</strong>
+    </label>
+    <label><input type="checkbox" name="tag" value="military" checked> military</label>
+    <label><input type="checkbox" name="tag" value="humanitarian" checked> humanitarian</label>
+    <label><input type="checkbox" name="tag" value="animals" checked> animals</label>
+    <a href="#" id="clear-seen" style="display:block;margin-top:0.5rem;color:#005BBB">Clear seen charities</a>
+    <button id="reload">Reload banner</button>
+  </div>
+
+  <script type="module">
+    import { supportUkraineBlock } from './dist/index.js'
+
+    let currentBanner = null
+    let themeStyle = null
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme)
+      if (theme === 'auto') {
+        document.documentElement.removeAttribute('data-theme')
+      }
+
+      if (!themeStyle) {
+        themeStyle = document.createElement('style')
+        document.head.append(themeStyle)
+      }
+
+      if (theme === 'light') {
+        themeStyle.textContent = `
+          .support-ukraine-block { background-color: #0057b7 !important; }
+          .support-ukraine-block__link,
+          .support-ukraine-block__all { color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.4) !important; }
+        `
+      } else if (theme === 'dark') {
+        themeStyle.textContent = `
+          .support-ukraine-block { background-color: #ffd700 !important; }
+          .support-ukraine-block__link,
+          .support-ukraine-block__all { color: #000000 !important; text-shadow: 0 1px 2px rgba(255,255,255,0.4) !important; }
+        `
+      } else {
+        themeStyle.textContent = ''
+      }
+    }
+
+    async function mount() {
+      if (currentBanner) currentBanner.remove()
+      const mode = document.querySelector('input[name="mode"]:checked').value
+      const tags = [...document.querySelectorAll('input[name="tag"]:checked')]
+        .map(el => el.value)
+      const locale = document.querySelector('#locale').value || undefined
+      currentBanner = await supportUkraineBlock({ mode, tags, locale, isInConsole: true })
+    }
+
+    mount()
+
+    document.querySelector('#reload').addEventListener('click', mount)
+    document.querySelector('#locale').addEventListener('change', mount)
+    document.querySelectorAll('input[name="theme"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        applyTheme(e.target.value)
+        mount()
+      })
+    })
+    document.querySelector('#clear-seen').addEventListener('click', (e) => {
+      e.preventDefault()
+      localStorage.removeItem('support-ukraine-seen')
+      mount()
+    })
+  </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: Steun Oekraïne
+allCharities: Alle goede doelen
+donate: Doneer
+charities:
+  united24:
+    tagline: Officieel fondsenwervingsplatform van Oekraïne
+  come-back-alive:
+    tagline: Steun voor de Oekraïense strijdkrachten sinds 2014
+  razom-for-ukraine:
+    tagline: Noodhulp en humanitaire bijstand
+  ukrainian-red-cross:
+    tagline: Humanitaire hulp in conflictgebieden
+  nova-ukraine:
+    tagline: Humanitaire hulp en belangenbehartiging
+  voices-of-children:
+    tagline: Psychologische steun voor kinderen getroffen door de oorlog
+  prytula-foundation:
+    tagline: Defensietechnologie en materiaal voor Oekraïne
+  medical-hilfe:
+    tagline: Medische voorraden voor Oekraïense ziekenhuizen
+  army-of-drones:
+    tagline: Verkenningsdrones voor het front
+  world-central-kitchen:
+    tagline: Verse maaltijden voor mensen in conflictgebieden
+  cats-of-kyiv:
+    tagline: Kattenshelter die katten redt en herplaats in Kyiv
+  uanimals:
+    tagline: Dierenredding en belangenorganisatie in Oekraïne
+  hospitallers:
+    tagline: Oekraïense vrijwillige paramedici voor eerste hulp en evacuatie
+  sternenko-fund:
+    tagline: FPV-dronelevering voor Oekraïense strijdkrachten
+  life-robots-ukraine:
+    tagline: Robots voor de ontmijning van Oekraïne
+  sirius-shelter:
+    tagline: Het grootste dierenasiel van Oekraïne voor honden en katten

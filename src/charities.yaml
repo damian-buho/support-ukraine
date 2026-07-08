@@ -1,0 +1,93 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+- id: united24
+  name: United24
+  tagline: Official fundraising platform of Ukraine
+  url: https://u24.gov.ua
+  tags: [humanitarian]
+
+- id: come-back-alive
+  name: Come Back Alive
+  tagline: Supporting the Ukrainian Armed Forces since 2014
+  url: https://www.comebackalive.in.ua
+  tags: [military]
+
+- id: razom-for-ukraine
+  name: Razom for Ukraine
+  tagline: Emergency response and humanitarian aid
+  url: https://www.razomforukraine.org
+  tags: [humanitarian]
+
+- id: ukrainian-red-cross
+  name: Ukrainian Red Cross
+  tagline: Humanitarian assistance in conflict zones
+  url: https://redcross.org.ua/en/
+  tags: [humanitarian]
+
+- id: nova-ukraine
+  name: Nova Ukraine
+  tagline: Humanitarian aid and advocacy
+  url: https://novaukraine.org
+  tags: [humanitarian]
+
+- id: voices-of-children
+  name: Voices of Children
+  tagline: Psychological support for children affected by war
+  url: https://voices.org.ua/en/
+  tags: [humanitarian]
+
+- id: prytula-foundation
+  name: Prytula Foundation
+  tagline: Defence technology and equipment for Ukraine
+  url: https://prytulafoundation.org/en
+  tags: [military]
+
+- id: army-of-drones
+  name: Army of Drones
+  tagline: Reconnaissance drones for the frontline
+  url: https://armyofdrones.com
+  tags: [military]
+
+- id: world-central-kitchen
+  name: World Central Kitchen
+  tagline: Fresh meals for people in conflict zones
+  url: https://wck.org/relief/activation-chefs-for-ukraine/
+  tags: [humanitarian]
+
+- id: cats-of-kyiv
+  name: Cats of Kyiv
+  tagline: Cat shelter rescuing and rehoming cats in Kyiv
+  url: https://cats.kiev.ua
+  tags: [animals]
+
+- id: uanimals
+  name: UAnimals
+  tagline: Animal rescue and advocacy organization in Ukraine
+  url: https://uanimals.org
+  tags: [animals]
+
+- id: hospitallers
+  name: Hospitallers Medical Battalion
+  tagline: Ukrainian voluntary paramedics providing first aid and evacuation
+  url: https://www.hospitallers.org.uk
+  tags: [humanitarian]
+
+- id: sternenko-fund
+  name: Sternenko Fund
+  tagline: FPV drone supply for Ukrainian defence forces
+  url: https://www.sternenkofund.org
+  tags: [military]
+
+- id: life-robots-ukraine
+  name: Life Robots Ukraine
+  tagline: Robots for demining Ukraine
+  url: https://liferobots.com.ua
+  tags: [humanitarian]
+
+- id: sirius-shelter
+  name: Sirius
+  tagline: Ukraine's largest animal shelter for dogs and cats
+  url: https://dogcat.com.ua
+  tags: [animals]

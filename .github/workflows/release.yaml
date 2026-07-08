@@ -1,0 +1,113 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+name: Release
+# Fires when Pipeline finishes successfully and a git tag points to the head
+# commit. Publishes to npm via OIDC trusted publishing.
+#
+# To release: push the version commit to main, then push a tag.
+#   git push origin main && git push origin X.Y.Z
+# Pipeline runs on the branch push; its success triggers this workflow; the gate
+# finds the tag at HEAD (tag must be pushed before the pipeline finishes); publish-npm publishes.
+#
+# There is no workflow_dispatch path — tag creation IS the release operation.
+#
+# Note: workflow_run-triggered workflows always run the version of this file
+# from the default branch. To roll out a change to Release, merge to main first.
+
+on:
+  workflow_run:
+    workflows: [Pipeline]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  # workflow_run carries no meaningful github.ref — key on the underlying
+  # head_sha so retried pipeline runs for the same SHA serialize.
+  group: release-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    # Three-fact gate: Pipeline must have succeeded for a push to main, and the
+    # head SHA must carry a tag we haven't already released. Any failing fact →
+    # all downstream jobs no-op via `if: needs.gate.outputs.tag != ''`.
+    name: Gate
+    runs-on: ubuntu-26.04
+    if: |
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main'
+    permissions:
+      contents: read
+    outputs:
+      tag: ${{ steps.gate.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref:          ${{ github.event.workflow_run.head_sha }}
+          fetch-depth:  0
+
+      - id:   gate
+        name: Resolve tag at HEAD (and dedup)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Dedup against workflow_dispatch or manual re-runs by checking whether
+        # a GitHub release for this tag already exists.
+        run: |
+          set -euo pipefail
+          tag=$(git tag --points-at HEAD | head -n1)
+          if [ -z "${tag}" ]; then
+            echo "No tag at $(git rev-parse HEAD) — Pipeline succeeded but nothing to release."
+            echo "tag=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if gh release view "${tag}" --json tagName >/dev/null 2>&1; then
+            echo "GitHub release ${tag} already exists — duplicate trigger ignored."
+            echo "tag=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "Releasing ${tag} at $(git rev-parse HEAD)"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+
+  publish-npm:
+    # Checks out the validated release tag (a gate job-output ref, not raw
+    # event data) to build and publish. Using needs.gate.outputs.tag as the ref
+    # breaks the CodeQL taint chain for both untrusted-checkout and
+    # cache-poisoning — no artifact bridge needed, no shared state written.
+    name: Publish npm + GitHub release
+    needs: gate
+    if:    needs.gate.outputs.tag != ''
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: write  # GitHub release creation
+      id-token: write  # OIDC for npm trusted publishing + provenance
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # Gate-validated tag ref — not raw workflow_run.head_sha.
+          # Job output boundary prevents CodeQL from tainting this ref.
+          ref:         ${{ needs.gate.outputs.tag }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version:  '24'
+          registry-url:  https://registry.npmjs.org
+          # No cache: npm — avoids writing packages from this checkout into the
+          # shared GHA cache where other workflows could restore them.
+
+      - run: npm ci
+
+      # prepublishOnly runs the build before publish; no explicit build step needed.
+      - name: Publish to npm
+        run:  npm publish --provenance --access public
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
+        with:
+          tag_name:               ${{ needs.gate.outputs.tag }}
+          generate_release_notes: true

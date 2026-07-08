@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "支持乌克兰"
+allCharities: "所有慈善机构"
+donate: "捐款"
+charities:
+  united24:
+    tagline: "乌克兰官方筹款平台"
+  come-back-alive:
+    tagline: "自2014年起支持乌克兰武装部队"
+  razom-for-ukraine:
+    tagline: "紧急响应与人道主义援助"
+  ukrainian-red-cross:
+    tagline: "冲突地区的人道主义援助"
+  nova-ukraine:
+    tagline: "人道主义援助与倡导"
+  voices-of-children:
+    tagline: "为受战争影响的儿童提供心理支持"
+  prytula-foundation:
+    tagline: "乌克兰国防技术与装备"
+  medical-hilfe:
+    tagline: "乌克兰医院的医疗物资"
+  army-of-drones:
+    tagline: "前线侦察无人机"
+  world-central-kitchen:
+    tagline: "为冲突地区民众提供新鲜餐食"
+  cats-of-kyiv:
+    tagline: "基辅猫舍，救助并安置流浪猫"
+  uanimals:
+    tagline: "乌克兰动物救援与保护组织"
+  hospitallers:
+    tagline: "乌克兰志愿医护人员提供急救和疏散"
+  sternenko-fund:
+    tagline: "为乌克兰国防部队提供FPV无人机"
+  life-robots-ukraine:
+    tagline: "用于乌克兰排雷的机器人"
+  sirius-shelter:
+    tagline: "乌克兰最大的犬猫收容所"

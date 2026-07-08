@@ -1,0 +1,338 @@
+// SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+//
+// SPDX-License-Identifier: MIT
+
+/**
+ * Build script that generates pages/index.html — a single-page app listing
+ * all charities with localized content. Reads source YAML data from src/ and
+ * emits a self-contained HTML file with embedded translations.
+ *
+ * Usage:  node scripts/build-pages.mjs
+ * Output: pages/index.html
+ */
+
+import { readFileSync, mkdirSync, writeFileSync } from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { load as loadYaml } from 'js-yaml'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const ROOT = path.join(__dirname, '..')
+
+// ── Locale display names (native script, for the language picker) ──────────
+
+const LOCALE_NAMES = {
+  en: 'English',
+  es: 'Español',
+  fr: 'Français',
+  de: 'Deutsch',
+  pt: 'Português',
+  it: 'Italiano',
+  pl: 'Polski',
+  nl: 'Nederlands',
+  sv: 'Svenska',
+  uk: 'Українська',
+  ar: 'العربية',
+  zh: '中文',
+  hi: 'हिन्दी',
+  th: 'ไทย',
+  ja: '日本語',
+  ko: '한국어',
+}
+
+// RTL locales (must match src/locales/index.ts)
+const RTL_LOCALES = ['ar']
+
+// ── Read source data ───────────────────────────────────────────────────────
+
+function readYaml(relativePath) {
+  const raw = readFileSync(path.join(ROOT, relativePath), 'utf8')
+  return loadYaml(raw)
+}
+
+const charities = readYaml('src/charities.yaml')
+
+const locales = {}
+for (const code of Object.keys(LOCALE_NAMES)) {
+  locales[code] = readYaml(`src/locales/${code}.yaml`)
+}
+
+// ── Build translations JSON (embedded in HTML) ─────────────────────────────
+
+const translations = {}
+for (const [code, msgs] of Object.entries(locales)) {
+  translations[code] = {
+    supportUkraine: msgs.supportUkraine,
+    allCharities: msgs.allCharities,
+    donate: msgs.donate,
+    charities: {},
+  }
+
+  // Localized taglines
+  for (const charity of charities) {
+    const entry = msgs.charities[charity.id]
+    translations[code].charities[charity.id] = {
+      tagline: entry?.tagline ?? charity.tagline,
+    }
+  }
+}
+
+// ── Generate HTML ──────────────────────────────────────────────────────────
+
+const localeOptions = Object.entries(LOCALE_NAMES)
+  .map(([code, name]) => `          <option value="${code}">${name}</option>`)
+  .join('\n')
+
+const charitiesJson = JSON.stringify(charities)
+const translationsJson = JSON.stringify(translations)
+const rtlJson = JSON.stringify(RTL_LOCALES)
+
+const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support Ukraine — All Charities</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, -Segoe-ui, sans-serif;
+      background: #fafafa;
+      color: #222;
+      line-height: 1.5;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: #1a1a1a; color: #eee; }
+      .card { background: #2a2a2a; border-color: #444; }
+      .card:hover { border-color: #0057b7; }
+      .header { background: #0057b7; }
+      .picker { background: #2a2a2a; border-color: #444; color: #eee; }
+    }
+
+    .header {
+      background: #0057b7;
+      color: #fff;
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    .header__title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .header__subtitle {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      padding: 1rem 1.5rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .picker {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.375rem;
+      font-size: 0.95rem;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+      padding: 1rem 1.5rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 0.5rem;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: border-color 0.15s;
+    }
+
+    .card:hover {
+      border-color: #0057b7;
+    }
+
+    .card__name {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .card__tagline {
+      font-size: 0.9rem;
+      color: #555;
+      flex: 1;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .card__tagline { color: #aaa; }
+    }
+
+    .card__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35em;
+      margin-top: 0.25rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #0057b7;
+      text-decoration: none;
+    }
+
+    .card__link:hover {
+      text-decoration: underline;
+    }
+
+    .card__tags {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 0.15em 0.5em;
+      border-radius: 999px;
+      background: #e8f0fe;
+      color: #0057b7;
+      font-weight: 500;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .tag { background: #1a3a5c; color: #6db3f8; }
+    }
+
+    [dir="rtl"] .card__link { flex-direction: row-reverse; }
+    [dir="rtl"] .header { direction: rtl; }
+
+    .footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+      color: #888;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .footer a { color: #0057b7; text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1 class="header__title" id="title"></h1>
+    <p class="header__subtitle" id="subtitle"></p>
+  </header>
+
+  <nav class="controls">
+    <select class="picker" id="lang" aria-label="Language">
+${localeOptions}
+    </select>
+  </nav>
+
+  <main class="grid" id="grid"></main>
+
+  <footer class="footer" id="footer"></footer>
+
+  <script>
+    // ── Embedded data ───────────────────────────────────────────────
+    const CHARITIES = ${charitiesJson};
+    const TRANSLATIONS = ${translationsJson};
+    const RTL_LOCALES = ${rtlJson};
+
+    // ── DOM refs ────────────────────────────────────────────────────
+    const titleEl = document.getElementById('title');
+    const subtitleEl = document.getElementById('subtitle');
+    const gridEl = document.getElementById('grid');
+    const langEl = document.getElementById('lang');
+    const footerEl = document.getElementById('footer');
+
+    // ── Locale detection ────────────────────────────────────────────
+    function detectLocale() {
+      const params = new URLSearchParams(location.search);
+      const fromUrl = params.get('lang');
+      if (fromUrl && TRANSLATIONS[fromUrl]) return fromUrl;
+
+      for (const tag of navigator.languages || []) {
+        const base = tag.split('-', 1)[0].toLowerCase();
+        if (TRANSLATIONS[base]) return base;
+      }
+      return 'en';
+    }
+
+    // ── Render ──────────────────────────────────────────────────────
+    function render(code) {
+      const t = TRANSLATIONS[code] || TRANSLATIONS.en;
+      const isRtl = RTL_LOCALES.includes(code);
+
+      document.documentElement.lang = code;
+      document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+
+      titleEl.textContent = \`\u{1F1FA}\u{1F1E6} \${t.supportUkraine}\`;
+      subtitleEl.textContent = t.allCharities;
+
+      gridEl.innerHTML = '';
+      for (const c of CHARITIES) {
+        const localized = t.charities[c.id] || { tagline: c.tagline };
+
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = \`
+          <h2 class="card__name">\${c.name}</h2>
+          <p class="card__tagline">\${localized.tagline}</p>
+          <div class="card__tags">
+            \${c.tags.map(tag => \`<span class="tag">\${tag}</span>\`).join('')}
+          </div>
+          <a class="card__link" href="\${c.url}" target="_blank" rel="noopener noreferrer">
+            \${t.donate} \u{2192}
+          </a>
+        \`;
+        gridEl.appendChild(card);
+      }
+
+      footerEl.innerHTML = \`<a href="https://github.com/damian-buho/support-ukraine">support-ukraine</a> \u{00B7} MIT\`;
+
+      // Sync picker
+      langEl.value = code;
+
+      // Update URL without reload
+      const url = new URL(location);
+      url.searchParams.set('lang', code);
+      history.replaceState(null, '', url);
+    }
+
+    // ── Init ────────────────────────────────────────────────────────
+    const initial = detectLocale();
+    render(initial);
+
+    langEl.addEventListener('change', () => render(langEl.value));
+  </script>
+</body>
+</html>
+`
+
+// ── Write output ───────────────────────────────────────────────────────────
+
+const pagesDirectory = path.join(ROOT, 'pages')
+mkdirSync(pagesDirectory, { recursive: true })
+writeFileSync(path.join(pagesDirectory, 'index.html'), html)
+
+console.log(`pages/index.html — generated (${(html.length / 1024).toFixed(1)} KB)`)
+console.log(`  ${charities.length} charities, ${Object.keys(locales).length} locales`)

@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "यूक्रेन का समर्थन करें"
+allCharities: "सभी धर्मार्थ संस्थाएँ"
+donate: "दान करें"
+charities:
+  united24:
+    tagline: "यूक्रेन का आधिकारिक धन उगाही मंच"
+  come-back-alive:
+    tagline: "2014 से यूक्रेनी सशस्त्र बलों का समर्थन"
+  razom-for-ukraine:
+    tagline: "आपातकालीन प्रतिक्रिया और मानवीय सहायता"
+  ukrainian-red-cross:
+    tagline: "संघर्ष क्षेत्रों में मानवीय सहायता"
+  nova-ukraine:
+    tagline: "मानवीय सहायता और वकालत"
+  voices-of-children:
+    tagline: "युद्ध से प्रभावित बच्चों के लिए मनोवैज्ञानिक सहायता"
+  prytula-foundation:
+    tagline: "यूक्रेन के लिए रक्षा प्रौद्योगिकी और उपकरण"
+  medical-hilfe:
+    tagline: "यूक्रेनी अस्पतालों के लिए चिकित्सा आपूर्ति"
+  army-of-drones:
+    tagline: "मोर्चे के लिए टोही ड्रोन"
+  world-central-kitchen:
+    tagline: "संघर्ष क्षेत्रों में ताज़ा भोजन"
+  cats-of-kyiv:
+    tagline: "कीव में बिल्लियों को बचाने और घर देने वाला आश्रय"
+  uanimals:
+    tagline: "यूक्रेन में पशु बचाव और वकालत संगठन"
+  hospitallers:
+    tagline: "यूक्रेनी स्वयंसेवक पैरामेडिक जो प्राथमिक चिकित्सा और निकासी प्रदान करते हैं"
+  sternenko-fund:
+    tagline: "यूक्रेनी रक्षा बलों के लिए FPV ड्रोन की आपूर्ति"
+  life-robots-ukraine:
+    tagline: "यूक्रेन में खाना निकासी के लिए रोबोट"
+  sirius-shelter:
+    tagline: "कुत्तों और बिल्लियों के लिए यूक्रेन का सबसे बड़ा पशु आश्रय"
