@@ -129,7 +129,7 @@ Two GitHub Actions workflows:
 
 - **pipeline.yaml** — runs on PRs and pushes to `main`:
   - `checks` job: lint, format:check, audit (Node 24, ubuntu)
-  - `test` job: matrix of Node 22/24 x ubuntu/macos/windows
+  - `test` job: Node 24, ubuntu-26.04
 - **release.yaml** — fires via `workflow_run` after Pipeline succeeds:
   - `gate` job: resolves tag at HEAD, deduplicates
   - `publish-npm` job: OIDC trusted publishing, creates GitHub release
