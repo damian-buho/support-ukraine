@@ -35,7 +35,7 @@ npm install @damian-buho/support-ukraine
 ```html
 
 <script type="module">
-  import {supportUkraineBlock} from 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine'
+  import {supportUkraineBlock} from 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@1/+esm'
 
   await supportUkraineBlock()
 </script>
