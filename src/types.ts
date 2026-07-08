@@ -2,23 +2,73 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { z } from 'zod'
-
 /** Category tag for a charity. */
-export const charityTagSchema = z.enum(['military', 'humanitarian', 'animals'])
-export type CharityTag = z.infer<typeof charityTagSchema>
+export const VALID_TAGS = ['military', 'humanitarian', 'animals'] as const
+export type CharityTag = (typeof VALID_TAGS)[number]
+
+function assert(condition: unknown, message: string): asserts condition {
+  if (!condition) throw new Error(message)
+}
+
+function assertNonEmptyString(value: unknown, field: string): void {
+  assert(typeof value === 'string', `${field} must be a string`)
+  assert(value.length > 0, `${field} must not be empty`)
+}
+
+function assertUrl(value: unknown, field: string): void {
+  assertNonEmptyString(value, field)
+  try {
+    new URL(value)
+  } catch {
+    throw new Error(`${field} must be a valid URL`)
+  }
+}
+
+function parseCharityTag(value: unknown): CharityTag {
+  assert(
+    VALID_TAGS.includes(value as CharityTag),
+    `Invalid tag: ${String(value)}. Must be one of: ${VALID_TAGS.join(', ')}`
+  )
+  return value as CharityTag
+}
 
 /** A charity foundation that can appear in the banner. */
-export const charitySchema = z.object({
-  id: z.string().min(1),
-  name: z.string().min(1),
-  tagline: z.string().min(1),
-  url: z.string().url(),
-  tags: z.array(charityTagSchema).min(1)
-})
-export type Charity = z.infer<typeof charitySchema>
+export interface Charity {
+  id: string
+  name: string
+  tagline: string
+  url: string
+  tags: CharityTag[]
+}
 
-export const charitiesSchema = z.array(charitySchema)
+function parseCharity(value: unknown): Charity {
+  assert(value !== null && typeof value === 'object', 'Charity must be an object')
+  const record = value as Record<string, unknown>
+  assertNonEmptyString(record.id, 'id')
+  assertNonEmptyString(record.name, 'name')
+  assertNonEmptyString(record.tagline, 'tagline')
+  assertUrl(record.url, 'url')
+  assert(Array.isArray(record.tags), 'tags must be an array')
+  assert(record.tags.length > 0, 'tags must not be empty')
+  return {
+    id: record.id,
+    name: record.name,
+    tagline: record.tagline,
+    url: record.url,
+    tags: record.tags.map(tag => parseCharityTag(tag))
+  }
+}
+
+export const charitySchema = {
+  parse: parseCharity
+}
+
+export const charitiesSchema = {
+  parse(value: unknown): Charity[] {
+    assert(Array.isArray(value), 'Charities must be an array')
+    return value.map(item => parseCharity(item))
+  }
+}
 
 /** Translated UI strings and charity taglines for a single locale. */
 export interface LocaleMessages {

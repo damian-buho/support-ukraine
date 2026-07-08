@@ -19,7 +19,6 @@ TypeScript ESM package.
 - Entry point: `dist/index.js` (library API)
 - Package manager: npm
 - Build: tsup (esbuild-powered) with custom YAML + SCSS plugins
-- Validation: Zod schemas for charity data
 
 ## Commands
 
@@ -50,7 +49,7 @@ tsconfig enables: `strict`, `noUncheckedIndexedAccess`, `noUnusedLocals`,
 ```
 src/
 ├── index.ts          # Public API: supportUkraineBlock(), DEFAULT_CHARITIES
-├── types.ts          # Zod schemas: charitySchema, charitiesSchema, SupportUkraineBlockOptions
+├── types.ts          # Hand-written validators: charitySchema, charitiesSchema, SupportUkraineBlockOptions
 ├── i18n.ts           # detectLocale(), loadLocale(), mergeCharities(), isRTL()
 ├── locales/
 │   ├── index.ts      # resolveLocale(), localeLoaders, RTL_LOCALES, SupportedLocale

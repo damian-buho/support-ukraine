@@ -84,9 +84,7 @@
     "trailingComma": "none",
     "useTabs": false
   },
-  "dependencies": {
-    "zod": "4.4.3"
-  },
+  "dependencies": {},
   "overrides": {
     "esbuild": "0.28.1",
     "@typescript-eslint/utils": "8.63.0",

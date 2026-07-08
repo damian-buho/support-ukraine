@@ -46,7 +46,6 @@ export default defineConfig([
     dts: false,
     platform: 'browser' as const,
     target: 'es2022' as const,
-    noExternal: [/^zod/],
     esbuildPlugins: plugins
   },
   {
