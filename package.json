@@ -46,7 +46,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:damian-buho/support-ukraine.git"
+    "url": "git+ssh://git@github.com/damian-buho/support-ukraine.git"
   },
   "bugs": {
     "url": "https://github.com/damian-buho/support-ukraine/issues"
