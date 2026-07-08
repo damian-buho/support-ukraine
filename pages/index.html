@@ -1,9 +1,3 @@
-<!--
-SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
-
-SPDX-License-Identifier: MIT
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,14 +12,6 @@ SPDX-License-Identifier: MIT
       background: #fafafa;
       color: #222;
       line-height: 1.5;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      body { background: #1a1a1a; color: #eee; }
-      .card { background: #2a2a2a; border-color: #444; }
-      .card:hover { border-color: #0057b7; }
-      .header { background: #0057b7; }
-      .picker { background: #2a2a2a; border-color: #444; color: #eee; }
     }
 
     .header {
@@ -98,10 +84,6 @@ SPDX-License-Identifier: MIT
       flex: 1;
     }
 
-    @media (prefers-color-scheme: dark) {
-      .card__tagline { color: #aaa; }
-    }
-
     .card__link {
       display: inline-flex;
       align-items: center;
@@ -133,10 +115,6 @@ SPDX-License-Identifier: MIT
       font-weight: 500;
     }
 
-    @media (prefers-color-scheme: dark) {
-      .tag { background: #1a3a5c; color: #6db3f8; }
-    }
-
     [dir="rtl"] .card__link { flex-direction: row-reverse; }
     [dir="rtl"] .header { direction: rtl; }
 
@@ -150,6 +128,16 @@ SPDX-License-Identifier: MIT
 
     .footer a { color: #0057b7; text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: #1a1a1a; color: #eee; }
+      .picker { background: #2a2a2a; border-color: #444; color: #eee; }
+      .card { background: #2a2a2a; border-color: #444; }
+      .card:hover { border-color: #0057b7; }
+      .card__tagline { color: #aaa; }
+      .tag { background: #1a3a5c; color: #6db3f8; }
+      .footer { border-color: #444; color: #aaa; }
+    }
   </style>
 </head>
 <body>

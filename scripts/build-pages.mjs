@@ -103,14 +103,6 @@ const html = `<!DOCTYPE html>
       line-height: 1.5;
     }
 
-    @media (prefers-color-scheme: dark) {
-      body { background: #1a1a1a; color: #eee; }
-      .card { background: #2a2a2a; border-color: #444; }
-      .card:hover { border-color: #0057b7; }
-      .header { background: #0057b7; }
-      .picker { background: #2a2a2a; border-color: #444; color: #eee; }
-    }
-
     .header {
       background: #0057b7;
       color: #fff;
@@ -181,10 +173,6 @@ const html = `<!DOCTYPE html>
       flex: 1;
     }
 
-    @media (prefers-color-scheme: dark) {
-      .card__tagline { color: #aaa; }
-    }
-
     .card__link {
       display: inline-flex;
       align-items: center;
@@ -216,10 +204,6 @@ const html = `<!DOCTYPE html>
       font-weight: 500;
     }
 
-    @media (prefers-color-scheme: dark) {
-      .tag { background: #1a3a5c; color: #6db3f8; }
-    }
-
     [dir="rtl"] .card__link { flex-direction: row-reverse; }
     [dir="rtl"] .header { direction: rtl; }
 
@@ -233,6 +217,16 @@ const html = `<!DOCTYPE html>
 
     .footer a { color: #0057b7; text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: #1a1a1a; color: #eee; }
+      .picker { background: #2a2a2a; border-color: #444; color: #eee; }
+      .card { background: #2a2a2a; border-color: #444; }
+      .card:hover { border-color: #0057b7; }
+      .card__tagline { color: #aaa; }
+      .tag { background: #1a3a5c; color: #6db3f8; }
+      .footer { border-color: #444; color: #aaa; }
+    }
   </style>
 </head>
 <body>
