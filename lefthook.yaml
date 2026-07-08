@@ -21,6 +21,8 @@ pre-commit:
       run: npx eslint {staged_files}
     audit:
       run: npm audit
+    test:
+      run: just test
 
 pre-push:
   commands:
