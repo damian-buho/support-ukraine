@@ -293,6 +293,7 @@ class MockElement {
   private _attrs = new Map<string, string>()
   private _children: MockElement[] = []
   className = ''
+  id = ''
   href = ''
   textContent = ''
   style = { fontSize: '' }
@@ -318,19 +319,28 @@ class MockElement {
   get lastChild() {
     return this._children.at(-1)
   }
+
+  get children() {
+    return this._children
+  }
 }
+
+const head = new MockElement()
 
 function setupDom(): void {
   if (!globalThis.document) {
     Object.defineProperty(globalThis, 'document', {
       value: {
-        head: { append() {} },
+        head,
         body: { prepend() {} },
         createElement(): MockElement {
           return new MockElement()
         },
-        querySelector() {
-          // return nothing — no existing style element
+        querySelector(selector: string) {
+          const idMatch = selector.match(/^#(.+)$/)
+          if (!idMatch) return
+          const targetId = idMatch[1]
+          return head.children.find(child => child.id === targetId) ?? undefined
         }
       },
       writable: true,
@@ -371,6 +381,7 @@ describe('dontRepeat', () => {
 
   beforeEach(() => {
     storage.store.clear()
+    head.children.length = 0
   })
 
   it('does not touch localStorage when dontRepeat is false', async () => {
@@ -467,6 +478,7 @@ describe('i18n integration', () => {
 
   beforeEach(() => {
     storage.store.clear()
+    head.children.length = 0
   })
 
   it('banner uses translated text when locale is specified', async () => {
@@ -540,5 +552,27 @@ describe('i18n integration', () => {
     const text = allText.textContent
     assert.ok(text.length > 0, 'allCharities text should not be empty')
     assert.notEqual(text, 'All charities', 'should be translated')
+  })
+})
+
+// ── injectStyles ──────────────────────────────────────────────────────
+
+describe('injectStyles', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+  })
+
+  it('appends style element only once across multiple calls', async () => {
+    await supportUkraineBlock({ dontRepeat: false })
+    await supportUkraineBlock({ dontRepeat: false })
+
+    const styleElements = head.children.filter(child => child.id === 'support-ukraine-block-styles')
+    assert.equal(styleElements.length, 1, 'style should be injected only once')
   })
 })
