@@ -64,7 +64,7 @@ The entire block is a clickable link to the charity's donation page.
 | Option        | Type                   | Default           | Description                                                               |
 |---------------|------------------------|-------------------|---------------------------------------------------------------------------|
 | `element`     | `HTMLElement`          | `document.body`   | Target mount element for the banner                                       |
-| `mode`        | `'shift' \| 'overlap'` | `'shift'`         | `'shift'` pushes page content down, `'overlap'` floats on top             |
+| `mode`        | `'shift' \| 'overlap' \| 'replace'` | `'shift'`         | `'shift'` pushes page content down, `'overlap'` floats on top, `'replace'` swaps a same-class `<header>` placeholder |
 | `fontSize`    | `string`               | `'0.875rem'`      | Banner font size                                                          |
 | `tags`        | `CharityTag[]`         | _(all)_           | Filter charities by category: `'military'`, `'humanitarian'`, `'animals'` |
 | `dontRepeat`  | `boolean`              | `true`            | Avoid repeating charities across page loads using `localStorage`          |
@@ -78,6 +78,21 @@ Show only military charities:
 ```ts
 await supportUkraineBlock({tags: ['military']})
 ```
+
+### Replace mode (no layout shift)
+
+Use `replace` mode to swap a same-class `<header>` placeholder element so the banner takes its place without shifting page content:
+
+```html
+<!-- Static HTML: renders nothing until JS runs -->
+<header class="support-ukraine-block" style="height:2.5rem"></header>
+```
+
+```ts
+await supportUkraineBlock({mode: 'replace'})
+```
+
+The banner finds the first `<header class="support-ukraine-block">` inside the mount element and replaces it in place. If no placeholder is found, it falls back to prepending. This eliminates cumulative layout shift (CLS) because the placeholder already reserves the exact space the banner needs.
 
 ### Disabling repeat prevention
 

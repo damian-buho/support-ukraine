@@ -158,7 +158,7 @@ export async function supportUkraineBlock(
 
   const prefix = document.createElement('span')
   prefix.className = `${CSS_PREFIX}__prefix`
-  prefix.textContent = `${messages.supportUkraine}\u{00A0}`
+  prefix.textContent = `${messages.supportUkraine} `
 
   const info = document.createElement('span')
   info.className = `${CSS_PREFIX}__info`
@@ -169,7 +169,7 @@ export async function supportUkraineBlock(
 
   const colon = document.createElement('span')
   colon.className = `${CSS_PREFIX}__colon`
-  colon.textContent = ':\u{00A0}'
+  colon.textContent = ': '
 
   const tagline = document.createElement('span')
   tagline.className = `${CSS_PREFIX}__tagline`

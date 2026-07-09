@@ -93,10 +93,10 @@ export function isRTL(lang: string): boolean {
 /**
  * Build a translated banner text line for a charity.
  *
- * @returns The formatted string "UA_FLAG supportUkraine: name: tagline"
+ * @returns The formatted string "UA_FLAG supportUkraine name: tagline"
  */
 export function formatBannerText(charity: Charity, messages: LocaleMessages): string {
-  return `\u{1F1FA}\u{1F1E6} ${messages.supportUkraine}: ${charity.name}: ${charity.tagline}`
+  return `\u{1F1FA}\u{1F1E6} ${messages.supportUkraine} ${charity.name}: ${charity.tagline}`
 }
 
 /**

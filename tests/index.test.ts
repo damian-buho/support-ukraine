@@ -216,7 +216,7 @@ describe('loadLocale', () => {
 
   it('falls back to English for unknown locale', async () => {
     const messages = await loadLocale('zz')
-    assert.equal(messages.supportUkraine, 'Support Ukraine')
+    assert.equal(messages.supportUkraine, 'Support Ukraine with')
   })
 })
 
@@ -580,7 +580,7 @@ describe('i18n integration', () => {
       const link = banner.firstChild as MockElement
       const prefix = link.querySelector('.support-ukraine-block__prefix') as MockElement
       const text = prefix.textContent
-      assert.ok(text.includes('Support Ukraine'), 'should contain English text')
+      assert.ok(text.includes('Support Ukraine with'), 'should contain English text')
     } finally {
       // eslint-disable-next-line unicorn/no-global-object-property-assignment
       globalThis.navigator = savedNavigator
