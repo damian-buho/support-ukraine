@@ -74,8 +74,8 @@ export const charitiesSchema = {
 export interface LocaleMessages {
   /** Banner prefix, e.g. "Support Ukraine". */
   supportUkraine: string
-  /** "All charities" link text. */
-  allCharities: string
+  /** "More…" link text. */
+  more: string
   /** Card donate button text, e.g. "Donate". */
   donate: string
   /** Translated taglines keyed by charity id. Missing keys fall back to EN. */
@@ -85,8 +85,8 @@ export interface LocaleMessages {
 export interface SupportUkraineBlockOptions {
   /** Target mount element. If omitted the banner is prepended to document.body. */
   element?: HTMLElement
-  /** Positioning mode: 'shift' pushes content down, 'overlap' floats on top. */
-  mode?: 'shift' | 'overlap'
+  /** Positioning mode: 'shift' pushes content down, 'overlap' floats on top, 'replace' swaps a same-class placeholder. */
+  mode?: 'shift' | 'overlap' | 'replace'
   /** Font size (default '0.875rem'). */
   fontSize?: string
   /** Category tags to filter by. If omitted all charities are shown. */
