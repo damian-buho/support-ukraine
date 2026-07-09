@@ -152,37 +152,64 @@ export async function supportUkraineBlock(
   link.rel = 'noopener noreferrer'
   link.style.fontSize = fontSize
 
+  const flag = document.createElement('span')
+  flag.className = `${CSS_PREFIX}__flag`
+  flag.textContent = `\u{1F1FA}\u{1F1E6} `
+
   const prefix = document.createElement('span')
   prefix.className = `${CSS_PREFIX}__prefix`
-  prefix.textContent = `\u{1F1FA}\u{1F1E6} ${messages.supportUkraine}:`
+  prefix.textContent = `${messages.supportUkraine}\u{00A0}`
 
   const info = document.createElement('span')
   info.className = `${CSS_PREFIX}__info`
-  info.textContent = `${charity.name}: ${charity.tagline}`
 
-  link.append(prefix, info)
+  const name = document.createElement('span')
+  name.className = `${CSS_PREFIX}__name`
+  name.textContent = charity.name
+
+  const colon = document.createElement('span')
+  colon.className = `${CSS_PREFIX}__colon`
+  colon.textContent = ':\u{00A0}'
+
+  const tagline = document.createElement('span')
+  tagline.className = `${CSS_PREFIX}__tagline`
+  tagline.textContent = charity.tagline
+
+  info.append(name, colon, tagline)
+
+  link.append(flag, prefix, info)
   banner.append(link)
 
-  const allLink = document.createElement('a')
-  allLink.className = `${CSS_PREFIX}__all`
-  allLink.href = 'https://damian-buho.github.io/support-ukraine/'
-  allLink.target = '_blank'
-  allLink.rel = 'noopener noreferrer'
-  allLink.style.fontSize = fontSize
+  const moreLink = document.createElement('a')
+  moreLink.className = `${CSS_PREFIX}__more`
+  moreLink.href = 'https://damian-buho.github.io/support-ukraine/'
+  moreLink.target = '_blank'
+  moreLink.rel = 'noopener noreferrer'
+  moreLink.style.fontSize = fontSize
 
-  const allText = document.createElement('span')
-  allText.className = `${CSS_PREFIX}__all-text`
-  allText.textContent = messages.allCharities
+  const moreText = document.createElement('span')
+  moreText.className = `${CSS_PREFIX}__more-text`
+  moreText.textContent = messages.more
 
-  const allEllipsis = document.createElement('span')
-  allEllipsis.className = `${CSS_PREFIX}__all-ellipsis`
-  allEllipsis.textContent = '\u{2026}'
+  const moreEllipsis = document.createElement('span')
+  moreEllipsis.className = `${CSS_PREFIX}__more-ellipsis`
+  moreEllipsis.textContent = '\u{2026}'
 
-  allLink.append(allText, allEllipsis)
-  banner.append(allLink)
+  moreLink.append(moreText, moreEllipsis)
+  banner.append(moreLink)
 
   const mount = options.element ?? document.body
-  mount.prepend(banner)
+
+  if (mode === 'replace') {
+    const placeholder = mount.querySelector<HTMLElement>(`header.${CSS_PREFIX}`)
+    if (placeholder) {
+      placeholder.replaceWith(banner)
+    } else {
+      mount.prepend(banner)
+    }
+  } else {
+    mount.prepend(banner)
+  }
 
   if (isInConsole) {
     console.info('[support-ukraine] banner', `${charity.name}: ${charity.tagline}`, charity.url)

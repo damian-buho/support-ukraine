@@ -65,6 +65,7 @@ SPDX-License-Identifier: MIT
 </head>
 <body>
   <div class="page">
+    <header class="support-ukraine-block" style="min-height:2.5rem"></header>
     <h1>support-ukraine — dev page</h1>
     <p>The banner is injected at the top. Reload to get a different random charity.</p>
     <div class="placeholder">Page content below the banner (shift mode pushes this down)</div>
@@ -104,8 +105,9 @@ SPDX-License-Identifier: MIT
     <label>
       <strong>Mode</strong>
     </label>
-    <label><input type="radio" name="mode" value="shift" checked> shift (pushes content)</label>
+    <label><input type="radio" name="mode" value="shift"> shift (pushes content)</label>
     <label><input type="radio" name="mode" value="overlap"> overlap (fixed on top)</label>
+    <label><input type="radio" name="mode" value="replace" checked> replace (swaps placeholder)</label>
     <label>
       <strong>Tags</strong>
     </label>

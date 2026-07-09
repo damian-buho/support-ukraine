@@ -12,6 +12,7 @@ header.#{$prefix} {
   border-radius: 0;
   font-size: 16px;
   width: 100%;
+  min-height: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,6 +20,7 @@ header.#{$prefix} {
   text-decoration: none;
   box-sizing: border-box;
   line-height: 1.4;
+  overflow: visible;
   z-index: 2147483647;
   background: #0057b7 none;
 
@@ -34,6 +36,10 @@ header.#{$prefix} {
     position: fixed;
     top: 0;
     left: 0;
+  }
+
+  &--replace {
+    position: relative;
   }
 
   .#{$prefix}__link {
@@ -61,17 +67,27 @@ header.#{$prefix} {
     }
   }
 
-  .#{$prefix}__prefix {
+  .#{$prefix}__flag {
     white-space: nowrap;
+  }
+
+  .#{$prefix}__prefix {
+    min-width: 0;
   }
 
   .#{$prefix}__info {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    min-width: 0;
   }
 
-  .#{$prefix}__all {
+  .#{$prefix}__colon {
+    min-width: 0;
+  }
+
+  .#{$prefix}__tagline {
+    min-width: 0;
+  }
+
+  .#{$prefix}__more {
     display: inline-flex;
     align-items: center;
     text-decoration: none;
@@ -92,47 +108,47 @@ header.#{$prefix} {
     }
   }
 
-  .#{$prefix}__all-ellipsis {
+  .#{$prefix}__more-ellipsis {
     display: none;
   }
 
-  @media (max-width: 640px) {
-    flex-wrap: wrap;
-
-    .#{$prefix}__link {
-      flex: 1 1 100%;
-      padding: 0.75rem 1.25rem;
+  @media (max-width: 58rem) {
+    .#{$prefix}__prefix {
+      display: none;
     }
 
-    .#{$prefix}__info {
-      flex: 1 1 100%;
-      white-space: normal;
-      overflow: visible;
-      text-overflow: unset;
-      padding-left: 1.5em;
+    .#{$prefix}__name {
+      display: none;
     }
 
-    .#{$prefix}__all {
+    .#{$prefix}__colon {
+      display: none;
+    }
+
+    .#{$prefix}__more {
+      display: none;
+    }
+  }
+
+  @media (max-width: 35rem) {
+    .#{$prefix}__name {
+      display: initial;
+    }
+
+    .#{$prefix}__tagline {
       display: none;
     }
   }
 }
 
-// RTL support — separate rule (Sass can't nest BEM inside attribute selectors)
+// RTL support
 [dir="rtl"] .#{$prefix}__link {
   text-align: right;
   justify-content: flex-end;
 }
 
-[dir="rtl"] .#{$prefix}__all {
+[dir="rtl"] .#{$prefix}__more {
   text-align: right;
-}
-
-@media (max-width: 640px) {
-  [dir="rtl"] .#{$prefix}__info {
-    padding-left: 0;
-    padding-right: 1.5em;
-  }
 }
 
 // data-theme support — for sites that toggle theme via attribute
@@ -145,7 +161,7 @@ header.#{$prefix} {
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
 }
 
-[data-theme="dark"] header.#{$prefix} .#{$prefix}__all {
+[data-theme="dark"] header.#{$prefix} .#{$prefix}__more {
   color: #000;
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
 }
@@ -159,7 +175,7 @@ header.#{$prefix} {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
-[data-theme="light"] header.#{$prefix} .#{$prefix}__all {
+[data-theme="light"] header.#{$prefix} .#{$prefix}__more {
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }

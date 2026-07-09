@@ -202,8 +202,8 @@ describe('loadLocale', () => {
     const messages = await loadLocale('en')
     assert.equal(typeof messages.supportUkraine, 'string')
     assert.ok(messages.supportUkraine.length > 0)
-    assert.equal(typeof messages.allCharities, 'string')
-    assert.ok(messages.allCharities.length > 0)
+    assert.equal(typeof messages.more, 'string')
+    assert.ok(messages.more.length > 0)
     assert.equal(typeof messages.charities, 'object')
   })
 
@@ -237,7 +237,7 @@ describe('mergeCharities', () => {
   it('keeps English tagline when charity id is missing from locale', async () => {
     const messages = {
       supportUkraine: 'Test',
-      allCharities: 'Test',
+      more: 'Test',
       donate: 'Test',
       charities: {}
     }
@@ -292,11 +292,23 @@ describe('supportUkraineBlock', () => {
 class MockElement {
   private _attrs = new Map<string, string>()
   private _children: MockElement[] = []
+  private _textContent = ''
   className = ''
+  tagName = ''
   id = ''
   href = ''
-  textContent = ''
   style = { fontSize: '' }
+
+  get textContent(): string {
+    if (this._children.length === 0) {
+      return this._textContent
+    }
+    return this._children.map(child => child.textContent).join('')
+  }
+
+  set textContent(value: string) {
+    this._textContent = value
+  }
 
   append(...items: MockElement[]) {
     this._children.push(...items)
@@ -310,6 +322,22 @@ class MockElement {
 
   getAttribute(name: string) {
     return this._attrs.get(name) ?? ''
+  }
+
+  replaceWith(other: MockElement) {
+    const parent = body as unknown as { _children: MockElement[] }
+    const index = parent._children.indexOf(this)
+    if (index !== -1) {
+      parent._children[index] = other
+    }
+  }
+
+  querySelector(selector: string) {
+    const classMatch = selector.match(/^\.([\w-]+)$/)
+    if (classMatch) {
+      const className = classMatch[1]
+      return this._children.find(child => child.className === className) ?? undefined
+    }
   }
 
   get firstChild() {
@@ -327,14 +355,56 @@ class MockElement {
 
 const head = new MockElement()
 
+class MockBody {
+  private _children: MockElement[] = []
+
+  prepend(item: MockElement) {
+    this._children.unshift(item)
+  }
+
+  replaceChild(newChild: MockElement, oldChild: MockElement) {
+    const index = this._children.indexOf(oldChild)
+    if (index !== -1) {
+      this._children[index] = newChild
+    }
+    return oldChild
+  }
+
+  querySelector(selector: string) {
+    const idMatch = selector.match(/^#(.+)$/)
+    if (idMatch) {
+      return head.children.find(child => child.id === idMatch[1]) ?? undefined
+    }
+    const classMatch = selector.match(/^(\w+)\.([\w-]+)$/)
+    if (classMatch) {
+      const [, tag, className] = classMatch
+      return this._children.find(
+        child => child.tagName === tag.toUpperCase() && child.className === className
+      )
+    }
+  }
+
+  get children() {
+    return this._children
+  }
+
+  get firstElementChild() {
+    return this._children[0]
+  }
+}
+
+const body = new MockBody()
+
 function setupDom(): void {
   if (!globalThis.document) {
     Object.defineProperty(globalThis, 'document', {
       value: {
         head,
-        body: { prepend() {} },
-        createElement(): MockElement {
-          return new MockElement()
+        body,
+        createElement(tag: string): MockElement {
+          const element = new MockElement()
+          element.tagName = tag.toUpperCase()
+          return element
         },
         querySelector(selector: string) {
           const idMatch = selector.match(/^#(.+)$/)
@@ -508,7 +578,7 @@ describe('i18n integration', () => {
         dontRepeat: false
       })
       const link = banner.firstChild as MockElement
-      const prefix = link.firstChild as MockElement
+      const prefix = link.querySelector('.support-ukraine-block__prefix') as MockElement
       const text = prefix.textContent
       assert.ok(text.includes('Support Ukraine'), 'should contain English text')
     } finally {
@@ -541,17 +611,78 @@ describe('i18n integration', () => {
     assert.notEqual(direction, 'rtl')
   })
 
-  it('allCharities link uses translated text', async () => {
+  it('more link uses translated text', async () => {
     const banner = await supportUkraineBlock({
       locale: 'es',
       tags: ['animals'],
       dontRepeat: false
     })
-    const allLink = banner.lastChild as MockElement
-    const allText = allLink.firstChild as MockElement
-    const text = allText.textContent
-    assert.ok(text.length > 0, 'allCharities text should not be empty')
-    assert.notEqual(text, 'All charities', 'should be translated')
+    const moreLink = banner.lastChild as MockElement
+    const moreText = moreLink.firstChild as MockElement
+    const text = moreText.textContent
+    assert.ok(text.length > 0, 'more text should not be empty')
+    assert.notEqual(text, 'more…', 'should be translated')
+  })
+})
+
+// ── replace mode ───────────────────────────────────────────────────────
+
+describe('replace mode', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  it('replaces the placeholder when found', async () => {
+    const placeholder = new MockElement()
+    placeholder.tagName = 'HEADER'
+    placeholder.className = 'support-ukraine-block'
+    body.children.push(placeholder)
+
+    const banner = await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
+    assert.equal(body.children.length, 1)
+    assert.equal(body.firstElementChild, banner)
+  })
+
+  it('falls back to prepend when no placeholder exists', async () => {
+    const banner = await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
+    assert.equal(body.children.length, 1)
+    assert.equal(body.firstElementChild, banner)
+  })
+
+  it('only replaces the first matching placeholder', async () => {
+    const p1 = new MockElement()
+    p1.tagName = 'HEADER'
+    p1.className = 'support-ukraine-block'
+    const p2 = new MockElement()
+    p2.tagName = 'HEADER'
+    p2.className = 'support-ukraine-block'
+    body.children.push(p1, p2)
+
+    await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
+    assert.equal(body.children.length, 2)
+    assert.notEqual(body.firstElementChild, p1, 'first placeholder was replaced')
+    assert.equal(
+      body.querySelector('header.support-ukraine-block'),
+      p2,
+      'second placeholder untouched'
+    )
+  })
+
+  it('does not replace non-header elements with the same class', async () => {
+    const div = new MockElement()
+    div.tagName = 'DIV'
+    div.className = 'support-ukraine-block'
+    body.children.push(div)
+
+    await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
+    assert.equal(body.children.length, 2, 'div kept + banner prepended')
   })
 })
 
