@@ -4,13 +4,24 @@
 
 $prefix: support-ukraine-block;
 
+:host {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-size: 16px;
+  width: 100%;
+  min-height: 2.5rem;
+  line-height: 1.4;
+  box-sizing: border-box;
+  z-index: 2147483647;
+}
+
 header.#{$prefix} {
   margin: 0;
   padding: 0;
-  padding-block: 0;
   border: none;
   border-radius: 0;
-  font-size: 16px;
   width: 100%;
   min-height: 2.5rem;
   display: flex;
@@ -21,14 +32,14 @@ header.#{$prefix} {
   box-sizing: border-box;
   line-height: 1.4;
   overflow: visible;
-  z-index: 2147483647;
   background: #0057b7 none;
 
   @media (prefers-color-scheme: dark) {
     background-color: #ffd700;
   }
 
-  &--shift {
+  &--shift,
+  &--replace {
     position: relative;
   }
 
@@ -36,10 +47,6 @@ header.#{$prefix} {
     position: fixed;
     top: 0;
     left: 0;
-  }
-
-  &--replace {
-    position: relative;
   }
 
   .#{$prefix}__link {
@@ -71,18 +78,9 @@ header.#{$prefix} {
     white-space: nowrap;
   }
 
-  .#{$prefix}__prefix {
-    min-width: 0;
-  }
-
-  .#{$prefix}__info {
-    min-width: 0;
-  }
-
-  .#{$prefix}__colon {
-    min-width: 0;
-  }
-
+  .#{$prefix}__prefix,
+  .#{$prefix}__info,
+  .#{$prefix}__colon,
   .#{$prefix}__tagline {
     min-width: 0;
   }
@@ -113,32 +111,20 @@ header.#{$prefix} {
   }
 
   .#{$prefix}__name {
-      font-weight: bold;
+    font-weight: bold;
   }
 
   @media (max-width: 58rem) {
-    .#{$prefix}__prefix {
-      display: none;
-    }
-
-    .#{$prefix}__name {
-      display: none;
-    }
-
-    .#{$prefix}__colon {
-      display: none;
-    }
-
+    .#{$prefix}__prefix,
+    .#{$prefix}__name,
+    .#{$prefix}__colon,
     .#{$prefix}__more {
       display: none;
     }
   }
 
   @media (max-width: 35rem) {
-    .#{$prefix}__name {
-      display: initial;
-    }
-
+    .#{$prefix}__name,
     .#{$prefix}__colon {
       display: initial;
     }
@@ -149,13 +135,13 @@ header.#{$prefix} {
   }
 }
 
-// RTL support
-[dir="rtl"] .#{$prefix}__link {
+// RTL
+[dir="rtl"] header.#{$prefix} .#{$prefix}__link {
   text-align: right;
   justify-content: flex-end;
 }
 
-[dir="rtl"] .#{$prefix}__more {
+[dir="rtl"] header.#{$prefix} .#{$prefix}__more {
   text-align: right;
 }
 
