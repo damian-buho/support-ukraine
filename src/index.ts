@@ -58,18 +58,18 @@ export function randomItem<T>(items: T[]): T {
 }
 
 /**
- * Inject minimal CSS for the banner into <head> (idempotent).
+ * Inject a <style> element into a shadow root (idempotent).
  */
-function injectStyles(): void {
+function injectShadowStyles(shadowRoot: ShadowRoot): void {
   const id = `${CSS_PREFIX}-styles`
-  if (document.querySelector(`#${id}`)) {
+  if (shadowRoot.querySelector(`#${id}`)) {
     return
   }
 
-  const style = document.createElement('style')
+  const style = shadowRoot.ownerDocument.createElement('style')
   style.id = id
   style.textContent = styles
-  document.head.append(style)
+  shadowRoot.append(style)
 }
 
 /**
@@ -103,8 +103,6 @@ export async function supportUkraineBlock(
     locale: requestedLocale
   } = options
 
-  injectStyles()
-
   const lang = detectLocale(requestedLocale)
   const messages = await loadLocale(lang)
   const localizedCharities = mergeCharities(DEFAULT_CHARITIES, messages)
@@ -136,6 +134,11 @@ export async function supportUkraineBlock(
       seen.add(charity.url)
     })
   }
+
+  const host = document.createElement('div')
+
+  const shadow = host.attachShadow({ mode: 'open' })
+  injectShadowStyles(shadow)
 
   const banner = document.createElement('header')
   banner.className = `${CSS_PREFIX} ${CSS_PREFIX}--${mode}`
@@ -198,22 +201,24 @@ export async function supportUkraineBlock(
   moreLink.append(moreText, moreEllipsis)
   banner.append(moreLink)
 
+  shadow.append(banner)
+
   const mount = options.element ?? document.body
 
   if (mode === 'replace') {
-    const placeholder = mount.querySelector<HTMLElement>(`header.${CSS_PREFIX}`)
+    const placeholder = mount.querySelector<HTMLElement>(`div[data-support-ukraine]`)
     if (placeholder) {
-      placeholder.replaceWith(banner)
+      placeholder.replaceWith(host)
     } else {
-      mount.prepend(banner)
+      mount.prepend(host)
     }
   } else {
-    mount.prepend(banner)
+    mount.prepend(host)
   }
 
   if (isInConsole) {
     console.info('[support-ukraine] banner', `${charity.name}: ${charity.tagline}`, charity.url)
   }
 
-  return banner
+  return host
 }

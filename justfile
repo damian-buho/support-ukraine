@@ -36,6 +36,12 @@ format:
 format-check:
     npm run format:check
 
+check-outdated:
+    npm outdated || true
+
+update:
+    npm update --no-audit --no-fund
+
 audit:
     npm run audit
 

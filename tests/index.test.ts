@@ -293,11 +293,26 @@ class MockElement {
   private _attrs = new Map<string, string>()
   private _children: MockElement[] = []
   private _textContent = ''
+  private _shadowRoot: MockShadowRoot | undefined
   className = ''
   tagName = ''
   id = ''
   href = ''
   style = { fontSize: '' }
+  dataset: Record<string, string>
+
+  constructor() {
+    const attributes = this._attrs
+    this.dataset = new Proxy({} as Record<string, string>, {
+      get(_target, property: string) {
+        return attributes.get(`data-${property.replaceAll(/([A-Z])/g, '-$1').toLowerCase()}`) ?? ''
+      },
+      set(_target, property: string, value: string) {
+        attributes.set(`data-${property.replaceAll(/([A-Z])/g, '-$1').toLowerCase()}`, value)
+        return true
+      }
+    })
+  }
 
   get textContent(): string {
     if (this._children.length === 0) {
@@ -333,11 +348,25 @@ class MockElement {
   }
 
   querySelector(selector: string) {
+    // data-support-ukraine attribute selector for replace mode
+    const attributeMatch = selector.includes('[data-support-ukraine]')
+    if (attributeMatch) {
+      return this._children.find(child => child._attrs.has('data-support-ukraine')) ?? undefined
+    }
     const classMatch = selector.match(/^\.([\w-]+)$/)
     if (classMatch) {
       const className = classMatch[1]
       return this._children.find(child => child.className === className) ?? undefined
     }
+  }
+
+  attachShadow(_options: { mode: string }): MockShadowRoot {
+    this._shadowRoot = new MockShadowRoot(this)
+    return this._shadowRoot
+  }
+
+  get shadowRoot(): MockShadowRoot | undefined {
+    return this._shadowRoot
   }
 
   get firstChild() {
@@ -375,6 +404,14 @@ class MockBody {
     if (idMatch) {
       return head.children.find(child => child.id === idMatch[1]) ?? undefined
     }
+    const attributeMatch = selector.includes('[data-support-ukraine]')
+    if (attributeMatch) {
+      return (
+        this._children.find(child =>
+          (child as unknown as { _attrs: Map<string, string> })._attrs.has('data-support-ukraine')
+        ) ?? undefined
+      )
+    }
     const classMatch = selector.match(/^(\w+)\.([\w-]+)$/)
     if (classMatch) {
       const [, tag, className] = classMatch
@@ -393,6 +430,50 @@ class MockBody {
   }
 }
 
+class MockShadowRoot {
+  private _children: MockElement[] = []
+  private _host: MockElement
+
+  constructor(host: MockElement) {
+    this._host = host
+  }
+
+  get host(): MockElement {
+    return this._host
+  }
+
+  get ownerDocument(): { createElement: (tag: string) => MockElement } {
+    return {
+      createElement(tag: string) {
+        const element = new MockElement()
+        element.tagName = tag.toUpperCase()
+        return element
+      }
+    }
+  }
+
+  append(...items: MockElement[]) {
+    this._children.push(...items)
+  }
+
+  querySelector(_selector: string) {
+    return
+  }
+
+  get children(): MockElement[] {
+    return this._children
+  }
+
+  get firstElementChild(): MockElement | undefined {
+    return this._children[0]
+  }
+
+  /** Find the <header> banner element inside the shadow root. */
+  get banner(): MockElement | undefined {
+    return this._children.find(child => child.tagName === 'HEADER')
+  }
+}
+
 const body = new MockBody()
 
 function setupDom(): void {
@@ -408,9 +489,13 @@ function setupDom(): void {
         },
         querySelector(selector: string) {
           const idMatch = selector.match(/^#(.+)$/)
-          if (!idMatch) return
-          const targetId = idMatch[1]
-          return head.children.find(child => child.id === targetId) ?? undefined
+          if (idMatch) {
+            return head.children.find(child => child.id === idMatch[1]) ?? undefined
+          }
+          const attributeMatch = selector.match(/^\[([^\]]+)\]$/)
+          if (attributeMatch && attributeMatch[1] === 'data-support-ukraine') {
+            return body.children.find(child => child.dataset.supportUkraine !== '') ?? undefined
+          }
         }
       },
       writable: true,
@@ -460,12 +545,13 @@ describe('dontRepeat', () => {
   })
 
   it('writes seen URL to localStorage after mounting', async () => {
-    const banner = await supportUkraineBlock({
+    const host = await supportUkraineBlock({
       dontRepeat: true,
       tags: ['animals']
     })
     const seen = JSON.parse(storage.store.get(STORAGE_KEY) ?? '[]') as string[]
     assert.equal(seen.length, 1)
+    const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as unknown as { href: string }
     assert.equal(seen[0], link.href)
   })
@@ -474,7 +560,8 @@ describe('dontRepeat', () => {
     const seenUrls = new Set<string>()
 
     for (let index = 0; index < 3; index++) {
-      const banner = await supportUkraineBlock({ tags: ['animals'], dontRepeat: true })
+      const host = await supportUkraineBlock({ tags: ['animals'], dontRepeat: true })
+      const banner = host.shadowRoot!.banner!
       const link = banner.firstChild as unknown as { href: string }
       seenUrls.add(link.href)
     }
@@ -491,7 +578,8 @@ describe('dontRepeat', () => {
     assert.equal(afterFirstCycle.length, 2)
 
     // Third call: cycle resets, picks from full list again
-    const banner = await supportUkraineBlock({ tags: ['animals'], dontRepeat: true })
+    const host = await supportUkraineBlock({ tags: ['animals'], dontRepeat: true })
+    const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as unknown as { href: string }
     const animals = DEFAULT_CHARITIES.filter((c: Charity) => c.tags.includes('animals'))
     assert.ok(animals.some((c: Charity) => c.url === link.href))
@@ -502,10 +590,11 @@ describe('dontRepeat', () => {
     const seenUrls = new Set<string>()
 
     for (let index = 0; index < military.length; index++) {
-      const banner = await supportUkraineBlock({
+      const host = await supportUkraineBlock({
         tags: ['military'],
         dontRepeat: true
       })
+      const banner = host.shadowRoot!.banner!
       const link = banner.firstChild as unknown as { href: string }
       seenUrls.add(link.href)
     }
@@ -520,19 +609,21 @@ describe('dontRepeat', () => {
   })
 
   it('treats empty tags array as no filter', async () => {
-    const banner = await supportUkraineBlock({
+    const host = await supportUkraineBlock({
       tags: [],
       dontRepeat: false
     })
+    const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as unknown as { href: string }
     assert.ok(link.href.length > 0, 'should mount a banner with a valid charity')
   })
 
   it('falls back to all charities when tags match nothing', async () => {
-    const banner = await supportUkraineBlock({
+    const host = await supportUkraineBlock({
       tags: ['nonexistent' as CharityTag],
       dontRepeat: false
     })
+    const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as unknown as { href: string }
     assert.ok(link.href.length > 0, 'should mount a banner despite no tag match')
   })
@@ -552,12 +643,12 @@ describe('i18n integration', () => {
   })
 
   it('banner uses translated text when locale is specified', async () => {
-    const banner = await supportUkraineBlock({
+    const host = await supportUkraineBlock({
       locale: 'es',
       tags: ['animals'],
       dontRepeat: false
     })
-    // banner → link → prefix + info
+    const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as MockElement
     const info = link.lastChild as MockElement
     const text = info.textContent
@@ -573,10 +664,11 @@ describe('i18n integration', () => {
     const savedNavigator = navigator
     delete globalThis.navigator
     try {
-      const banner = await supportUkraineBlock({
+      const host = await supportUkraineBlock({
         tags: ['animals'],
         dontRepeat: false
       })
+      const banner = host.shadowRoot!.banner!
       const link = banner.firstChild as MockElement
       const prefix = link.querySelector('.support-ukraine-block__prefix') as MockElement
       const text = prefix.textContent
@@ -588,11 +680,12 @@ describe('i18n integration', () => {
   })
 
   it('banner has dir="rtl" for Arabic locale', async () => {
-    const banner = await supportUkraineBlock({
+    const host = await supportUkraineBlock({
       locale: 'ar',
       tags: ['animals'],
       dontRepeat: false
     })
+    const banner = host.shadowRoot!.banner!
     const direction = (banner as unknown as { getAttribute: (n: string) => string }).getAttribute(
       'dir'
     )
@@ -600,11 +693,12 @@ describe('i18n integration', () => {
   })
 
   it('banner does not have dir="rtl" for LTR locales', async () => {
-    const banner = await supportUkraineBlock({
+    const host = await supportUkraineBlock({
       locale: 'en',
       tags: ['animals'],
       dontRepeat: false
     })
+    const banner = host.shadowRoot!.banner!
     const direction = (banner as unknown as { getAttribute: (n: string) => string }).getAttribute(
       'dir'
     )
@@ -612,11 +706,12 @@ describe('i18n integration', () => {
   })
 
   it('more link uses translated text', async () => {
-    const banner = await supportUkraineBlock({
+    const host = await supportUkraineBlock({
       locale: 'es',
       tags: ['animals'],
       dontRepeat: false
     })
+    const banner = host.shadowRoot!.banner!
     const moreLink = banner.lastChild as MockElement
     const moreText = moreLink.firstChild as MockElement
     const text = moreText.textContent
@@ -641,54 +736,50 @@ describe('replace mode', () => {
 
   it('replaces the placeholder when found', async () => {
     const placeholder = new MockElement()
-    placeholder.tagName = 'HEADER'
-    placeholder.className = 'support-ukraine-block'
+    placeholder.tagName = 'DIV'
+    placeholder.dataset.supportUkraine = ''
     body.children.push(placeholder)
 
-    const banner = await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
+    const host = await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
     assert.equal(body.children.length, 1)
-    assert.equal(body.firstElementChild, banner)
+    assert.equal(body.firstElementChild, host)
   })
 
   it('falls back to prepend when no placeholder exists', async () => {
-    const banner = await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
+    const host = await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
     assert.equal(body.children.length, 1)
-    assert.equal(body.firstElementChild, banner)
+    assert.equal(body.firstElementChild, host)
   })
 
   it('only replaces the first matching placeholder', async () => {
     const p1 = new MockElement()
-    p1.tagName = 'HEADER'
-    p1.className = 'support-ukraine-block'
+    p1.tagName = 'DIV'
+    p1.dataset.supportUkraine = ''
     const p2 = new MockElement()
-    p2.tagName = 'HEADER'
-    p2.className = 'support-ukraine-block'
+    p2.tagName = 'DIV'
+    p2.dataset.supportUkraine = ''
     body.children.push(p1, p2)
 
     await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
     assert.equal(body.children.length, 2)
     assert.notEqual(body.firstElementChild, p1, 'first placeholder was replaced')
-    assert.equal(
-      body.querySelector('header.support-ukraine-block'),
-      p2,
-      'second placeholder untouched'
-    )
+    assert.equal(body.querySelector('[data-support-ukraine]'), p2, 'second placeholder untouched')
   })
 
-  it('does not replace non-header elements with the same class', async () => {
-    const div = new MockElement()
-    div.tagName = 'DIV'
-    div.className = 'support-ukraine-block'
-    body.children.push(div)
+  it('does not replace non-div elements with the same attribute', async () => {
+    const header = new MockElement()
+    header.tagName = 'DIV'
+    header.className = 'support-ukraine-block'
+    body.children.push(header)
 
     await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
-    assert.equal(body.children.length, 2, 'div kept + banner prepended')
+    assert.equal(body.children.length, 2, 'header kept + host prepended')
   })
 })
 
 // ── injectStyles ──────────────────────────────────────────────────────
 
-describe('injectStyles', () => {
+describe('injectShadowStyles', () => {
   before(() => {
     setupDom()
     setupStorage()
@@ -700,10 +791,12 @@ describe('injectStyles', () => {
   })
 
   it('appends style element only once across multiple calls', async () => {
-    await supportUkraineBlock({ dontRepeat: false })
-    await supportUkraineBlock({ dontRepeat: false })
+    const host1 = await supportUkraineBlock({ dontRepeat: false })
+    const host2 = await supportUkraineBlock({ dontRepeat: false })
 
-    const styleElements = head.children.filter(child => child.id === 'support-ukraine-block-styles')
-    assert.equal(styleElements.length, 1, 'style should be injected only once')
+    const styles1 = host1.shadowRoot!.children.filter(child => child.tagName === 'STYLE')
+    const styles2 = host2.shadowRoot!.children.filter(child => child.tagName === 'STYLE')
+    assert.equal(styles1.length, 1, 'first shadow root should have one style')
+    assert.equal(styles2.length, 1, 'second shadow root should have one style')
   })
 })
