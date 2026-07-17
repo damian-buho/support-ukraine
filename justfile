@@ -48,7 +48,7 @@ update:
 audit:
     npm run audit
 
-pipeline: format lint build build-test test
+pipeline: format lint build size build-test test
 
 publish:
     npm publish
