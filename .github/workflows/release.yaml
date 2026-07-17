@@ -107,7 +107,7 @@ jobs:
         run:  npm publish --provenance --access public
 
       - name: Create GitHub release
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
+        uses: softprops/action-gh-release@fe965f7af51af5f2602596916f38a38df2e33de0 # v3.0.2
         with:
           tag_name:               ${{ needs.gate.outputs.tag }}
           generate_release_notes: true
