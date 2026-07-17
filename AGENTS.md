@@ -73,9 +73,12 @@ tsup compiles both library and tests. Two esbuild plugins handle non-JS assets:
 - **yamlPlugin** — reads `.yaml` files, parses with js-yaml, emits as JS modules
 - **scssPlugin** — compiles `.scss` with sass, emits CSS as a JS string
 
-Library build uses `platform: 'browser'`; test build uses `platform: 'node'`
+Library build uses `platform: 'browser'` with `minify: true` (esbuild's
+minifier — locals mangle, exports preserved, no `dropConsole` so the
+`isInConsole` option still works at runtime). Test build uses `platform: 'node'`
 with `removeNodeProtocol: false` to preserve `node:test` / `node:assert`
-imports without a post-build fixup script.
+imports without a post-build fixup script, and stays un-minified for readable
+stack traces.
 
 ### Data flow
 

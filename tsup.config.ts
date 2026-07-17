@@ -56,6 +56,10 @@ export default defineConfig(
         entry: ['src/index.ts'],
         outDir: 'dist',
         clean: true,
+        // Minify the published bundle (esbuild's minifier). Locals mangle,
+        // exports are preserved. No dropConsole: the isInConsole option
+        // relies on console.info at runtime — see src/index.ts.
+        minify: true,
         format: ['esm'] as const,
         dts: false,
         platform: 'browser' as const,
