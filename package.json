@@ -1,6 +1,6 @@
 {
   "name": "@damian-buho/support-ukraine",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "type": "module",
   "description": "Browser library that adds a Ukraine-support charity banner to any website.",
   "main": "dist/index.js",
