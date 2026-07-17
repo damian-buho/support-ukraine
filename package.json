@@ -26,6 +26,7 @@
     "test:verbose": "node --test --test-reporter spec 'dist/test/index.test.js'",
     "test:coverage": "node --test --experimental-test-coverage 'dist/test/index.test.js'",
     "audit": "npm audit",
+    "size": "tsup && size-limit",
     "prepublishOnly": "npm run build",
     "lint": "eslint ./",
     "fix": "eslint ./ --fix",
@@ -57,7 +58,7 @@
   "homepage": "https://github.com/damian-buho/support-ukraine#readme",
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@size-limit/preset-small-lib": "^12.1.0",
+    "@size-limit/preset-small-lib": "12.1.0",
     "@types/eslint": "9.6.1",
     "@types/js-yaml": "4.0.9",
     "@types/node": "26.1.1",
@@ -73,7 +74,7 @@
     "js-yaml": "5.2.1",
     "prettier": "3.9.5",
     "sass": "1.101.0",
-    "size-limit": "^12.1.0",
+    "size-limit": "12.1.0",
     "tsup": "8.5.1",
     "typescript": "6.0.3",
     "typescript-eslint": "8.64.0"

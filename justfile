@@ -23,6 +23,9 @@ test-verbose:
 coverage:
     npm run test:coverage
 
+size:
+    npm run size
+
 lint:
     npm run lint
     reuse lint --lines

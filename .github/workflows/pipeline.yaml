@@ -66,4 +66,8 @@ jobs:
 
       - run: npm run build
 
+      # size-limit reads dist/index.js — run after build, before tests.
+      - name: Size check
+        run: npx size-limit --silent
+
       - run: npm test
