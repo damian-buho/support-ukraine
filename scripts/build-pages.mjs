@@ -318,6 +318,14 @@ ${localeOptions}
 
     langEl.addEventListener('change', () => render(langEl.value));
   </script>
+
+  <script type="module">
+    import("https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@latest/+esm").then(
+      ({ supportUkraineBlock }) => {
+        supportUkraineBlock({ mode: "shift", isInConsole: false });
+      },
+    );
+  </script>
 </body>
 </html>
 `
