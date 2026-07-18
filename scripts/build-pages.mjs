@@ -87,7 +87,13 @@ const charitiesJson = JSON.stringify(charities)
 const translationsJson = JSON.stringify(translations)
 const rtlJson = JSON.stringify(RTL_LOCALES)
 
-const html = `<!DOCTYPE html>
+const html = `<!--
+SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+
+SPDX-License-Identifier: MIT
+-->
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
