@@ -30,10 +30,4 @@ pre-commit:
 pre-push:
   commands:
     pipeline:
-      # Git feeds the ref-list to the hook on stdin. tsup/size-limit spawn
-      # esbuild as a long-lived child that inherits that pipe; if it doesn't
-      # drain/close it, git blocks on pipe teardown → indefinite stall.
-      # use_stdin: false detaches lefthook from the hook's stdin; the
-      # </dev/null redirect closes it for any child that bypasses lefthook.
-      use_stdin: false
-      run: just pipeline </dev/null
+      run: just pipeline
