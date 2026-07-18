@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+
+SPDX-License-Identifier: MIT
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -243,6 +249,14 @@
     render(initial);
 
     langEl.addEventListener('change', () => render(langEl.value));
+  </script>
+
+  <script type="module">
+    import("https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@latest/+esm").then(
+      ({ supportUkraineBlock }) => {
+        supportUkraineBlock({ mode: "shift", isInConsole: false });
+      },
+    );
   </script>
 </body>
 </html>

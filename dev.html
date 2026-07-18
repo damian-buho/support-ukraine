@@ -9,31 +9,65 @@ SPDX-License-Identifier: MIT
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>support-ukraine — dev</title>
+  <title>support-ukraine — dev playground</title>
   <style>
-    * { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      margin: 0;
       font-family: system-ui, -apple-system, sans-serif;
       background: #fafafa;
       color: #222;
+      line-height: 1.5;
     }
-    .page { padding: 2rem; }
-    h1 { margin-top: 0; }
-    .controls {
-      position: fixed;
-      bottom: 1rem;
-      right: 1rem;
-      background: #fff;
-      border: 1px solid #ddd;
+
+    .page { padding: 2rem; max-width: 960px; margin: 0 auto; }
+    h1 { margin-top: 0; font-size: 1.5rem; }
+
+    .placeholder {
+      background: #e8e8e8;
+      border: 2px dashed #ccc;
       border-radius: 0.5rem;
-      padding: 1rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      z-index: 2147483646;
-      font-size: 0.875rem;
+      padding: 2rem;
+      text-align: center;
+      color: #888;
+      margin-top: 0.75rem;
     }
-    .controls label { display: block; margin-bottom: 0.5rem; cursor: pointer; }
-    .controls button {
+
+    /* ── Sidebar ──────────────────────────────────────────────────── */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 280px;
+      height: 100vh;
+      background: #fff;
+      border-left: 1px solid #ddd;
+      box-shadow: -2px 0 12px rgba(0,0,0,0.08);
+      z-index: 2147483646;
+      overflow-y: auto;
+      padding: 1rem;
+      font-size: 0.8rem;
+      transition: transform 0.2s ease;
+    }
+
+    .sidebar label { display: block; margin-bottom: 0.4rem; cursor: pointer; }
+    .sidebar label strong { display: block; margin-bottom: 0.25rem; }
+
+    .sidebar select,
+    .sidebar input[type="text"] {
+      display: block;
+      width: 100%;
+      margin-bottom: 0.5rem;
+      padding: 0.3rem 0.4rem;
+      border: 1px solid #ccc;
+      border-radius: 0.25rem;
+      font-size: 0.8rem;
+    }
+
+    .sidebar .section { margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid #eee; }
+    .sidebar .section:last-child { border-bottom: none; }
+
+    .sidebar button {
       display: block;
       width: 100%;
       margin-top: 0.5rem;
@@ -44,91 +78,162 @@ SPDX-License-Identifier: MIT
       border-radius: 0.25rem;
       cursor: pointer;
       font-weight: 600;
+      font-size: 0.8rem;
     }
-    .controls button:hover { opacity: 0.9; }
-    .placeholder {
-      background: #e8e8e8;
-      border: 2px dashed #ccc;
-      border-radius: 0.5rem;
-      padding: 3rem;
-      text-align: center;
-      color: #888;
-      margin-top: 1rem;
+
+    .sidebar button:hover { opacity: 0.9; }
+    .sidebar button.secondary { background: #fff; color: #005BBB; }
+
+    .sidebar .code-preview {
+      background: #f5f5f5;
+      border: 1px solid #e0e0e0;
+      border-radius: 0.25rem;
+      padding: 0.5rem;
+      font-family: monospace;
+      font-size: 0.7rem;
+      word-break: break-all;
+      white-space: pre-wrap;
+      max-height: 6rem;
+      overflow-y: auto;
+      margin-top: 0.5rem;
+      user-select: all;
     }
+
+    .sidebar .source-badge {
+      display: inline-block;
+      padding: 0.15em 0.4em;
+      border-radius: 0.25rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar .source-badge--local { background: #d4edda; color: #155724; }
+    .sidebar .source-badge--cdn { background: #cce5ff; color: #004085; }
+
+    /* ── Dark ─────────────────────────────────────────────────────── */
+    @media (prefers-color-scheme: dark) {
+      html:not([data-theme="light"]) body { background: #1a1a1a; color: #eee; }
+      html:not([data-theme="light"]) .sidebar { background: #2a2a2a; border-color: #444; color: #eee; }
+      html:not([data-theme="light"]) .placeholder { background: #333; border-color: #555; color: #aaa; }
+      html:not([data-theme="light"]) .sidebar select,
+      html:not([data-theme="light"]) .sidebar input[type="text"] { background: #333; border-color: #555; color: #eee; }
+      html:not([data-theme="light"]) .sidebar .section { border-color: #444; }
+      html:not([data-theme="light"]) .sidebar .code-preview { background: #333; border-color: #555; color: #ccc; }
+      html:not([data-theme="light"]) .sidebar .source-badge--local { background: #1a3a2a; color: #6fcf97; }
+      html:not([data-theme="light"]) .sidebar .source-badge--cdn { background: #1a2a3c; color: #6db3f8; }
+    }
+
     html[data-theme="dark"] body { background: #1a1a1a; color: #eee; }
-    html[data-theme="dark"] .controls { background: #2a2a2a; border-color: #444; color: #eee; }
+    html[data-theme="dark"] .sidebar { background: #2a2a2a; border-color: #444; color: #eee; }
     html[data-theme="dark"] .placeholder { background: #333; border-color: #555; color: #aaa; }
-    html[data-theme="dark"] .controls select,
-    html[data-theme="dark"] .controls input[type="radio"] { accent-color: #FFD500; }
-    html[data-theme="light"] body { background: #fafafa; color: #222; }
+    html[data-theme="dark"] .sidebar select,
+    html[data-theme="dark"] .sidebar input[type="text"] { background: #333; border-color: #555; color: #eee; }
+    html[data-theme="dark"] .sidebar .section { border-color: #444; }
+    html[data-theme="dark"] .sidebar .code-preview { background: #333; border-color: #555; color: #ccc; }
+    html[data-theme="dark"] .sidebar .source-badge--local { background: #1a3a2a; color: #6fcf97; }
+    html[data-theme="dark"] .sidebar .source-badge--cdn { background: #1a2a3c; color: #6db3f8; }
   </style>
 </head>
 <body>
-  <div class="page">
-    <header class="support-ukraine-block" style="min-height:2.5rem"></header>
-    <h1>support-ukraine — dev page</h1>
-    <p>The banner is injected at the top. Reload to get a different random charity.</p>
-    <div class="placeholder">Page content below the banner (shift mode pushes this down)</div>
-    <div class="placeholder">Scroll area filler</div>
-    <div class="placeholder">Scroll area filler</div>
+  <div class="page" id="page-content">
+    <h1>support-ukraine — dev playground</h1>
+    <p>Use the panel on the right to tweak every option. Changes apply live.</p>
+    <div class="placeholder">Page content — banner shifts this down in <code>shift</code> mode</div>
+    <div class="placeholder">Another content block for scroll testing</div>
+    <div class="placeholder">Another content block for scroll testing</div>
   </div>
 
-  <div class="controls">
-    <label>
-      <strong>Locale</strong>
-    </label>
-    <select id="locale" style="display:block;width:100%;margin-bottom:0.5rem;padding:0.3rem;border:1px solid #ccc;border-radius:0.25rem">
-      <option value="">Auto-detect</option>
-      <option value="en">English</option>
-      <option value="es">Español</option>
-      <option value="fr">Français</option>
-      <option value="de">Deutsch</option>
-      <option value="pt">Português</option>
-      <option value="it">Italiano</option>
-      <option value="pl">Polski</option>
-      <option value="nl">Nederlands</option>
-      <option value="sv">Svenska</option>
-      <option value="uk">Українська</option>
-      <option value="ar">العربية</option>
-      <option value="zh">中文</option>
-      <option value="hi">हिन्दी</option>
-      <option value="th">ไทย</option>
-      <option value="ja">日本語</option>
-      <option value="ko">한국어</option>
-    </select>
-    <label>
-      <strong>Color scheme</strong>
-    </label>
-    <label><input type="radio" name="theme" value="auto" checked> auto (system)</label>
-    <label><input type="radio" name="theme" value="light"> light</label>
-    <label><input type="radio" name="theme" value="dark"> dark</label>
-    <label>
-      <strong>Mode</strong>
-    </label>
-    <label><input type="radio" name="mode" value="shift"> shift (pushes content)</label>
-    <label><input type="radio" name="mode" value="overlap"> overlap (fixed on top)</label>
-    <label><input type="radio" name="mode" value="replace" checked> replace (swaps placeholder)</label>
-    <label>
-      <strong>Tags</strong>
-    </label>
-    <label><input type="checkbox" name="tag" value="military" checked> military</label>
-    <label><input type="checkbox" name="tag" value="humanitarian" checked> humanitarian</label>
-    <label><input type="checkbox" name="tag" value="animals" checked> animals</label>
-    <a href="#" id="clear-seen" style="display:block;margin-top:0.5rem;color:#005BBB">Clear seen charities</a>
-    <button id="reload">Reload banner</button>
-  </div>
+  <aside class="sidebar" id="sidebar">
+    <div class="section">
+      <label><strong>Locale</strong></label>
+      <select id="opt-locale">
+        <option value="">Auto-detect</option>
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+        <option value="pt">Portugu&ecirc;s</option>
+        <option value="it">Italiano</option>
+        <option value="pl">Polski</option>
+        <option value="nl">Nederlands</option>
+        <option value="sv">Svenska</option>
+        <option value="uk">Українська</option>
+        <option value="ar">العربية</option>
+        <option value="zh">&#20013;&#25991;</option>
+        <option value="hi">&#2361;&#2367;&#2306;&#2342;&#2368;</option>
+        <option value="th">&#3652;&#3607;&#3618;</option>
+        <option value="ja">&#26085;&#26412;&#35486;</option>
+        <option value="ko">&#54620;&#44397;&#50612;</option>
+      </select>
+    </div>
+
+    <div class="section">
+      <label><strong>Color scheme</strong></label>
+      <label><input type="radio" name="theme" value="auto" checked> Auto (system)</label>
+      <label><input type="radio" name="theme" value="light"> Light</label>
+      <label><input type="radio" name="theme" value="dark"> Dark</label>
+    </div>
+
+    <div class="section">
+      <label><strong>Mode</strong></label>
+      <label><input type="radio" name="mode" value="shift"> Shift (pushes content)</label>
+      <label><input type="radio" name="mode" value="overlap"> Overlap (fixed on top)</label>
+      <label><input type="radio" name="mode" value="replace" checked> Replace (swaps placeholder)</label>
+    </div>
+
+    <div class="section">
+      <label><strong>Font size</strong></label>
+      <input type="text" id="opt-fontSize" value="0.875rem" placeholder="e.g. 1rem, 14px">
+    </div>
+
+    <div class="section">
+      <label><strong>Tags</strong></label>
+      <label><input type="checkbox" name="tag" value="military" checked> military</label>
+      <label><input type="checkbox" name="tag" value="humanitarian" checked> humanitarian</label>
+      <label><input type="checkbox" name="tag" value="animals" checked> animals</label>
+    </div>
+
+    <div class="section">
+      <label><strong>Behavior</strong></label>
+      <label><input type="checkbox" id="opt-dontRepeat" checked> dontRepeat</label>
+      <label><input type="checkbox" id="opt-isInConsole" checked> isInConsole</label>
+    </div>
+
+    <div class="section">
+      <button id="btn-reload">Reload banner</button>
+      <button id="btn-clear" class="secondary">Clear seen charities</button>
+    </div>
+
+    <div class="section">
+      <label><strong>Generated code</strong></label>
+      <div class="code-preview" id="code-preview"></div>
+    </div>
+
+    <div class="section">
+      <span class="source-badge" id="source-badge"></span>
+    </div>
+  </aside>
 
   <script type="module">
-    import { supportUkraineBlock } from './dist/index.js'
+    const isLocal = location.hostname === 'localhost' || location.protocol === 'file:'
+    const importUrl = isLocal
+      ? './dist/index.js'
+      : 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@latest/+esm'
+
+    const badge = document.querySelector('#source-badge')
+    badge.textContent = isLocal ? 'local: ./dist/index.js' : 'CDN: jsDelivr @latest'
+    badge.className = `source-badge source-badge--${isLocal ? 'local' : 'cdn'}`
+
+    const { supportUkraineBlock } = await import(importUrl)
 
     let currentBanner = null
     let themeStyle = null
 
     function applyTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme)
-      if (theme === 'auto') {
-        document.documentElement.removeAttribute('data-theme')
-      }
+      const root = document.documentElement
+      root.setAttribute('data-theme', theme)
+      if (theme === 'auto') root.removeAttribute('data-theme')
 
       if (!themeStyle) {
         themeStyle = document.createElement('style')
@@ -139,43 +244,70 @@ SPDX-License-Identifier: MIT
         themeStyle.textContent = `
           .support-ukraine-block { background-color: #0057b7 !important; }
           .support-ukraine-block__link,
-          .support-ukraine-block__all { color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.4) !important; }
+          .support-ukraine-block__more { color: #ffffff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.4) !important; }
         `
       } else if (theme === 'dark') {
         themeStyle.textContent = `
           .support-ukraine-block { background-color: #ffd700 !important; }
           .support-ukraine-block__link,
-          .support-ukraine-block__all { color: #000000 !important; text-shadow: 0 1px 2px rgba(255,255,255,0.4) !important; }
+          .support-ukraine-block__more { color: #000000 !important; text-shadow: 0 1px 2px rgba(255,255,255,0.4) !important; }
         `
       } else {
         themeStyle.textContent = ''
       }
     }
 
+    function readOptions() {
+      const mode = document.querySelector('input[name="mode"]:checked').value
+      const tags = [...document.querySelectorAll('input[name="tag"]:checked')].map(el => el.value)
+      const locale = document.querySelector('#opt-locale').value || undefined
+      const fontSize = document.querySelector('#opt-fontSize').value || '0.875rem'
+      const dontRepeat = document.querySelector('#opt-dontRepeat').checked
+      const isInConsole = document.querySelector('#opt-isInConsole').checked
+      return { mode, tags, locale, fontSize, dontRepeat, isInConsole }
+    }
+
+    function updatePreview(opts) {
+      const args = []
+      if (opts.mode !== 'shift') args.push(`mode: "${opts.mode}"`)
+      if (opts.locale) args.push(`locale: "${opts.locale}"`)
+      if (opts.fontSize !== '0.875rem') args.push(`fontSize: "${opts.fontSize}"`)
+      const allTags = ['military', 'humanitarian', 'animals']
+      if (opts.tags.length < allTags.length && opts.tags.length > 0) {
+        args.push(`tags: [${opts.tags.map(t => `"${t}"`).join(', ')}]`)
+      }
+      if (!opts.dontRepeat) args.push('dontRepeat: false')
+      if (!opts.isInConsole) args.push('isInConsole: false')
+      const code = args.length > 0
+        ? `await supportUkraineBlock({\n  ${args.join(',\n  ')}\n})`
+        : 'await supportUkraineBlock()'
+      document.querySelector('#code-preview').textContent = code
+    }
+
     async function mount() {
       if (currentBanner) currentBanner.remove()
-      const mode = document.querySelector('input[name="mode"]:checked').value
-      const tags = [...document.querySelectorAll('input[name="tag"]:checked')]
-        .map(el => el.value)
-      const locale = document.querySelector('#locale').value || undefined
-      currentBanner = await supportUkraineBlock({ mode, tags, locale, isInConsole: true })
+      const opts = readOptions()
+      applyTheme(document.querySelector('input[name="theme"]:checked').value)
+      updatePreview(opts)
+      currentBanner = await supportUkraineBlock(opts)
     }
 
     mount()
 
-    document.querySelector('#reload').addEventListener('click', mount)
-    document.querySelector('#locale').addEventListener('change', mount)
-    document.querySelectorAll('input[name="theme"]').forEach(radio => {
-      radio.addEventListener('change', (e) => {
-        applyTheme(e.target.value)
-        mount()
-      })
-    })
-    document.querySelector('#clear-seen').addEventListener('click', (e) => {
-      e.preventDefault()
+    document.querySelector('#btn-reload').addEventListener('click', mount)
+    document.querySelector('#btn-clear').addEventListener('click', () => {
       localStorage.removeItem('support-ukraine-seen')
       mount()
     })
+
+    document.querySelector('#opt-locale').addEventListener('change', mount)
+    document.querySelector('#opt-fontSize').addEventListener('change', mount)
+    document.querySelector('#opt-dontRepeat').addEventListener('change', mount)
+    document.querySelector('#opt-isInConsole').addEventListener('change', mount)
+
+    document.querySelectorAll('input[name="theme"]').forEach(r => r.addEventListener('change', mount))
+    document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener('change', mount))
+    document.querySelectorAll('input[name="tag"]').forEach(r => r.addEventListener('change', mount))
   </script>
 </body>
 </html>
