@@ -22,6 +22,14 @@ SPDX-License-Identifier: MIT
 - You can choose kinds of charities.
 - Inspired by [hejny/Ukraine](https://github.com/hejny/Ukraine).
 
+## Screenshots
+
+![I18N support](https://raw.githubusercontent.com/damian-buho/support-ukraine/development/docs/screenshots/english.png)
+
+![Dark theme support](https://raw.githubusercontent.com/damian-buho/support-ukraine/development/docs/screenshots/spanish.png)
+
+![RTL Support](https://raw.githubusercontent.com/damian-buho/support-ukraine/development/docs/screenshots/arabic.png)
+
 ## Install
 
 ### npm
@@ -35,9 +43,9 @@ npm install @damian-buho/support-ukraine
 ```html
 
 <script type="module">
-  import {supportUkraineBlock} from 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@1/+esm'
+    import {supportUkraineBlock} from 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@1/+esm'
 
-  await supportUkraineBlock()
+    await supportUkraineBlock()
 </script>
 ```
 
@@ -61,15 +69,15 @@ The entire block is a clickable link to the charity's donation page.
 
 ## Options
 
-| Option        | Type                   | Default           | Description                                                               |
-|---------------|------------------------|-------------------|---------------------------------------------------------------------------|
-| `element`     | `HTMLElement`          | `document.body`   | Target mount element for the banner                                       |
+| Option        | Type                                | Default           | Description                                                                                                          |
+|---------------|-------------------------------------|-------------------|----------------------------------------------------------------------------------------------------------------------|
+| `element`     | `HTMLElement`                       | `document.body`   | Target mount element for the banner                                                                                  |
 | `mode`        | `'shift' \| 'overlap' \| 'replace'` | `'shift'`         | `'shift'` pushes page content down, `'overlap'` floats on top, `'replace'` swaps a same-class `<header>` placeholder |
-| `fontSize`    | `string`               | `'0.875rem'`      | Banner font size                                                          |
-| `tags`        | `CharityTag[]`         | _(all)_           | Filter charities by category: `'military'`, `'humanitarian'`, `'animals'` |
-| `dontRepeat`  | `boolean`              | `true`            | Avoid repeating charities across page loads using `localStorage`          |
-| `isInConsole` | `boolean`              | `true`            | Log the selected charity to the dev console                               |
-| `locale`      | `string`               | _(auto-detected)_ | Override the auto-detected BCP 47 language tag                            |
+| `fontSize`    | `string`                            | `'0.875rem'`      | Banner font size                                                                                                     |
+| `tags`        | `CharityTag[]`                      | _(all)_           | Filter charities by category: `'military'`, `'humanitarian'`, `'animals'`                                            |
+| `dontRepeat`  | `boolean`                           | `true`            | Avoid repeating charities across page loads using `localStorage`                                                     |
+| `isInConsole` | `boolean`                           | `true`            | Log the selected charity to the dev console                                                                          |
+| `locale`      | `string`                            | _(auto-detected)_ | Override the auto-detected BCP 47 language tag                                                                       |
 
 ### Filtering by category
 
@@ -81,7 +89,8 @@ await supportUkraineBlock({tags: ['military']})
 
 ### Replace mode (no layout shift)
 
-Use `replace` mode to swap a same-class `<header>` placeholder element so the banner takes its place without shifting page content:
+Use `replace` mode to swap a same-class `<header>` placeholder element so the banner takes its place without shifting
+page content:
 
 ```html
 <!-- Static HTML: renders nothing until JS runs -->
@@ -92,7 +101,9 @@ Use `replace` mode to swap a same-class `<header>` placeholder element so the ba
 await supportUkraineBlock({mode: 'replace'})
 ```
 
-The banner finds the first `<header class="support-ukraine-block">` inside the mount element and replaces it in place. If no placeholder is found, it falls back to prepending. This eliminates cumulative layout shift (CLS) because the placeholder already reserves the exact space the banner needs.
+The banner finds the first `<header class="support-ukraine-block">` inside the mount element and replaces it in place.
+If no placeholder is found, it falls back to prepending. This eliminates cumulative layout shift (CLS) because the
+placeholder already reserves the exact space the banner needs.
 
 ### Disabling repeat prevention
 
