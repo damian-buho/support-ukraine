@@ -24,7 +24,7 @@ coverage:
     npm run test:coverage
 
 check-size:
-    npm run size
+    CI=true npm run check-size
 
 lint:
     npm run lint
