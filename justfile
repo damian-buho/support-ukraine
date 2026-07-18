@@ -23,7 +23,7 @@ test-verbose:
 coverage:
     npm run test:coverage
 
-size:
+check-size:
     npm run size
 
 lint:
@@ -48,7 +48,7 @@ update:
 audit:
     npm run audit
 
-pipeline: format lint build size build-test test
+pipeline: format lint build check-size build-test test
 
 publish:
     npm publish
