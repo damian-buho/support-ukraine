@@ -11,7 +11,7 @@
  * Output: pages/index.html
  */
 
-import { readFileSync, mkdirSync, writeFileSync } from 'node:fs'
+import { readFileSync, mkdirSync, writeFileSync, copyFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { load as loadYaml } from 'js-yaml'
@@ -87,7 +87,13 @@ const charitiesJson = JSON.stringify(charities)
 const translationsJson = JSON.stringify(translations)
 const rtlJson = JSON.stringify(RTL_LOCALES)
 
-const html = `<!DOCTYPE html>
+const html = `<!--
+SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+
+SPDX-License-Identifier: MIT
+-->
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -336,5 +342,8 @@ const pagesDirectory = path.join(ROOT, 'pages')
 mkdirSync(pagesDirectory, { recursive: true })
 writeFileSync(path.join(pagesDirectory, 'index.html'), html)
 
+copyFileSync(path.join(ROOT, 'dev.html'), path.join(pagesDirectory, 'dev.html'))
+
 console.log(`pages/index.html — generated (${(html.length / 1024).toFixed(1)} KB)`)
+console.log(`pages/dev.html — copied from root`)
 console.log(`  ${charities.length} charities, ${Object.keys(locales).length} locales`)

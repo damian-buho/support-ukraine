@@ -91,3 +91,21 @@
   tagline: Ukraine's largest animal shelter for dogs and cats
   url: https://dogcat.com.ua
   tags: [animals]
+
+- id: dignitas
+  name: Dignitas
+  tagline: Technology and support for Ukrainian defenders and veterans
+  url: https://dignitas.fund
+  tags: [military]
+
+- id: leleka
+  name: Leleka Foundation
+  tagline: Tactical medical supplies for Ukraine's frontline medics
+  url: https://leleka.care/en
+  tags: [humanitarian]
+
+- id: superhumans
+  name: Superhumans Center
+  tagline: Prosthetics, surgery, and rehabilitation for war survivors
+  url: https://superhumans.com/en/
+  tags: [humanitarian]

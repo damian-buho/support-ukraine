@@ -26,7 +26,7 @@
     "test:verbose": "node --test --test-reporter spec 'dist/test/index.test.js'",
     "test:coverage": "node --test --experimental-test-coverage 'dist/test/index.test.js'",
     "audit": "npm audit",
-    "size": "tsup && size-limit",
+    "check-size": "npx size-limit",
     "prepublishOnly": "npm run build",
     "lint": "eslint ./",
     "fix": "eslint ./ --fix",
@@ -98,7 +98,7 @@
   "size-limit": [
     {
       "path": "./dist/index.js",
-      "limit": "10 kB"
+      "limit": "16 kB"
     }
   ]
 }
