@@ -103,3 +103,9 @@
   tagline: Tactical medical supplies for Ukraine's frontline medics
   url: https://leleka.care/en
   tags: [humanitarian]
+
+- id: superhumans
+  name: Superhumans Center
+  tagline: Prosthetics, surgery, and rehabilitation for war survivors
+  url: https://superhumans.com/en/
+  tags: [humanitarian]
