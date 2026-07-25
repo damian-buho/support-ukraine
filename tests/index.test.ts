@@ -412,11 +412,13 @@ class MockBody {
         ) ?? undefined
       )
     }
-    const classMatch = selector.match(/^(\w+)\.([\w-]+)$/)
+    const classMatch = selector.match(/^(\w+)\.([\w-]+(?:\.[\w-]+)*)$/)
     if (classMatch) {
-      const [, tag, className] = classMatch
+      const [, tag, classChain] = classMatch
+      const classes = classChain.split('.')
       return this._children.find(
-        child => child.tagName === tag.toUpperCase() && child.className === className
+        child =>
+          child.tagName === tag.toUpperCase() && classes.every(c => child.className.includes(c))
       )
     }
   }
@@ -736,8 +738,8 @@ describe('replace mode', () => {
 
   it('replaces the placeholder when found', async () => {
     const placeholder = new MockElement()
-    placeholder.tagName = 'DIV'
-    placeholder.dataset.supportUkraine = ''
+    placeholder.tagName = 'HEADER'
+    placeholder.className = 'support-ukraine-block'
     body.children.push(placeholder)
 
     const host = await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
@@ -753,27 +755,27 @@ describe('replace mode', () => {
 
   it('only replaces the first matching placeholder', async () => {
     const p1 = new MockElement()
-    p1.tagName = 'DIV'
-    p1.dataset.supportUkraine = ''
+    p1.tagName = 'HEADER'
+    p1.className = 'support-ukraine-block'
     const p2 = new MockElement()
-    p2.tagName = 'DIV'
-    p2.dataset.supportUkraine = ''
+    p2.tagName = 'HEADER'
+    p2.className = 'support-ukraine-block'
     body.children.push(p1, p2)
 
     await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
     assert.equal(body.children.length, 2)
     assert.notEqual(body.firstElementChild, p1, 'first placeholder was replaced')
-    assert.equal(body.querySelector('[data-support-ukraine]'), p2, 'second placeholder untouched')
+    assert.ok(body.children.includes(p2), 'second placeholder untouched')
   })
 
-  it('does not replace non-div elements with the same attribute', async () => {
-    const header = new MockElement()
-    header.tagName = 'DIV'
-    header.className = 'support-ukraine-block'
-    body.children.push(header)
+  it('does not replace non-header elements with the same class', async () => {
+    const div = new MockElement()
+    div.tagName = 'DIV'
+    div.className = 'support-ukraine-block'
+    body.children.push(div)
 
     await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
-    assert.equal(body.children.length, 2, 'header kept + host prepended')
+    assert.equal(body.children.length, 2, 'div kept + host prepended')
   })
 })
 
