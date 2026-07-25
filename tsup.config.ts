@@ -5,7 +5,7 @@
 import { readFileSync } from 'node:fs'
 import type { PluginBuild } from 'esbuild'
 import { compile } from 'sass'
-import { load as loadYaml } from 'js-yaml'
+import { parse as loadYaml } from 'yaml'
 import { defineConfig } from 'tsup'
 
 const yamlPlugin = {

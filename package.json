@@ -60,7 +60,6 @@
     "@eslint/js": "10.0.1",
     "@size-limit/preset-small-lib": "12.1.0",
     "@types/eslint": "9.6.1",
-    "@types/js-yaml": "4.0.9",
     "@types/node": "26.1.1",
     "esbuild": "0.28.1",
     "eslint": "10.8.0",
@@ -71,13 +70,13 @@
     "eslint-plugin-tsdoc": "0.5.2",
     "eslint-plugin-unicorn": "72.0.0",
     "globals": "17.7.0",
-    "js-yaml": "5.2.2",
     "prettier": "3.9.6",
     "sass": "1.102.0",
     "size-limit": "12.1.0",
     "tsup": "8.5.1",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.65.0"
+    "typescript-eslint": "8.65.0",
+    "yaml": "2.9.0"
   },
   "prettier": {
     "arrowParens": "avoid",

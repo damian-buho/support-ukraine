@@ -14,7 +14,7 @@
 import { readFileSync, mkdirSync, writeFileSync, copyFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { load as loadYaml } from 'js-yaml'
+import { parse as loadYaml } from 'yaml'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dirname, '..')
