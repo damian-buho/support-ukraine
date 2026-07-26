@@ -70,7 +70,7 @@ dist/                 # tsup output (src → dist/, tests → dist/test/)
 
 tsup compiles both library and tests. Two esbuild plugins handle non-JS assets:
 
-- **yamlPlugin** — reads `.yaml` files, parses with js-yaml, emits as JS modules
+- **yamlPlugin** — reads `.yaml` files, parses with yaml (eemeli), emits as JS modules
 - **scssPlugin** — compiles `.scss` with sass, emits CSS as a JS string
 
 Library build uses `platform: 'browser'` with `minify: true` (esbuild's

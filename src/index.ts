@@ -206,7 +206,7 @@ export async function supportUkraineBlock(
   const mount = options.element ?? document.body
 
   if (mode === 'replace') {
-    const placeholder = mount.querySelector<HTMLElement>(`div[data-support-ukraine]`)
+    const placeholder = mount.querySelector<HTMLElement>(`header.${CSS_PREFIX}`)
     if (placeholder) {
       placeholder.replaceWith(host)
     } else {

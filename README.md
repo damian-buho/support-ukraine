@@ -24,6 +24,8 @@ SPDX-License-Identifier: MIT
 
 ## Screenshots
 
+[Demo / Play with settings](https://damian-buho.github.io/support-ukraine/dev.html)
+
 ![I18N support](https://raw.githubusercontent.com/damian-buho/support-ukraine/development/docs/screenshots/english.png)
 
 ![Dark theme support](https://raw.githubusercontent.com/damian-buho/support-ukraine/development/docs/screenshots/spanish.png)
