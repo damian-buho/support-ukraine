@@ -145,31 +145,32 @@ header.#{$prefix} {
   text-align: right;
 }
 
-// data-theme support — for sites that toggle theme via attribute
-[data-theme="dark"] header.#{$prefix} {
+// data-theme support — for sites that toggle theme via attribute.
+// Uses :host-context() so selectors cross the Shadow DOM boundary.
+:host-context([data-theme="dark"]) header.#{$prefix} {
   background-color: #ffd700;
 }
 
-[data-theme="dark"] header.#{$prefix} .#{$prefix}__link {
+:host-context([data-theme="dark"]) header.#{$prefix} .#{$prefix}__link {
   color: #000;
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
 }
 
-[data-theme="dark"] header.#{$prefix} .#{$prefix}__more {
+:host-context([data-theme="dark"]) header.#{$prefix} .#{$prefix}__more {
   color: #000;
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
 }
 
-[data-theme="light"] header.#{$prefix} {
+:host-context([data-theme="light"]) header.#{$prefix} {
   background-color: #0057b7;
 }
 
-[data-theme="light"] header.#{$prefix} .#{$prefix}__link {
+:host-context([data-theme="light"]) header.#{$prefix} .#{$prefix}__link {
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
-[data-theme="light"] header.#{$prefix} .#{$prefix}__more {
+:host-context([data-theme="light"]) header.#{$prefix} .#{$prefix}__more {
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
