@@ -95,6 +95,8 @@ export interface SupportUkraineBlockOptions {
   dontRepeat?: boolean
   /** Log a message to the dev console. */
   isInConsole?: boolean
+  /** Show a refresh button that loads the next random charity. */
+  showRefreshButton?: boolean
   /**
    * Override the auto-detected locale (BCP 47 language tag).
    * If omitted the locale is detected from `navigator.language`.

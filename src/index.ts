@@ -17,6 +17,7 @@ export const DEFAULT_CHARITIES: Charity[] = charitiesSchema.parse(rawCharities)
 
 const CSS_PREFIX = 'support-ukraine-block'
 const STORAGE_KEY = 'support-ukraine-seen'
+const REFRESH_GLYPH = '\u{27F3}'
 
 function readSeen(): Set<string> {
   try {
@@ -55,6 +56,36 @@ export function randomItem<T>(items: T[]): T {
     throw new Error('randomItem: cannot pick from an empty array')
   }
   return items[Math.floor(Math.random() * items.length)]!
+}
+
+/**
+ * Pick a random charity from candidates, respecting dontRepeat via localStorage.
+ *
+ * @internal
+ */
+function pickCharity(candidates: Charity[], shouldAvoidRepeat: boolean): Charity {
+  let pool = candidates
+
+  if (shouldAvoidRepeat) {
+    updateSeen(seen => {
+      const unseen = pool.filter(c => !seen.has(c.url))
+      if (unseen.length > 0) {
+        pool = unseen
+      } else {
+        seen.clear()
+      }
+    })
+  }
+
+  const charity = randomItem(pool)
+
+  if (shouldAvoidRepeat) {
+    updateSeen(seen => {
+      seen.add(charity.url)
+    })
+  }
+
+  return charity
 }
 
 /**
@@ -100,6 +131,7 @@ export async function supportUkraineBlock(
     tags,
     dontRepeat = true,
     isInConsole = true,
+    showRefreshButton = false,
     locale: requestedLocale
   } = options
 
@@ -116,24 +148,7 @@ export async function supportUkraineBlock(
     candidates = localizedCharities
   }
 
-  if (dontRepeat) {
-    updateSeen(seen => {
-      const unseen = candidates.filter(c => !seen.has(c.url))
-      if (unseen.length > 0) {
-        candidates = unseen
-      } else {
-        seen.clear()
-      }
-    })
-  }
-
-  const charity = randomItem(candidates)
-
-  if (dontRepeat) {
-    updateSeen(seen => {
-      seen.add(charity.url)
-    })
-  }
+  const charity = pickCharity(candidates, dontRepeat)
 
   const host = document.createElement('div')
 
@@ -201,6 +216,25 @@ export async function supportUkraineBlock(
   moreLink.append(moreText, moreEllipsis)
   banner.append(moreLink)
 
+  if (showRefreshButton) {
+    const refreshButton = document.createElement('button')
+    refreshButton.className = `${CSS_PREFIX}__refresh`
+    refreshButton.type = 'button'
+    refreshButton.textContent = REFRESH_GLYPH
+    refreshButton.style.fontSize = fontSize
+    refreshButton.addEventListener('click', () => {
+      const next = pickCharity(candidates, dontRepeat)
+      link.href = next.url
+      name.textContent = next.name
+      tagline.textContent = next.tagline
+      if (isInConsole) {
+        console.info('[support-ukraine] banner', `${next.name}: ${next.tagline}`, next.url)
+      }
+    })
+    // eslint-disable-next-line unicorn/prefer-modern-dom-apis
+    banner.insertBefore(refreshButton, moreLink)
+  }
+
   shadow.append(banner)
 
   const mount = options.element ?? document.body
@@ -220,5 +254,10 @@ export async function supportUkraineBlock(
     console.info('[support-ukraine] banner', `${charity.name}: ${charity.tagline}`, charity.url)
   }
 
-  return host
+  host.dataset.supportUkraine = ''
+
+  const instance = host as HTMLElement & { destroy: () => void }
+  instance.destroy = () => {}
+
+  return instance
 }
