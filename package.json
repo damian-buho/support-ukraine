@@ -31,7 +31,8 @@
     "lint": "eslint ./",
     "fix": "eslint ./ --fix",
     "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts'",
-    "format:check": "prettier --check 'src/**/*.ts' 'tests/**/*.ts'"
+    "format:check": "prettier --check 'src/**/*.ts' 'tests/**/*.ts'",
+    "serve": "npx serve ."
   },
   "keywords": [
     "ukraine",
