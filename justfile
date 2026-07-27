@@ -50,5 +50,8 @@ audit:
 
 pipeline: format lint build check-size build-test test
 
+serve:
+    npm run serve
+
 publish:
     npm publish

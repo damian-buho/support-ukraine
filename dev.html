@@ -18,6 +18,7 @@ SPDX-License-Identifier: MIT
       background: #fafafa;
       color: #222;
       line-height: 1.5;
+      margin-right: 280px;
     }
 
     .page { padding: 2rem; max-width: 960px; margin: 0 auto; }
@@ -198,6 +199,11 @@ SPDX-License-Identifier: MIT
       <label><strong>Behavior</strong></label>
       <label><input type="checkbox" id="opt-dontRepeat" checked> dontRepeat</label>
       <label><input type="checkbox" id="opt-isInConsole" checked> isInConsole</label>
+      <label><input type="checkbox" id="opt-showRefreshButton"> showRefreshButton</label>
+      <label><input type="checkbox" id="opt-autoRefresh"> autoRefresh</label>
+      <label><input type="checkbox" id="opt-showRefreshAnimation"> showRefreshAnimation</label>
+      <label><strong>Auto-refresh interval (ms)</strong></label>
+      <input type="text" id="opt-autoRefreshInterval" value="15000" placeholder="e.g. 15000">
     </div>
 
     <div class="section">
@@ -264,7 +270,13 @@ SPDX-License-Identifier: MIT
       const fontSize = document.querySelector('#opt-fontSize').value || '0.875rem'
       const dontRepeat = document.querySelector('#opt-dontRepeat').checked
       const isInConsole = document.querySelector('#opt-isInConsole').checked
-      return { mode, tags, locale, fontSize, dontRepeat, isInConsole }
+      const showRefreshButton = document.querySelector('#opt-showRefreshButton').checked
+      const autoRefreshEnabled = document.querySelector('#opt-autoRefresh').checked
+      const autoRefreshInterval = autoRefreshEnabled
+        ? Number(document.querySelector('#opt-autoRefreshInterval').value) || 15000
+        : 0
+      const showRefreshAnimation = document.querySelector('#opt-showRefreshAnimation').checked
+      return { mode, tags, locale, fontSize, dontRepeat, isInConsole, showRefreshButton, autoRefreshInterval, showRefreshAnimation }
     }
 
     function updatePreview(opts) {
@@ -278,6 +290,9 @@ SPDX-License-Identifier: MIT
       }
       if (!opts.dontRepeat) args.push('dontRepeat: false')
       if (!opts.isInConsole) args.push('isInConsole: false')
+      if (opts.showRefreshButton) args.push('showRefreshButton: true')
+      if (opts.autoRefreshInterval > 0) args.push(`autoRefreshInterval: ${opts.autoRefreshInterval}`)
+      if (opts.showRefreshAnimation) args.push('showRefreshAnimation: true')
       const code = args.length > 0
         ? `await supportUkraineBlock({\n  ${args.join(',\n  ')}\n})`
         : 'await supportUkraineBlock()'
@@ -285,7 +300,10 @@ SPDX-License-Identifier: MIT
     }
 
     async function mount() {
-      if (currentBanner) currentBanner.remove()
+      if (currentBanner) {
+        if (currentBanner.destroy) currentBanner.destroy()
+        currentBanner.remove()
+      }
       const opts = readOptions()
       applyTheme(document.querySelector('input[name="theme"]:checked').value)
       updatePreview(opts)
@@ -304,6 +322,10 @@ SPDX-License-Identifier: MIT
     document.querySelector('#opt-fontSize').addEventListener('change', mount)
     document.querySelector('#opt-dontRepeat').addEventListener('change', mount)
     document.querySelector('#opt-isInConsole').addEventListener('change', mount)
+    document.querySelector('#opt-showRefreshButton').addEventListener('change', mount)
+    document.querySelector('#opt-autoRefresh').addEventListener('change', mount)
+    document.querySelector('#opt-autoRefreshInterval').addEventListener('change', mount)
+    document.querySelector('#opt-showRefreshAnimation').addEventListener('change', mount)
 
     document.querySelectorAll('input[name="theme"]').forEach(r => r.addEventListener('change', mount))
     document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener('change', mount))

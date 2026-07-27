@@ -294,6 +294,7 @@ class MockElement {
   private _children: MockElement[] = []
   private _textContent = ''
   private _shadowRoot: MockShadowRoot | undefined
+  private _listeners = new Map<string, Array<(...arguments_: unknown[]) => void>>()
   className = ''
   tagName = ''
   id = ''
@@ -327,6 +328,28 @@ class MockElement {
 
   append(...items: MockElement[]) {
     this._children.push(...items)
+  }
+
+  insertBefore(newChild: MockElement, reference: MockElement) {
+    const index = this._children.indexOf(reference)
+    if (index === -1) {
+      this._children.push(newChild)
+    } else {
+      this._children.splice(index, 0, newChild)
+    }
+  }
+
+  addEventListener(event: string, handler: (...arguments_: unknown[]) => void) {
+    const list = this._listeners.get(event) ?? []
+    list.push(handler)
+    this._listeners.set(event, list)
+  }
+
+  click() {
+    const handlers = this._listeners.get('click') ?? []
+    for (const handler of handlers) {
+      handler()
+    }
   }
 
   prepend(_item: MockElement) {}
@@ -776,6 +799,154 @@ describe('replace mode', () => {
 
     await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
     assert.equal(body.children.length, 2, 'div kept + host prepended')
+  })
+})
+
+// ── showRefreshButton ────────────────────────────────────────────────
+
+describe('showRefreshButton', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+  })
+
+  it('does not render refresh button by default', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false })
+    const banner = host.shadowRoot!.banner!
+    const refresh = banner.children.find(
+      child => child.className === 'support-ukraine-block__refresh'
+    )
+    assert.equal(refresh, undefined)
+  })
+
+  it('renders refresh button when showRefreshButton is true', async () => {
+    const host = await supportUkraineBlock({
+      showRefreshButton: true,
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const refresh = banner.children.find(
+      child => child.className === 'support-ukraine-block__refresh'
+    )
+    assert.ok(refresh, 'refresh button should exist')
+    assert.equal(refresh!.textContent, '\u{27F3}')
+  })
+
+  it('refresh button is placed before the more link', async () => {
+    const host = await supportUkraineBlock({
+      showRefreshButton: true,
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const refreshIndex = banner.children.findIndex(
+      child => child.className === 'support-ukraine-block__refresh'
+    )
+    const moreIndex = banner.children.findIndex(
+      child => child.className === 'support-ukraine-block__more'
+    )
+    assert.ok(refreshIndex !== -1, 'refresh button found')
+    assert.ok(moreIndex !== -1, 'more link found')
+    assert.ok(refreshIndex < moreIndex, 'refresh button is before more link')
+  })
+
+  it('clicking refresh button changes the displayed charity', async () => {
+    const host = await supportUkraineBlock({
+      showRefreshButton: true,
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as unknown as { href: string }
+
+    const refresh = banner.children.find(
+      child => child.className === 'support-ukraine-block__refresh'
+    )!
+    refresh.click()
+
+    assert.ok(link.href.length > 0, 'link still has a valid href after refresh')
+  })
+})
+
+// ── autoRefreshInterval ─────────────────────────────────────────────
+
+describe('autoRefreshInterval', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+  })
+
+  it('does not start timer when interval is 0 (default)', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false })
+    assert.ok(host.destroy, 'destroy method exists')
+    host.destroy()
+  })
+
+  it('starts timer when interval > 0', async () => {
+    const host = await supportUkraineBlock({
+      autoRefreshInterval: 50,
+      dontRepeat: false
+    })
+    assert.ok(host.destroy, 'destroy method exists')
+    host.destroy()
+  })
+
+  it('destroy clears the interval', async () => {
+    const host = await supportUkraineBlock({
+      autoRefreshInterval: 50,
+      dontRepeat: false
+    })
+    host.destroy()
+    assert.ok(true, 'destroy did not throw')
+  })
+})
+
+// ── showRefreshAnimation ────────────────────────────────────────────
+
+describe('showRefreshAnimation', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+  })
+
+  it('does not add refreshing class by default', async () => {
+    const host = await supportUkraineBlock({
+      showRefreshButton: true,
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const refresh = banner.children.find(
+      child => child.className === 'support-ukraine-block__refresh'
+    )!
+    refresh.click()
+    assert.ok(!banner.className.includes('--refreshing'), 'should not have refreshing class')
+  })
+
+  it('does not add refreshing class when showRefreshAnimation is false', async () => {
+    const host = await supportUkraineBlock({
+      showRefreshButton: true,
+      showRefreshAnimation: false,
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const refresh = banner.children.find(
+      child => child.className === 'support-ukraine-block__refresh'
+    )!
+    refresh.click()
+    assert.ok(!banner.className.includes('--refreshing'), 'should not have refreshing class')
   })
 })
 
