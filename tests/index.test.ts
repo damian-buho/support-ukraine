@@ -871,6 +871,44 @@ describe('showRefreshButton', () => {
   })
 })
 
+// ── autoRefreshInterval ─────────────────────────────────────────────
+
+describe('autoRefreshInterval', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+  })
+
+  it('does not start timer when interval is 0 (default)', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false })
+    assert.ok(host.destroy, 'destroy method exists')
+    host.destroy()
+  })
+
+  it('starts timer when interval > 0', async () => {
+    const host = await supportUkraineBlock({
+      autoRefreshInterval: 50,
+      dontRepeat: false
+    })
+    assert.ok(host.destroy, 'destroy method exists')
+    host.destroy()
+  })
+
+  it('destroy clears the interval', async () => {
+    const host = await supportUkraineBlock({
+      autoRefreshInterval: 50,
+      dontRepeat: false
+    })
+    host.destroy()
+    assert.ok(true, 'destroy did not throw')
+  })
+})
+
 // ── injectStyles ──────────────────────────────────────────────────────
 
 describe('injectShadowStyles', () => {

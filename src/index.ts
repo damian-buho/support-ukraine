@@ -132,6 +132,7 @@ export async function supportUkraineBlock(
     dontRepeat = true,
     isInConsole = true,
     showRefreshButton = false,
+    autoRefreshInterval = 0,
     locale: requestedLocale
   } = options
 
@@ -256,8 +257,25 @@ export async function supportUkraineBlock(
 
   host.dataset.supportUkraine = ''
 
+  let intervalId: ReturnType<typeof setInterval> | undefined
+  if (autoRefreshInterval > 0) {
+    intervalId = setInterval(() => {
+      const next = pickCharity(candidates, dontRepeat)
+      link.href = next.url
+      name.textContent = next.name
+      tagline.textContent = next.tagline
+      if (isInConsole) {
+        console.info('[support-ukraine] banner', `${next.name}: ${next.tagline}`, next.url)
+      }
+    }, autoRefreshInterval)
+  }
+
   const instance = host as HTMLElement & { destroy: () => void }
-  instance.destroy = () => {}
+  instance.destroy = () => {
+    if (intervalId !== undefined) {
+      clearInterval(intervalId)
+    }
+  }
 
   return instance
 }

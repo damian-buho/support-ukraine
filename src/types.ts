@@ -97,6 +97,8 @@ export interface SupportUkraineBlockOptions {
   isInConsole?: boolean
   /** Show a refresh button that loads the next random charity. */
   showRefreshButton?: boolean
+  /** Auto-refresh interval in milliseconds. 0 = off (default). Set e.g. 15000 for 15 seconds. */
+  autoRefreshInterval?: number
   /**
    * Override the auto-detected locale (BCP 47 language tag).
    * If omitted the locale is detected from `navigator.language`.
