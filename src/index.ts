@@ -133,6 +133,7 @@ export async function supportUkraineBlock(
     isInConsole = true,
     showRefreshButton = false,
     autoRefreshInterval = 0,
+    showRefreshAnimation = false,
     locale: requestedLocale
   } = options
 
@@ -217,21 +218,35 @@ export async function supportUkraineBlock(
   moreLink.append(moreText, moreEllipsis)
   banner.append(moreLink)
 
+  function applyNext(next: Charity): void {
+    link.href = next.url
+    name.textContent = next.name
+    tagline.textContent = next.tagline
+    if (isInConsole) {
+      console.info('[support-ukraine] banner', `${next.name}: ${next.tagline}`, next.url)
+    }
+  }
+
+  function updateCharity(): void {
+    const next = pickCharity(candidates, dontRepeat)
+    if (showRefreshAnimation) {
+      banner.classList.add(`${CSS_PREFIX}--refreshing`)
+      setTimeout(() => {
+        applyNext(next)
+        banner.classList.remove(`${CSS_PREFIX}--refreshing`)
+      }, 200)
+    } else {
+      applyNext(next)
+    }
+  }
+
   if (showRefreshButton) {
     const refreshButton = document.createElement('button')
     refreshButton.className = `${CSS_PREFIX}__refresh`
     refreshButton.type = 'button'
     refreshButton.textContent = REFRESH_GLYPH
     refreshButton.style.fontSize = fontSize
-    refreshButton.addEventListener('click', () => {
-      const next = pickCharity(candidates, dontRepeat)
-      link.href = next.url
-      name.textContent = next.name
-      tagline.textContent = next.tagline
-      if (isInConsole) {
-        console.info('[support-ukraine] banner', `${next.name}: ${next.tagline}`, next.url)
-      }
-    })
+    refreshButton.addEventListener('click', updateCharity)
     // eslint-disable-next-line unicorn/prefer-modern-dom-apis
     banner.insertBefore(refreshButton, moreLink)
   }
@@ -259,15 +274,7 @@ export async function supportUkraineBlock(
 
   let intervalId: ReturnType<typeof setInterval> | undefined
   if (autoRefreshInterval > 0) {
-    intervalId = setInterval(() => {
-      const next = pickCharity(candidates, dontRepeat)
-      link.href = next.url
-      name.textContent = next.name
-      tagline.textContent = next.tagline
-      if (isInConsole) {
-        console.info('[support-ukraine] banner', `${next.name}: ${next.tagline}`, next.url)
-      }
-    }, autoRefreshInterval)
+    intervalId = setInterval(updateCharity, autoRefreshInterval)
   }
 
   const instance = host as HTMLElement & { destroy: () => void }

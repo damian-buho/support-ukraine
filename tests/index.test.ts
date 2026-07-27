@@ -909,6 +909,47 @@ describe('autoRefreshInterval', () => {
   })
 })
 
+// ── showRefreshAnimation ────────────────────────────────────────────
+
+describe('showRefreshAnimation', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+  })
+
+  it('does not add refreshing class by default', async () => {
+    const host = await supportUkraineBlock({
+      showRefreshButton: true,
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const refresh = banner.children.find(
+      child => child.className === 'support-ukraine-block__refresh'
+    )!
+    refresh.click()
+    assert.ok(!banner.className.includes('--refreshing'), 'should not have refreshing class')
+  })
+
+  it('does not add refreshing class when showRefreshAnimation is false', async () => {
+    const host = await supportUkraineBlock({
+      showRefreshButton: true,
+      showRefreshAnimation: false,
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const refresh = banner.children.find(
+      child => child.className === 'support-ukraine-block__refresh'
+    )!
+    refresh.click()
+    assert.ok(!banner.className.includes('--refreshing'), 'should not have refreshing class')
+  })
+})
+
 // ── injectStyles ──────────────────────────────────────────────────────
 
 describe('injectShadowStyles', () => {
