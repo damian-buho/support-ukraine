@@ -59,7 +59,7 @@
   "homepage": "https://github.com/damian-buho/support-ukraine#readme",
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@size-limit/preset-small-lib": "13.0.2",
+    "@size-limit/preset-small-lib": "13.0.3",
     "@types/eslint": "9.6.1",
     "@types/node": "26.1.2",
     "esbuild": "0.28.1",
@@ -73,7 +73,7 @@
     "globals": "17.8.0",
     "prettier": "3.9.6",
     "sass": "1.102.0",
-    "size-limit": "13.0.2",
+    "size-limit": "13.0.3",
     "tsup": "8.5.1",
     "typescript": "6.0.3",
     "typescript-eslint": "8.65.0",
