@@ -8,10 +8,11 @@ SPDX-License-Identifier: MIT
 
 [![StandWithUkraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md)
 ![NPM Version](https://img.shields.io/npm/v/%40damian-buho%2Fsupport-ukraine?style=flat-square)
+![npm package minimized gzipped size (scoped)](https://img.shields.io/bundlejs/size/%40damian-buho/support-ukraine?style=flat-square)
 ![NPM Downloads](https://img.shields.io/npm/dm/%40damian-buho%2Fsupport-ukraine?style=flat-square)
 ![NPM License](https://img.shields.io/npm/l/%40damian-buho%2Fsupport-ukraine?style=flat-square)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/damian-buho/support-ukraine)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
+![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/damian-buho/support-ukraine?style=flat-square)
 
 [![Pipeline](https://github.com/damian-buho/support-ukraine/actions/workflows/pipeline.yaml/badge.svg)](https://github.com/damian-buho/support-ukraine/actions/workflows/pipeline.yaml)
 [![CodeQL](https://github.com/damian-buho/support-ukraine/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/damian-buho/support-ukraine/actions/workflows/github-code-scanning/codeql)
