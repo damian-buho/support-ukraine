@@ -2,7 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-/** Category tag for a charity. */
+/**
+Category tag for a charity.
+*/
 export const VALID_TAGS = ['military', 'humanitarian', 'animals'] as const
 export type CharityTag = (typeof VALID_TAGS)[number]
 
@@ -32,7 +34,9 @@ function parseCharityTag(value: unknown): CharityTag {
   return value as CharityTag
 }
 
-/** A charity foundation that can appear in the banner. */
+/**
+A charity foundation that can appear in the banner.
+*/
 export interface Charity {
   id: string
   name: string
@@ -70,36 +74,64 @@ export const charitiesSchema = {
   }
 }
 
-/** Translated UI strings and charity taglines for a single locale. */
+/**
+Translated UI strings and charity taglines for a single locale.
+*/
 export interface LocaleMessages {
-  /** Banner prefix, e.g. "Support Ukraine". */
+  /**
+  Banner prefix, e.g. "Support Ukraine".
+  */
   supportUkraine: string
-  /** "More…" link text. */
+  /**
+  "More…" link text.
+  */
   more: string
-  /** Card donate button text, e.g. "Donate". */
+  /**
+  Card donate button text, e.g. "Donate".
+  */
   donate: string
-  /** Translated taglines keyed by charity id. Missing keys fall back to EN. */
+  /**
+  Translated taglines keyed by charity id. Missing keys fall back to EN.
+  */
   charities: Record<string, { tagline: string }>
 }
 
 export interface SupportUkraineBlockOptions {
-  /** Target mount element. If omitted the banner is prepended to document.body. */
+  /**
+  Target mount element. If omitted the banner is prepended to document.body.
+  */
   element?: HTMLElement
-  /** Positioning mode: 'shift' pushes content down, 'overlap' floats on top, 'replace' swaps a same-class placeholder. */
+  /**
+  Positioning mode: 'shift' pushes content down, 'overlap' floats on top, 'replace' swaps a same-class placeholder.
+  */
   mode?: 'shift' | 'overlap' | 'replace'
-  /** Font size (default '0.875rem'). */
+  /**
+  Font size (default '0.875rem').
+  */
   fontSize?: string
-  /** Category tags to filter by. If omitted all charities are shown. */
+  /**
+  Category tags to filter by. If omitted all charities are shown.
+  */
   tags?: CharityTag[]
-  /** Avoid repeating charities across page loads using localStorage. */
+  /**
+  Avoid repeating charities across page loads using localStorage.
+  */
   dontRepeat?: boolean
-  /** Log a message to the dev console. */
+  /**
+  Log a message to the dev console.
+  */
   isInConsole?: boolean
-  /** Show a refresh button that loads the next random charity. */
+  /**
+  Show a refresh button that loads the next random charity.
+  */
   showRefreshButton?: boolean
-  /** Auto-refresh interval in milliseconds. 0 = off (default). Set e.g. 15000 for 15 seconds. */
+  /**
+  Auto-refresh interval in milliseconds. 0 = off (default). Set e.g. 15000 for 15 seconds.
+  */
   autoRefreshInterval?: number
-  /** Show a fade animation when the charity changes (respects prefers-reduced-motion). */
+  /**
+  Show a fade animation when the charity changes (respects prefers-reduced-motion).
+  */
   showRefreshAnimation?: boolean
   /**
    * Override the auto-detected locale (BCP 47 language tag).

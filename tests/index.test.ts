@@ -493,7 +493,9 @@ class MockShadowRoot {
     return this._children[0]
   }
 
-  /** Find the <header> banner element inside the shadow root. */
+  /**
+  Find the <header> banner element inside the shadow root.
+  */
   get banner(): MockElement | undefined {
     return this._children.find(child => child.tagName === 'HEADER')
   }

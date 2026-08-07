@@ -7,7 +7,9 @@ import { localeLoaders, resolveLocale, RTL_LOCALES, type SupportedLocale } from 
 
 export type { SupportedLocale } from './locales/index.js'
 
-/** Cached loaded locale messages per language code. */
+/**
+Cached loaded locale messages per language code.
+*/
 const cache = new Map<string, LocaleMessages>()
 
 /**
@@ -84,7 +86,9 @@ export function mergeCharities(base: readonly Charity[], locale: LocaleMessages)
   })
 }
 
-/** Returns true if the locale uses right-to-left script. */
+/**
+Returns true if the locale uses right-to-left script.
+*/
 export function isRTL(lang: string): boolean {
   const code = resolveLocale(lang)
   return RTL_LOCALES.includes(code as 'ar')

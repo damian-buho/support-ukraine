@@ -4,7 +4,9 @@
 
 import type { LocaleMessages } from '../types.js'
 
-/** Map of BCP 47 base language → dynamic import loader. */
+/**
+Map of BCP 47 base language → dynamic import loader.
+*/
 export const localeLoaders: Record<string, () => Promise<{ default: LocaleMessages }>> = {
   en: () => import('./en.yaml'),
   es: () => import('./es.yaml'),
@@ -24,13 +26,19 @@ export const localeLoaders: Record<string, () => Promise<{ default: LocaleMessag
   ko: () => import('./ko.yaml')
 }
 
-/** All supported locale codes. */
+/**
+All supported locale codes.
+*/
 export type SupportedLocale = keyof typeof localeLoaders
 
-/** List of RTL locale codes. */
+/**
+List of RTL locale codes.
+*/
 export const RTL_LOCALES = ['ar'] as const
 
-/** Resolve a raw BCP 47 tag to a supported locale code, or 'en'. */
+/**
+Resolve a raw BCP 47 tag to a supported locale code, or 'en'.
+*/
 export function resolveLocale(tag: string): SupportedLocale {
   const base = (tag.split('-', 1)[0] ?? '').toLowerCase()
   if (Object.hasOwn(localeLoaders, base)) {
