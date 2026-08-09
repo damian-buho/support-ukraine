@@ -62,7 +62,7 @@
     "@size-limit/preset-small-lib": "13.0.3",
     "@types/eslint": "9.6.1",
     "@types/node": "26.2.0",
-    "esbuild": "0.28.1",
+    "esbuild": "0.28.2",
     "eslint": "10.8.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-import-x": "4.17.1",
@@ -91,8 +91,7 @@
     "useTabs": false
   },
   "overrides": {
-    "esbuild": "0.28.1",
-    "@typescript-eslint/utils": "8.63.0",
+    "esbuild": "0.28.2",
     "globals": "$globals"
   },
   "size-limit": [
