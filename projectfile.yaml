@@ -22,16 +22,38 @@ license:
   spdx: MIT
 links:
   - label: support-ukraine on GitHub
+    preferred: true
+    tags:
+      - public
+      - badges
+      - badges-github
     type: source-code
     url: https://github.com/damian-buho/support-ukraine
   - type: bugs
     url: https://github.com/damian-buho/support-ukraine/issues
   - type: package-registry
     url: https://www.npmjs.com/package/@damian-buho/support-ukraine
+  - label: support-ukraine on Codeberg
+    tags:
+      - public
+      - badges
+      - badges-gitea
+    type: source-code
+    url: https://codeberg.org/damian-buho/support-ukraine
+  - label: support-ukraine on kiota.ch
+    type: source-code
+    url: https://kiota.ch/damian-buho/support-ukraine
 repositories:
-  - role: origin
+  - branch: main
+    role: origin
     type: git
     url: git@github.com:damian-buho/support-ukraine.git
+  - role: mirror
+    type: git
+    url: ssh://git@codeberg.org/damian-buho/support-ukraine.git
+  - role: mirror
+    type: git
+    url: ssh://git@kiota.ch/damian-buho/support-ukraine.git
 technologies:
   - node
   - typescript

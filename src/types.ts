@@ -91,6 +91,14 @@ export interface LocaleMessages {
   */
   donate: string
   /**
+  Refresh button aria-label, e.g. "Show next charity".
+  */
+  refresh: string
+  /**
+  Text appended to external links for screen readers, e.g. "(opens in a new tab)".
+  */
+  opensInNewTab: string
+  /**
   Translated taglines keyed by charity id. Missing keys fall back to EN.
   */
   charities: Record<string, { tagline: string }>

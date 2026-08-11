@@ -17,6 +17,18 @@ $prefix: support-ukraine-block;
   z-index: 2147483647;
 }
 
+.#{$prefix}__visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 header.#{$prefix} {
   margin: 0;
   padding: 0;
@@ -80,6 +92,11 @@ header.#{$prefix} {
     &:hover {
       opacity: 0.9;
     }
+
+    &:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: -2px;
+    }
   }
 
   .#{$prefix}__flag {
@@ -112,6 +129,11 @@ header.#{$prefix} {
     &:hover {
       opacity: 1;
     }
+
+    &:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: -2px;
+    }
   }
 
   .#{$prefix}__more-ellipsis {
@@ -141,6 +163,11 @@ header.#{$prefix} {
 
     &:hover {
       opacity: 1;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: -2px;
     }
   }
 
