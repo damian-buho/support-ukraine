@@ -5,6 +5,8 @@
 supportUkraine: "ウクライナを支援する -"
 more: "もっと…"
 donate: "寄付する"
+refresh: "次の団体を表示"
+opensInNewTab: "（新しいタブで開く）"
 charities:
   united24:
     tagline: "ウクライナの公式 fundraising プラットフォーム"

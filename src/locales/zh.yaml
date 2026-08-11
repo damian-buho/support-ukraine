@@ -5,6 +5,8 @@
 supportUkraine: "支持乌克兰 -"
 more: "更多…"
 donate: "捐款"
+refresh: "显示下一个慈善机构"
+opensInNewTab: "（在新标签页中打开）"
 charities:
   united24:
     tagline: "乌克兰官方筹款平台"

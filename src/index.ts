@@ -18,6 +18,7 @@ export const DEFAULT_CHARITIES: Charity[] = charitiesSchema.parse(rawCharities)
 const CSS_PREFIX = 'support-ukraine-block'
 const STORAGE_KEY = 'support-ukraine-seen'
 const REFRESH_GLYPH = '\u{27F3}'
+const VISUALLY_HIDDEN_CLASS = `${CSS_PREFIX}__visually-hidden`
 
 function readSeen(): Set<string> {
   try {
@@ -172,6 +173,13 @@ export async function supportUkraineBlock(
   link.rel = 'noopener noreferrer'
   link.style.fontSize = fontSize
 
+  const linkNewTabId = `${CSS_PREFIX}-link-new-tab`
+  const linkNewTabHint = document.createElement('span')
+  linkNewTabHint.id = linkNewTabId
+  linkNewTabHint.className = VISUALLY_HIDDEN_CLASS
+  linkNewTabHint.textContent = messages.opensInNewTab
+  link.setAttribute('aria-describedby', linkNewTabId)
+
   const flag = document.createElement('span')
   flag.className = `${CSS_PREFIX}__flag`
   flag.textContent = `\u{1F1FA}\u{1F1E6} `
@@ -207,6 +215,13 @@ export async function supportUkraineBlock(
   moreLink.rel = 'noopener noreferrer'
   moreLink.style.fontSize = fontSize
 
+  const moreNewTabId = `${CSS_PREFIX}-more-new-tab`
+  const moreNewTabHint = document.createElement('span')
+  moreNewTabHint.id = moreNewTabId
+  moreNewTabHint.className = VISUALLY_HIDDEN_CLASS
+  moreNewTabHint.textContent = messages.opensInNewTab
+  moreLink.setAttribute('aria-describedby', moreNewTabId)
+
   const moreText = document.createElement('span')
   moreText.className = `${CSS_PREFIX}__more-text`
   moreText.textContent = messages.more
@@ -217,6 +232,7 @@ export async function supportUkraineBlock(
 
   moreLink.append(moreText, moreEllipsis)
   banner.append(moreLink)
+  banner.append(linkNewTabHint, moreNewTabHint)
 
   function applyNext(next: Charity): void {
     link.href = next.url
@@ -246,6 +262,7 @@ export async function supportUkraineBlock(
     refreshButton.type = 'button'
     refreshButton.textContent = REFRESH_GLYPH
     refreshButton.style.fontSize = fontSize
+    refreshButton.setAttribute('aria-label', messages.refresh)
     refreshButton.addEventListener('click', updateCharity)
     // eslint-disable-next-line unicorn/prefer-modern-dom-apis
     banner.insertBefore(refreshButton, moreLink)

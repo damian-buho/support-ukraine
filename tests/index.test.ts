@@ -739,7 +739,9 @@ describe('i18n integration', () => {
       dontRepeat: false
     })
     const banner = host.shadowRoot!.banner!
-    const moreLink = banner.lastChild as MockElement
+    const moreLink = banner.children.find(
+      child => child.className === 'support-ukraine-block__more'
+    )!
     const moreText = moreLink.firstChild as MockElement
     const text = moreText.textContent
     assert.ok(text.length > 0, 'more text should not be empty')
