@@ -7,13 +7,21 @@ identity:
   created: "2026-07-07"
   name: support-ukraine
   namespace: me.dbuho
-  summary: Browser library that adds a Ukraine-support charity banner to any website.
+  summary:
+    en: Browser library that adds a Ukraine-support charity banner to any website.
+    es: Biblioteca de navegador que añade un banner benéfico de apoyo a Ucrania a cualquier sitio web.
+    uk: Бібліотека для браузера, яка додає благодійний банер підтримки України на будь-який вебсайт.
   title: support-ukraine
+  description:
+    en: Drop-in browser library that adds a Stand-with-Ukraine support banner and ribbon to any website. Installable from npm and embeddable with a single script tag.
+    es: Biblioteca de navegador lista para usar que añade un banner y un lazo de apoyo Stand-with-Ukraine a cualquier sitio web. Instalable desde npm e integrable con una sola etiqueta script.
+    uk: Готова до використання бібліотека для браузера, яка додає банер і стрічку підтримки Stand-with-Ukraine на будь-який вебсайт. Встановлюється з npm і вбудовується однією теґою script.
 includes:
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/include.yaml
 keywords:
   - ukraine
   - support
+  - banner
   - ribbon
   - anti-war
   - solidarity
