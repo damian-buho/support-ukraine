@@ -435,13 +435,14 @@ class MockBody {
         ) ?? undefined
       )
     }
-    const classMatch = selector.match(/^(\w+)\.([\w-]+(?:\.[\w-]+)*)$/)
+    const classMatch = selector.match(/^(\w*)\.([\w-]+(?:\.[\w-]+)*)$/)
     if (classMatch) {
       const [, tag, classChain] = classMatch
       const classes = classChain.split('.')
       return this._children.find(
         child =>
-          child.tagName === tag.toUpperCase() && classes.every(c => child.className.includes(c))
+          (!tag || child.tagName === tag.toUpperCase()) &&
+          classes.every(c => child.className.includes(c))
       )
     }
   }
@@ -795,14 +796,15 @@ describe('replace mode', () => {
     assert.ok(body.children.includes(p2), 'second placeholder untouched')
   })
 
-  it('does not replace non-header elements with the same class', async () => {
+  it('replaces any same-class element, not only <header>', async () => {
     const div = new MockElement()
     div.tagName = 'DIV'
     div.className = 'support-ukraine-block'
     body.children.push(div)
 
     await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
-    assert.equal(body.children.length, 2, 'div kept + host prepended')
+    assert.equal(body.children.length, 1)
+    assert.notEqual(body.firstElementChild, div, 'div placeholder was replaced')
   })
 })
 
