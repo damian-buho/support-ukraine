@@ -114,7 +114,7 @@ export interface SupportUkraineBlockOptions {
   */
   mode?: 'shift' | 'overlap' | 'replace'
   /**
-  Font size (default '0.875rem').
+  Font size (default '87.5%'). Percentages resolve against the widget's fixed 16px host box, so document root scaling is ignored; rem would inherit it.
   */
   fontSize?: string
   /**

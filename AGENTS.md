@@ -99,7 +99,7 @@ supportUkraineBlock(options)
 |---|---|---|---|
 | `element` | `HTMLElement` | `document.body` | Target mount point |
 | `mode` | `'shift' \| 'overlap' \| 'replace'` | `'shift'` | Shifts content down, floats on top, or swaps a same-class placeholder element (any tag) |
-| `fontSize` | `string` | `'0.875rem'` | Banner font size |
+| `fontSize` | `string` | `'87.5%'` | Banner font size — % resolves against the host box's 16px base, immune to root scaling |
 | `charities` | `Charity[]` | _(built-in)_ | Custom charity list |
 | `tags` | `CharityTag[]` | _(all)_ | Filter: `'military'`, `'humanitarian'`, `'animals'` |
 | `dontRepeat` | `boolean` | `true` | Avoid repeats via localStorage |

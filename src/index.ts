@@ -128,7 +128,7 @@ export async function supportUkraineBlock(
 ): Promise<HTMLElement> {
   const {
     mode = 'shift',
-    fontSize = '0.875rem',
+    fontSize = '87.5%',
     tags,
     dontRepeat = true,
     isInConsole = true,

@@ -185,7 +185,7 @@ SPDX-License-Identifier: MIT
 
     <div class="section">
       <label><strong>Font size</strong></label>
-      <input type="text" id="opt-fontSize" value="0.875rem" placeholder="e.g. 1rem, 14px">
+      <input type="text" id="opt-fontSize" value="87.5%" placeholder="e.g. 87.5%, 1em, 14px">
     </div>
 
     <div class="section">
@@ -267,7 +267,7 @@ SPDX-License-Identifier: MIT
       const mode = document.querySelector('input[name="mode"]:checked').value
       const tags = [...document.querySelectorAll('input[name="tag"]:checked')].map(el => el.value)
       const locale = document.querySelector('#opt-locale').value || undefined
-      const fontSize = document.querySelector('#opt-fontSize').value || '0.875rem'
+      const fontSize = document.querySelector('#opt-fontSize').value || '87.5%'
       const dontRepeat = document.querySelector('#opt-dontRepeat').checked
       const isInConsole = document.querySelector('#opt-isInConsole').checked
       const showRefreshButton = document.querySelector('#opt-showRefreshButton').checked
@@ -283,7 +283,7 @@ SPDX-License-Identifier: MIT
       const args = []
       if (opts.mode !== 'shift') args.push(`mode: "${opts.mode}"`)
       if (opts.locale) args.push(`locale: "${opts.locale}"`)
-      if (opts.fontSize !== '0.875rem') args.push(`fontSize: "${opts.fontSize}"`)
+      if (opts.fontSize !== '87.5%') args.push(`fontSize: "${opts.fontSize}"`)
       const allTags = ['military', 'humanitarian', 'animals']
       if (opts.tags.length < allTags.length && opts.tags.length > 0) {
         args.push(`tags: [${opts.tags.map(t => `"${t}"`).join(', ')}]`)
