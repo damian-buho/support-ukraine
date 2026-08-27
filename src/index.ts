@@ -302,6 +302,7 @@ export async function supportUkraineBlock(
     if (intervalId !== undefined) {
       clearInterval(intervalId)
     }
+    host.remove()
   }
 
   return instance

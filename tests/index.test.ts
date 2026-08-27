@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { describe, it, before, beforeEach } from 'node:test'
+import { describe, it, before, beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
 import type { Charity, CharityTag } from '../src/types.js'
 import { charitiesSchema } from '../src/types.js'
@@ -381,6 +381,14 @@ class MockElement {
     const index = parent._children.indexOf(this)
     if (index !== -1) {
       parent._children[index] = other
+    }
+  }
+
+  remove() {
+    const parent = body as unknown as { _children: MockElement[] }
+    const index = parent._children.indexOf(this)
+    if (index !== -1) {
+      parent._children.splice(index, 1)
     }
   }
 
@@ -851,6 +859,31 @@ describe('custom charities', () => {
     const link = banner.firstChild as MockElement
     assert.equal(link.href, 'https://military.example.com')
   })
+
+  it('merges locale taglines into custom charities', async () => {
+    const customCharities: Charity[] = [
+      {
+        id: 'united24',
+        name: 'Custom United24',
+        tagline: 'English fallback',
+        url: 'https://custom.example.org',
+        tags: ['humanitarian']
+      }
+    ]
+    const host = await supportUkraineBlock({
+      charities: customCharities,
+      locale: 'es',
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as MockElement
+    const text = link.textContent
+    assert.ok(text.includes('Custom United24'), 'should show custom charity name')
+    assert.ok(
+      !text.includes('English fallback'),
+      'should use translated tagline, not English fallback'
+    )
+  })
 })
 
 // ── element option ─────────────────────────────────────────────────────
@@ -1034,6 +1067,7 @@ describe('autoRefreshInterval', () => {
   beforeEach(() => {
     storage.store.clear()
     head.children.length = 0
+    body.children.length = 0
   })
 
   it('does not start timer when interval is 0 (default)', async () => {
@@ -1058,6 +1092,13 @@ describe('autoRefreshInterval', () => {
     })
     host.destroy()
     assert.ok(true, 'destroy did not throw')
+  })
+
+  it('destroy removes the host element from the DOM', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false })
+    assert.equal(body.children.length, 1)
+    host.destroy()
+    assert.equal(body.children.length, 0, 'host should be removed from DOM after destroy')
   })
 })
 
@@ -1120,6 +1161,47 @@ describe('showRefreshAnimation', () => {
     await new Promise(resolve => setTimeout(resolve, 250))
     assert.ok(!banner.className.includes('--refreshing'), 'refreshing class removed after timeout')
     assert.notEqual(link.href, before, 'charity changed after animation')
+  })
+})
+
+// ── isInConsole ───────────────────────────────────────────────────────
+
+describe('isInConsole', () => {
+  let originalInfo: typeof console.info
+  let calls: string[]
+
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+    body.children.length = 0
+    calls = []
+    originalInfo = console.info
+    console.info = (...arguments_: unknown[]) => {
+      calls.push(arguments_.map(String).join(' '))
+    }
+  })
+
+  afterEach(() => {
+    console.info = originalInfo
+  })
+
+  it('logs to console by default', async () => {
+    await supportUkraineBlock({ dontRepeat: false })
+    assert.ok(calls.length > 0, 'console.info should be called')
+    assert.ok(
+      calls.some(c => c.includes('[support-ukraine]')),
+      'should log with prefix'
+    )
+  })
+
+  it('does not log when isInConsole is false', async () => {
+    await supportUkraineBlock({ isInConsole: false, dontRepeat: false })
+    assert.equal(calls.length, 0, 'console.info should not be called')
   })
 })
 
