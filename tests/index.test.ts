@@ -1100,6 +1100,27 @@ describe('showRefreshAnimation', () => {
     refresh.click()
     assert.ok(!banner.className.includes('--refreshing'), 'should not have refreshing class')
   })
+
+  it('adds and removes refreshing class when showRefreshAnimation is true', async () => {
+    const host = await supportUkraineBlock({
+      showRefreshButton: true,
+      showRefreshAnimation: true,
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as unknown as { href: string }
+    const before = link.href
+    const refresh = banner.children.find(
+      child => child.className === 'support-ukraine-block__refresh'
+    )!
+
+    refresh.click()
+    assert.ok(banner.className.includes('--refreshing'), 'refreshing class added immediately')
+
+    await new Promise(resolve => setTimeout(resolve, 250))
+    assert.ok(!banner.className.includes('--refreshing'), 'refreshing class removed after timeout')
+    assert.notEqual(link.href, before, 'charity changed after animation')
+  })
 })
 
 // ── injectStyles ──────────────────────────────────────────────────────
