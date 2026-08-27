@@ -764,6 +764,70 @@ describe('i18n integration', () => {
   })
 })
 
+// ── custom charities ───────────────────────────────────────────────────
+
+describe('custom charities', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  it('uses custom charities instead of defaults', async () => {
+    const customCharities: Charity[] = [
+      {
+        id: 'custom-1',
+        name: 'Custom Charity',
+        tagline: 'A test charity',
+        url: 'https://example.com/donate',
+        tags: ['humanitarian']
+      }
+    ]
+    const host = await supportUkraineBlock({
+      charities: customCharities,
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as MockElement
+    assert.equal(link.href, 'https://example.com/donate')
+    const text = link.textContent
+    assert.ok(text.includes('Custom Charity'))
+    assert.ok(text.includes('A test charity'))
+  })
+
+  it('filters custom charities by tags', async () => {
+    const customCharities: Charity[] = [
+      {
+        id: 'c-mil',
+        name: 'Military One',
+        tagline: 'Defense',
+        url: 'https://military.example.com',
+        tags: ['military']
+      },
+      {
+        id: 'c-hum',
+        name: 'Humanitarian One',
+        tagline: 'Aid',
+        url: 'https://aid.example.com',
+        tags: ['humanitarian']
+      }
+    ]
+    const host = await supportUkraineBlock({
+      charities: customCharities,
+      tags: ['military'],
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as MockElement
+    assert.equal(link.href, 'https://military.example.com')
+  })
+})
+
 // ── replace mode ───────────────────────────────────────────────────────
 
 describe('replace mode', () => {

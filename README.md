@@ -78,6 +78,7 @@ The entire block is a clickable link to the charity's donation page.
 | `element`     | `HTMLElement`                       | `document.body`   | Target mount element for the banner                                                                                  |
 | `mode`        | `'shift' \| 'overlap' \| 'replace'` | `'shift'`         | `'shift'` pushes page content down, `'overlap'` floats on top, `'replace'` swaps a same-class placeholder element |
 | `fontSize`    | `string`                            | `'87.5%'`         | Banner font size; `%` anchors to the widget's own 16px host box, ignoring document root scaling                      |
+| `charities`   | `Charity[]`                         | _(built-in)_      | Custom charity list; replaces the built-in database                                                       |
 | `tags`        | `CharityTag[]`                      | _(all)_           | Filter charities by category: `'military'`, `'humanitarian'`, `'animals'`                                            |
 | `dontRepeat`  | `boolean`                           | `true`            | Avoid repeating charities across page loads using `localStorage`                                                     |
 | `isInConsole` | `boolean`                           | `true`            | Log the selected charity to the dev console                                                                          |

@@ -118,8 +118,12 @@ export interface SupportUkraineBlockOptions {
   */
   fontSize?: string
   /**
-  Category tags to filter by. If omitted all charities are shown.
-  */
+   * Custom charity list. If omitted the built-in defaults are used.
+   */
+  charities?: Charity[]
+  /**
+   * Category tags to filter by. If omitted all charities are shown.
+   */
   tags?: CharityTag[]
   /**
   Avoid repeating charities across page loads using localStorage.
