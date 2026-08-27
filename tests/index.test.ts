@@ -800,6 +800,31 @@ describe('custom charities', () => {
     assert.ok(text.includes('A test charity'))
   })
 
+  it('never shows a default charity when custom list is provided', async () => {
+    const customCharities: Charity[] = [
+      {
+        id: 'only-custom',
+        name: 'Sole Charity',
+        tagline: 'The one and only',
+        url: 'https://custom.example.org',
+        tags: ['humanitarian']
+      }
+    ]
+    for (let index = 0; index < 10; index++) {
+      const host = await supportUkraineBlock({
+        charities: customCharities,
+        dontRepeat: false
+      })
+      const banner = host.shadowRoot!.banner!
+      const link = banner.firstChild as MockElement
+      assert.equal(
+        link.href,
+        'https://custom.example.org',
+        `iteration ${index}: banner must use custom charity, not defaults`
+      )
+    }
+  })
+
   it('filters custom charities by tags', async () => {
     const customCharities: Charity[] = [
       {
