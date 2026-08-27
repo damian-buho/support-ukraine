@@ -853,6 +853,45 @@ describe('custom charities', () => {
   })
 })
 
+// ── element option ─────────────────────────────────────────────────────
+
+describe('element option', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  it('prepends banner to a custom element instead of document.body', async () => {
+    const customMount = new MockElement()
+    customMount.tagName = 'DIV'
+    const children: MockElement[] = customMount.children
+    customMount.prepend = (item: MockElement) => {
+      children.unshift(item)
+    }
+
+    const host = await supportUkraineBlock({
+      element: customMount,
+      dontRepeat: false
+    })
+
+    assert.equal(body.children.length, 0, 'document.body should remain empty')
+    assert.equal(customMount.children.length, 1, 'custom element should have one child')
+    assert.equal(customMount.firstChild, host, 'banner should be prepended to custom element')
+  })
+
+  it('prepends to document.body when element is omitted', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false })
+    assert.equal(body.children.length, 1)
+    assert.equal(body.firstElementChild, host)
+  })
+})
+
 // ── replace mode ───────────────────────────────────────────────────────
 
 describe('replace mode', () => {
