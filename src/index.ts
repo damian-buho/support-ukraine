@@ -288,6 +288,7 @@ export async function supportUkraineBlock(
   }
 
   host.dataset.supportUkraine = ''
+  host.classList.add(`${CSS_PREFIX}--processed`)
 
   let intervalId: ReturnType<typeof setInterval> | undefined
   if (autoRefreshInterval > 0) {

@@ -301,6 +301,20 @@ class MockElement {
   href = ''
   style = { fontSize: '' }
   dataset: Record<string, string>
+  classList = {
+    add: (token: string) => {
+      if (!this.className.includes(token)) {
+        this.className = this.className ? `${this.className} ${token}` : token
+      }
+    },
+    contains: (token: string) => this.className.includes(token),
+    remove: (token: string) => {
+      this.className = this.className
+        .split(/\s+/)
+        .filter(c => c !== token)
+        .join(' ')
+    }
+  }
 
   constructor() {
     const attributes = this._attrs
@@ -773,6 +787,10 @@ describe('replace mode', () => {
     const host = await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
     assert.equal(body.children.length, 1)
     assert.equal(body.firstElementChild, host)
+    assert.ok(
+      host.className.includes('support-ukraine-block--processed'),
+      'host has processed class'
+    )
   })
 
   it('falls back to prepend when no placeholder exists', async () => {
