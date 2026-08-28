@@ -28,11 +28,11 @@ SPDX-License-Identifier: MIT
 
 [Demo / Play with settings](https://damian-buho.github.io/support-ukraine/dev.html)
 
-![I18N support](https://raw.githubusercontent.com/damian-buho/support-ukraine/development/docs/screenshots/english.png)
+![I18N support](https://raw.githubusercontent.com/damian-buho/support-ukraine/dev/docs/screenshots/english.png)
 
-![Dark theme support](https://raw.githubusercontent.com/damian-buho/support-ukraine/development/docs/screenshots/spanish.png)
+![Dark theme support](https://raw.githubusercontent.com/damian-buho/support-ukraine/dev/docs/screenshots/spanish.png)
 
-![RTL Support](https://raw.githubusercontent.com/damian-buho/support-ukraine/development/docs/screenshots/arabic.png)
+![RTL Support](https://raw.githubusercontent.com/damian-buho/support-ukraine/dev/docs/screenshots/arabic.png)
 
 ## Install
 
