@@ -1143,10 +1143,18 @@ describe('showRefreshAnimation', () => {
   })
 
   it('adds and removes refreshing class when showRefreshAnimation is true', async () => {
+    const manyCharities: Charity[] = Array.from({ length: 50 }, (_, index) => ({
+      id: `charity-${index}`,
+      name: `Charity ${index}`,
+      tagline: `Tagline ${index}`,
+      url: `https://charity-${index}.example.org`,
+      tags: ['humanitarian']
+    }))
     const host = await supportUkraineBlock({
       showRefreshButton: true,
       showRefreshAnimation: true,
-      dontRepeat: false
+      dontRepeat: false,
+      charities: manyCharities
     })
     const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as unknown as { href: string }
