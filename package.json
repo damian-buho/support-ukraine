@@ -9,6 +9,70 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./ar": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/ar.js"
+    },
+    "./de": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/de.js"
+    },
+    "./en": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/en.js"
+    },
+    "./es": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/es.js"
+    },
+    "./fr": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/fr.js"
+    },
+    "./hi": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/hi.js"
+    },
+    "./it": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/it.js"
+    },
+    "./ja": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/ja.js"
+    },
+    "./ko": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/ko.js"
+    },
+    "./nl": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/nl.js"
+    },
+    "./pl": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/pl.js"
+    },
+    "./pt": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/pt.js"
+    },
+    "./sv": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/sv.js"
+    },
+    "./th": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/th.js"
+    },
+    "./uk": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/uk.js"
+    },
+    "./zh": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/zh.js"
     }
   },
   "files": [

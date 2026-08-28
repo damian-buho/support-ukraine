@@ -2,10 +2,11 @@
 //
 // SPDX-License-Identifier: MIT
 
-import type { Charity, LocaleMessages } from './types.js'
-import { localeLoaders, resolveLocale, RTL_LOCALES, type SupportedLocale } from './locales/index.js'
+import type { LocaleMessages } from './types.js'
+import { localeLoaders, resolveLocale, type SupportedLocale } from './locales/index.js'
 
 export type { SupportedLocale } from './locales/index.js'
+export { mergeCharities, isRTL, formatBannerText } from './banner.js'
 
 /**
 Cached loaded locale messages per language code.
@@ -68,39 +69,6 @@ export async function loadLocale(lang: string): Promise<LocaleMessages> {
     // EN should never fail — it is bundled inline
     throw new Error(`[support-ukraine] Failed to load locale "${code}"`)
   }
-}
-
-/**
- * Merge base charities with locale-specific translations.
- *
- * For each charity: use the locale tagline if available, otherwise keep
- * the English default from the base data.
- */
-export function mergeCharities(base: readonly Charity[], locale: LocaleMessages): Charity[] {
-  return base.map(charity => {
-    const translated = locale.charities[charity.id]
-    if (translated?.tagline) {
-      return { ...charity, tagline: translated.tagline }
-    }
-    return charity
-  })
-}
-
-/**
-Returns true if the locale uses right-to-left script.
-*/
-export function isRTL(lang: string): boolean {
-  const code = resolveLocale(lang)
-  return RTL_LOCALES.includes(code as 'ar')
-}
-
-/**
- * Build a translated banner text line for a charity.
- *
- * @returns The formatted string "UA_FLAG supportUkraine name: tagline"
- */
-export function formatBannerText(charity: Charity, messages: LocaleMessages): string {
-  return `\u{1F1FA}\u{1F1E6} ${messages.supportUkraine} ${charity.name}: ${charity.tagline}`
 }
 
 /**
