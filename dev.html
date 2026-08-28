@@ -147,6 +147,12 @@ SPDX-License-Identifier: MIT
 
   <aside class="sidebar" id="sidebar">
     <div class="section">
+      <label><strong>Build</strong></label>
+      <label><input type="radio" name="build" value="index" checked> Auto-detect (<code>dist/index.js</code>)</label>
+      <label><input type="radio" name="build" value="localized"> Pre-localized (<code>dist/&lt;locale&gt;.js</code>)</label>
+    </div>
+
+    <div class="section">
       <label><strong>Locale</strong></label>
       <select id="opt-locale">
         <option value="">Auto-detect</option>
@@ -223,15 +229,25 @@ SPDX-License-Identifier: MIT
 
   <script type="module">
     const isLocal = location.hostname === 'localhost' || location.protocol === 'file:'
-    const importUrl = isLocal
-      ? './dist/index.js'
-      : 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@latest/+esm'
 
-    const badge = document.querySelector('#source-badge')
-    badge.textContent = isLocal ? 'local: ./dist/index.js' : 'CDN: jsDelivr @latest'
-    badge.className = `source-badge source-badge--${isLocal ? 'local' : 'cdn'}`
+    function resolveImportUrl(build, locale) {
+      if (build === 'localized') {
+        const loc = locale || 'en'
+        return isLocal
+          ? `./dist/${loc}.js`
+          : `https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@latest/dist/${loc}.js`
+      }
+      return isLocal
+        ? './dist/index.js'
+        : 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@latest/+esm'
+    }
 
-    const { supportUkraineBlock } = await import(importUrl)
+    // Pre-localized bundles don't auto-detect — force a concrete locale when that build is picked.
+    function syncLocaleAvailability(build) {
+      const select = document.querySelector('#opt-locale')
+      select.querySelector('option[value=""]').disabled = build === 'localized'
+      if (build === 'localized' && !select.value) select.value = 'en'
+    }
 
     let currentBanner = null
     let themeStyle = null
@@ -264,6 +280,7 @@ SPDX-License-Identifier: MIT
     }
 
     function readOptions() {
+      const build = document.querySelector('input[name="build"]:checked').value
       const mode = document.querySelector('input[name="mode"]:checked').value
       const tags = [...document.querySelectorAll('input[name="tag"]:checked')].map(el => el.value)
       const locale = document.querySelector('#opt-locale').value || undefined
@@ -276,13 +293,13 @@ SPDX-License-Identifier: MIT
         ? Number(document.querySelector('#opt-autoRefreshInterval').value) || 15000
         : 0
       const showRefreshAnimation = document.querySelector('#opt-showRefreshAnimation').checked
-      return { mode, tags, locale, fontSize, dontRepeat, isInConsole, showRefreshButton, autoRefreshInterval, showRefreshAnimation }
+      return { build, mode, tags, locale, fontSize, dontRepeat, isInConsole, showRefreshButton, autoRefreshInterval, showRefreshAnimation }
     }
 
-    function updatePreview(opts) {
+    function updatePreview(opts, importUrl) {
       const args = []
       if (opts.mode !== 'shift') args.push(`mode: "${opts.mode}"`)
-      if (opts.locale) args.push(`locale: "${opts.locale}"`)
+      if (opts.build === 'index' && opts.locale) args.push(`locale: "${opts.locale}"`)
       if (opts.fontSize !== '87.5%') args.push(`fontSize: "${opts.fontSize}"`)
       const allTags = ['military', 'humanitarian', 'animals']
       if (opts.tags.length < allTags.length && opts.tags.length > 0) {
@@ -293,10 +310,18 @@ SPDX-License-Identifier: MIT
       if (opts.showRefreshButton) args.push('showRefreshButton: true')
       if (opts.autoRefreshInterval > 0) args.push(`autoRefreshInterval: ${opts.autoRefreshInterval}`)
       if (opts.showRefreshAnimation) args.push('showRefreshAnimation: true')
-      const code = args.length > 0
+      const importLine =
+        opts.build === 'localized'
+          ? `import { supportUkraineBlock } from '@damian-buho/support-ukraine/${opts.locale}'`
+          : `import { supportUkraineBlock } from '@damian-buho/support-ukraine'`
+      const call = args.length > 0
         ? `await supportUkraineBlock({\n  ${args.join(',\n  ')}\n})`
         : 'await supportUkraineBlock()'
-      document.querySelector('#code-preview').textContent = code
+      document.querySelector('#code-preview').textContent = `${importLine}\n\n${call}`
+
+      const badge = document.querySelector('#source-badge')
+      badge.textContent = `${isLocal ? 'local' : 'CDN'}: ${importUrl}`
+      badge.className = `source-badge source-badge--${isLocal ? 'local' : 'cdn'}`
     }
 
     async function mount() {
@@ -304,10 +329,17 @@ SPDX-License-Identifier: MIT
         if (currentBanner.destroy) currentBanner.destroy()
         currentBanner.remove()
       }
+      syncLocaleAvailability(document.querySelector('input[name="build"]:checked').value)
       const opts = readOptions()
+      const importUrl = resolveImportUrl(opts.build, opts.locale)
+      const { supportUkraineBlock } = await import(importUrl)
+
       applyTheme(document.querySelector('input[name="theme"]:checked').value)
-      updatePreview(opts)
-      currentBanner = await supportUkraineBlock(opts)
+      updatePreview(opts, importUrl)
+      const { build, ...callOptions } = opts
+      // Pre-localized bundles ignore `locale` — they already bundle one language.
+      if (build === 'localized') callOptions.locale = undefined
+      currentBanner = await supportUkraineBlock(callOptions)
     }
 
     mount()
@@ -327,6 +359,7 @@ SPDX-License-Identifier: MIT
     document.querySelector('#opt-autoRefreshInterval').addEventListener('change', mount)
     document.querySelector('#opt-showRefreshAnimation').addEventListener('change', mount)
 
+    document.querySelectorAll('input[name="build"]').forEach(r => r.addEventListener('change', mount))
     document.querySelectorAll('input[name="theme"]').forEach(r => r.addEventListener('change', mount))
     document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener('change', mount))
     document.querySelectorAll('input[name="tag"]').forEach(r => r.addEventListener('change', mount))
