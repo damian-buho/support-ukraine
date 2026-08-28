@@ -80,6 +80,7 @@ export default defineConfig(
           // exports are preserved. No dropConsole: the isInConsole option
           // relies on console.info at runtime — see src/index.ts.
           minify: true,
+          sourcemap: true,
           format: ['esm'] as const,
           dts: false,
           platform: 'browser' as const,
@@ -94,6 +95,7 @@ export default defineConfig(
           outDir: 'dist',
           clean: false,
           minify: true,
+          sourcemap: true,
           format: ['esm'] as const,
           dts: false,
           platform: 'browser' as const,
