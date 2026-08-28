@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { describe, it, before, beforeEach } from 'node:test'
+import { describe, it, before, beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
 import type { Charity, CharityTag } from '../src/types.js'
 import { charitiesSchema } from '../src/types.js'
@@ -301,6 +301,20 @@ class MockElement {
   href = ''
   style = { fontSize: '' }
   dataset: Record<string, string>
+  classList = {
+    add: (token: string) => {
+      if (!this.className.includes(token)) {
+        this.className = this.className ? `${this.className} ${token}` : token
+      }
+    },
+    contains: (token: string) => this.className.includes(token),
+    remove: (token: string) => {
+      this.className = this.className
+        .split(/\s+/)
+        .filter(c => c !== token)
+        .join(' ')
+    }
+  }
 
   constructor() {
     const attributes = this._attrs
@@ -367,6 +381,14 @@ class MockElement {
     const index = parent._children.indexOf(this)
     if (index !== -1) {
       parent._children[index] = other
+    }
+  }
+
+  remove() {
+    const parent = body as unknown as { _children: MockElement[] }
+    const index = parent._children.indexOf(this)
+    if (index !== -1) {
+      parent._children.splice(index, 1)
     }
   }
 
@@ -750,6 +772,159 @@ describe('i18n integration', () => {
   })
 })
 
+// ── custom charities ───────────────────────────────────────────────────
+
+describe('custom charities', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  it('uses custom charities instead of defaults', async () => {
+    const customCharities: Charity[] = [
+      {
+        id: 'custom-1',
+        name: 'Custom Charity',
+        tagline: 'A test charity',
+        url: 'https://example.com/donate',
+        tags: ['humanitarian']
+      }
+    ]
+    const host = await supportUkraineBlock({
+      charities: customCharities,
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as MockElement
+    assert.equal(link.href, 'https://example.com/donate')
+    const text = link.textContent
+    assert.ok(text.includes('Custom Charity'))
+    assert.ok(text.includes('A test charity'))
+  })
+
+  it('never shows a default charity when custom list is provided', async () => {
+    const customCharities: Charity[] = [
+      {
+        id: 'only-custom',
+        name: 'Sole Charity',
+        tagline: 'The one and only',
+        url: 'https://custom.example.org',
+        tags: ['humanitarian']
+      }
+    ]
+    for (let index = 0; index < 10; index++) {
+      const host = await supportUkraineBlock({
+        charities: customCharities,
+        dontRepeat: false
+      })
+      const banner = host.shadowRoot!.banner!
+      const link = banner.firstChild as MockElement
+      assert.equal(
+        link.href,
+        'https://custom.example.org',
+        `iteration ${index}: banner must use custom charity, not defaults`
+      )
+    }
+  })
+
+  it('filters custom charities by tags', async () => {
+    const customCharities: Charity[] = [
+      {
+        id: 'c-mil',
+        name: 'Military One',
+        tagline: 'Defense',
+        url: 'https://military.example.com',
+        tags: ['military']
+      },
+      {
+        id: 'c-hum',
+        name: 'Humanitarian One',
+        tagline: 'Aid',
+        url: 'https://aid.example.com',
+        tags: ['humanitarian']
+      }
+    ]
+    const host = await supportUkraineBlock({
+      charities: customCharities,
+      tags: ['military'],
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as MockElement
+    assert.equal(link.href, 'https://military.example.com')
+  })
+
+  it('merges locale taglines into custom charities', async () => {
+    const customCharities: Charity[] = [
+      {
+        id: 'united24',
+        name: 'Custom United24',
+        tagline: 'English fallback',
+        url: 'https://custom.example.org',
+        tags: ['humanitarian']
+      }
+    ]
+    const host = await supportUkraineBlock({
+      charities: customCharities,
+      locale: 'es',
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as MockElement
+    const text = link.textContent
+    assert.ok(text.includes('Custom United24'), 'should show custom charity name')
+    assert.ok(
+      !text.includes('English fallback'),
+      'should use translated tagline, not English fallback'
+    )
+  })
+})
+
+// ── element option ─────────────────────────────────────────────────────
+
+describe('element option', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  it('prepends banner to a custom element instead of document.body', async () => {
+    const customMount = new MockElement()
+    customMount.tagName = 'DIV'
+    const children: MockElement[] = customMount.children
+    customMount.prepend = (item: MockElement) => {
+      children.unshift(item)
+    }
+
+    const host = await supportUkraineBlock({
+      element: customMount,
+      dontRepeat: false
+    })
+
+    assert.equal(body.children.length, 0, 'document.body should remain empty')
+    assert.equal(customMount.children.length, 1, 'custom element should have one child')
+    assert.equal(customMount.firstChild, host, 'banner should be prepended to custom element')
+  })
+
+  it('prepends to document.body when element is omitted', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false })
+    assert.equal(body.children.length, 1)
+    assert.equal(body.firstElementChild, host)
+  })
+})
+
 // ── replace mode ───────────────────────────────────────────────────────
 
 describe('replace mode', () => {
@@ -773,6 +948,10 @@ describe('replace mode', () => {
     const host = await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
     assert.equal(body.children.length, 1)
     assert.equal(body.firstElementChild, host)
+    assert.ok(
+      host.className.includes('support-ukraine-block--processed'),
+      'host has processed class'
+    )
   })
 
   it('falls back to prepend when no placeholder exists', async () => {
@@ -888,6 +1067,7 @@ describe('autoRefreshInterval', () => {
   beforeEach(() => {
     storage.store.clear()
     head.children.length = 0
+    body.children.length = 0
   })
 
   it('does not start timer when interval is 0 (default)', async () => {
@@ -912,6 +1092,13 @@ describe('autoRefreshInterval', () => {
     })
     host.destroy()
     assert.ok(true, 'destroy did not throw')
+  })
+
+  it('destroy removes the host element from the DOM', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false })
+    assert.equal(body.children.length, 1)
+    host.destroy()
+    assert.equal(body.children.length, 0, 'host should be removed from DOM after destroy')
   })
 })
 
@@ -953,6 +1140,68 @@ describe('showRefreshAnimation', () => {
     )!
     refresh.click()
     assert.ok(!banner.className.includes('--refreshing'), 'should not have refreshing class')
+  })
+
+  it('adds and removes refreshing class when showRefreshAnimation is true', async () => {
+    const host = await supportUkraineBlock({
+      showRefreshButton: true,
+      showRefreshAnimation: true,
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as unknown as { href: string }
+    const before = link.href
+    const refresh = banner.children.find(
+      child => child.className === 'support-ukraine-block__refresh'
+    )!
+
+    refresh.click()
+    assert.ok(banner.className.includes('--refreshing'), 'refreshing class added immediately')
+
+    await new Promise(resolve => setTimeout(resolve, 250))
+    assert.ok(!banner.className.includes('--refreshing'), 'refreshing class removed after timeout')
+    assert.notEqual(link.href, before, 'charity changed after animation')
+  })
+})
+
+// ── isInConsole ───────────────────────────────────────────────────────
+
+describe('isInConsole', () => {
+  let originalInfo: typeof console.info
+  let calls: string[]
+
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+    body.children.length = 0
+    calls = []
+    originalInfo = console.info
+    console.info = (...arguments_: unknown[]) => {
+      calls.push(arguments_.map(String).join(' '))
+    }
+  })
+
+  afterEach(() => {
+    console.info = originalInfo
+  })
+
+  it('logs to console by default', async () => {
+    await supportUkraineBlock({ dontRepeat: false })
+    assert.ok(calls.length > 0, 'console.info should be called')
+    assert.ok(
+      calls.some(c => c.includes('[support-ukraine]')),
+      'should log with prefix'
+    )
+  })
+
+  it('does not log when isInConsole is false', async () => {
+    await supportUkraineBlock({ isInConsole: false, dontRepeat: false })
+    assert.equal(calls.length, 0, 'console.info should not be called')
   })
 })
 

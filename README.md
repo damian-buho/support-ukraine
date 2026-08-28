@@ -28,11 +28,11 @@ SPDX-License-Identifier: MIT
 
 [Demo / Play with settings](https://damian-buho.github.io/support-ukraine/dev.html)
 
-![I18N support](https://raw.githubusercontent.com/damian-buho/support-ukraine/development/docs/screenshots/english.png)
+![I18N support](https://raw.githubusercontent.com/damian-buho/support-ukraine/dev/docs/screenshots/english.png)
 
-![Dark theme support](https://raw.githubusercontent.com/damian-buho/support-ukraine/development/docs/screenshots/spanish.png)
+![Dark theme support](https://raw.githubusercontent.com/damian-buho/support-ukraine/dev/docs/screenshots/spanish.png)
 
-![RTL Support](https://raw.githubusercontent.com/damian-buho/support-ukraine/development/docs/screenshots/arabic.png)
+![RTL Support](https://raw.githubusercontent.com/damian-buho/support-ukraine/dev/docs/screenshots/arabic.png)
 
 ## Install
 
@@ -78,6 +78,7 @@ The entire block is a clickable link to the charity's donation page.
 | `element`     | `HTMLElement`                       | `document.body`   | Target mount element for the banner                                                                                  |
 | `mode`        | `'shift' \| 'overlap' \| 'replace'` | `'shift'`         | `'shift'` pushes page content down, `'overlap'` floats on top, `'replace'` swaps a same-class placeholder element |
 | `fontSize`    | `string`                            | `'87.5%'`         | Banner font size; `%` anchors to the widget's own 16px host box, ignoring document root scaling                      |
+| `charities`   | `Charity[]`                         | _(built-in)_      | Custom charity list; replaces the built-in database                                                       |
 | `tags`        | `CharityTag[]`                      | _(all)_           | Filter charities by category: `'military'`, `'humanitarian'`, `'animals'`                                            |
 | `dontRepeat`  | `boolean`                           | `true`            | Avoid repeating charities across page loads using `localStorage`                                                     |
 | `isInConsole` | `boolean`                           | `true`            | Log the selected charity to the dev console                                                                          |

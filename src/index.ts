@@ -129,6 +129,7 @@ export async function supportUkraineBlock(
   const {
     mode = 'shift',
     fontSize = '87.5%',
+    charities,
     tags,
     dontRepeat = true,
     isInConsole = true,
@@ -139,8 +140,9 @@ export async function supportUkraineBlock(
   } = options
 
   const lang = detectLocale(requestedLocale)
+  const baseCharities = charities ?? DEFAULT_CHARITIES
   const messages = await loadLocale(lang)
-  const localizedCharities = mergeCharities(DEFAULT_CHARITIES, messages)
+  const localizedCharities = mergeCharities(baseCharities, messages)
 
   let candidates =
     tags && tags.length > 0
@@ -288,6 +290,7 @@ export async function supportUkraineBlock(
   }
 
   host.dataset.supportUkraine = ''
+  host.classList.add(`${CSS_PREFIX}--processed`)
 
   let intervalId: ReturnType<typeof setInterval> | undefined
   if (autoRefreshInterval > 0) {
@@ -299,6 +302,7 @@ export async function supportUkraineBlock(
     if (intervalId !== undefined) {
       clearInterval(intervalId)
     }
+    host.remove()
   }
 
   return instance
