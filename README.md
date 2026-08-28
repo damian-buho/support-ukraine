@@ -84,6 +84,37 @@ await supportUkraineBlock()
 
 Available localized entry points: `ar`, `de`, `en`, `es`, `fr`, `hi`, `it`, `ja`, `ko`, `nl`, `pl`, `pt`, `sv`, `th`, `uk`, `zh`. The `locale` option is ignored in these builds — they are already localized.
 
+If you still want to read `navigator.language` yourself and avoid the library’s chained fetch, map it to the right bundle:
+
+```html
+<script type="module">
+  const base = (navigator.language.split('-')[0] ?? 'en').toLowerCase()
+  const supported = new Set(['ar','de','en','es','fr','hi','it','ja','ko','nl','pl','pt','sv','th','uk','zh'])
+  const locale = supported.has(base) ? base : 'en'
+
+  const { supportUkraineBlock } = await import(
+    `https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@1/dist/${locale}.js`
+  )
+
+  await supportUkraineBlock()
+</script>
+```
+
+With a bundler the same idea uses the package entry points:
+
+```ts
+const base = (navigator.language.split('-')[0] ?? 'en').toLowerCase()
+const supported = ['ar','de','en','es','fr','hi','it','ja','ko','nl','pl','pt','sv','th','uk','zh'] as const
+type Locale = (typeof supported)[number]
+const locale: Locale = (supported as readonly string[]).includes(base) ? (base as Locale) : 'en'
+
+const { supportUkraineBlock } = await import(`@damian-buho/support-ukraine/${locale}`)
+
+await supportUkraineBlock()
+```
+
+In both cases only one network request is made — the pre-localized `dist/<locale>.js` — instead of `index.js` → locale chunk.
+
 The banner is prepended to `document.body` by default. It displays a randomly selected charity with the format:
 
 > 🇺🇦 Support Ukraine: Come Back Alive: Strengthening Ukraine's defense
