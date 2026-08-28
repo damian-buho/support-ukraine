@@ -49,21 +49,26 @@ tsconfig enables: `strict`, `noUncheckedIndexedAccess`, `noUnusedLocals`,
 
 ```
 src/
-├── index.ts          # Public API: supportUkraineBlock(), DEFAULT_CHARITIES
+├── index.ts          # Auto-detect build: supportUkraineBlock() via navigator.language + dynamic import
+├── banner.ts         # Shared rendering: mountBanner(), DEFAULT_CHARITIES, mergeCharities(), isRTL()
 ├── types.ts          # Hand-written validators: charitySchema, charitiesSchema, SupportUkraineBlockOptions
-├── i18n.ts           # detectLocale(), loadLocale(), mergeCharities(), isRTL()
+├── i18n.ts           # detectLocale(), loadLocale() (generic build only)
 ├── locales/
 │   ├── index.ts      # resolveLocale(), localeLoaders, RTL_LOCALES, SupportedLocale
-│   ├── en.yaml       # English strings (bundled inline)
+│   ├── en.yaml       # English strings
 │   ├── es.yaml       # Spanish
 │   ├── ar.yaml       # Arabic (RTL)
 │   └── ...           # 16 locales total
+├── entries/          # Per-locale entry points (ar.ts, en.ts …) — static locale import, no dynamic fetch
 ├── charities.yaml    # Built-in charity database (validated by charitiesSchema)
 ├── styles.scss       # Banner CSS (compiled to string by esbuild plugin)
 └── environment.d.ts  # Module declarations for *.yaml and *.scss
 tests/
 └── index.test.ts     # node:test + node:assert
-dist/                 # tsup output (src → dist/, tests → dist/test/)
+dist/                 # tsup output
+├── index.js          # Generic auto-detect build + locale chunks (en-*.js …) — two fetches
+├── en.js, es.js …    # Pre-localized self-contained builds — one fetch, optimal CWV
+└── index.d.ts        # Types (shared by all entry points: "." and "./<locale>")
 ```
 
 ### Build pipeline
@@ -73,24 +78,39 @@ tsup compiles both library and tests. Two esbuild plugins handle non-JS assets:
 - **yamlPlugin** — reads `.yaml` files, parses with yaml (eemeli), emits as JS modules
 - **scssPlugin** — compiles `.scss` with sass, emits CSS as a JS string
 
-Library build uses `platform: 'browser'` with `minify: true` (esbuild's
-minifier — locals mangle, exports preserved, no `dropConsole` so the
-`isInConsole` option still works at runtime). Test build uses `platform: 'node'`
-with `removeNodeProtocol: false` to preserve `node:test` / `node:assert`
-imports without a post-build fixup script, and stays un-minified for readable
-stack traces.
+Library build is two tsup configs (array):
+
+- **generic**: `src/index.ts` → `dist/index.js` with `splitting: true` — dynamic `import()` keeps each locale as a separate chunk loaded on demand.
+- **localized**: `src/entries/*.ts` → `dist/<locale>.js` with `splitting: false` — each locale YAML is imported statically, so the bundle is self-contained with no chained request.
+
+Both use `platform: 'browser'` with `minify: true` (esbuild's minifier — locals mangle, exports preserved, no `dropConsole` so the `isInConsole` option still works at runtime). Test build uses `platform: 'node'` with `removeNodeProtocol: false` to preserve `node:test` / `node:assert` imports without a post-build fixup script, and stays un-minified for readable stack traces.
 
 ### Data flow
+
+Generic (auto-detect):
 
 ```
 supportUkraineBlock(options)
   → detectLocale()              → SupportedLocale (from navigator.languages / navigator.language)
   → loadLocale()                → LocaleMessages (cached, lazy-loaded per locale)
-  → mergeCharities()            → Charity[] (localized taglines)
-  → filter by tags              → Charity[] (if tags option provided)
-  → updateSeen() + randomItem() → Charity (dontRepeat via localStorage)
-  → DOM construction            → <header> element with lang + dir attributes
-  → mount.prepend(banner)       → inserted into target element
+  → mountBanner(lang, messages) → DOM construction → mount.prepend(banner)
+```
+
+Localized (pre-bundled, e.g. `dist/es.js`):
+
+```
+supportUkraineBlock(options)
+  → mountBanner('es', esMessages) → DOM construction → mount.prepend(banner)
+    (no detectLocale / loadLocale — messages are bundled inline, `locale` option is ignored)
+```
+
+Shared after `mountBanner`:
+
+```
+mergeCharities()            → Charity[] (localized taglines)
+  → filter by tags         → Charity[]
+  → updateSeen()+randomItem → Charity (dontRepeat via localStorage)
+  → header with lang+dir   → mount.prepend
 ```
 
 ### SupportUkraineBlockOptions

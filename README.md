@@ -45,9 +45,18 @@ npm install @damian-buho/support-ukraine
 ### CDN (no build step)
 
 ```html
-
 <script type="module">
     import {supportUkraineBlock} from 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@1/+esm'
+
+    await supportUkraineBlock()
+</script>
+```
+
+For optimal Core Web Vitals, avoid the chained locale fetch by loading a pre-localized build:
+
+```html
+<script type="module">
+    import {supportUkraineBlock} from 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@1/dist/es.js'
 
     await supportUkraineBlock()
 </script>
@@ -64,6 +73,52 @@ await supportUkraineBlock()
 // Force a specific locale
 await supportUkraineBlock({locale: 'es'})
 ```
+
+For optimal Core Web Vitals, let your server or router decide the language and load only the needed build — no second network request:
+
+```ts
+import {supportUkraineBlock} from '@damian-buho/support-ukraine/es'
+
+await supportUkraineBlock()
+```
+
+Available localized entry points: `ar`, `de`, `en`, `es`, `fr`, `hi`, `it`, `ja`, `ko`, `nl`, `pl`, `pt`, `sv`, `th`, `uk`, `zh`. The `locale` option is ignored in these builds — they are already localized.
+
+If you still want to read `navigator.language` yourself and avoid the library’s chained fetch, detect the base
+language tag and load the matching bundle:
+
+```html
+<script type="module">
+  const base = navigator.language.split('-')[0]
+  const supported = ['ar','de','en','es','fr','hi','it','ja','ko','nl','pl','pt','sv','th','uk','zh']
+  const locale = supported.includes(base) ? base : 'en'
+
+  const { supportUkraineBlock } = await import(
+    `https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@1/dist/${locale}.js`
+  )
+
+  await supportUkraineBlock()
+</script>
+```
+
+With a bundler, do not interpolate the locale into the import specifier — Vite/webpack cannot statically
+resolve a computed package subpath, so the build either fails or pulls in every locale, which defeats the
+point. Use a literal specifier per branch instead; each one still gets its own chunk:
+
+```ts
+const bundles = {
+  es: () => import('@damian-buho/support-ukraine/es'),
+  fr: () => import('@damian-buho/support-ukraine/fr'),
+  // … one entry per supported locale
+  en: () => import('@damian-buho/support-ukraine/en')
+}
+
+const base = navigator.language.split('-')[0]
+const { supportUkraineBlock } = await (bundles[base] ?? bundles.en)()
+await supportUkraineBlock()
+```
+
+In both cases only one network request is made — the pre-localized `dist/<locale>.js` — instead of `index.js` → locale chunk.
 
 The banner is prepended to `document.body` by default. It displays a randomly selected charity with the format:
 
@@ -144,16 +199,25 @@ The banner is translated to the visitor's language automatically. The following 
 
 RTL scripts are detected automatically and the banner direction is set accordingly.
 
+For best performance, pick the locale yourself (from `Accept-Language`, `<html lang>`, or your i18n router) and import the matching entry point. The generic `dist/index.js` uses `navigator.language` and a dynamic `import()` for the locale chunk — that chained request delays the banner and hurts CWV. Each `dist/<locale>.js` bundles its messages statically, so it renders in a single fetch.
+
 ## Architecture
 
 ```
 src/
-├── index.ts          # Public API: supportUkraineBlock()
+├── index.ts          # Auto-detect build (navigator.language + dynamic import)
+├── banner.ts         # Shared banner rendering (mountBanner, DEFAULT_CHARITIES)
 ├── types.ts          # Charity, SupportUkraineBlockOptions, etc.
-├── i18n.ts           # Locale detection, loading, merging
+├── i18n.ts           # Locale detection, loading, merging (generic build only)
 ├── locales/          # Per-locale translation files
 ├── charities.yaml    # Built-in charity database
+├── entries/          # Per-locale entry points (ar.ts, es.ts, …) — static import, no fetch
 └── styles.scss       # Banner CSS (compiled by tsup)
+
+dist/
+├── index.js          # Generic auto-detect build + locale chunks (en-*.js, es-*.js …)
+├── en.js, es.js …    # Pre-localized self-contained builds — one fetch, no chained request
+└── index.d.ts        # Types (shared by all entry points)
 ```
 
 ## Contributing
