@@ -8,7 +8,7 @@ import type { Charity, CharityTag } from '../src/types.js'
 import { charitiesSchema } from '../src/types.js'
 import { supportUkraineBlock, DEFAULT_CHARITIES, randomItem } from '../src/index.js'
 import { detectLocale, loadLocale, mergeCharities, isRTL, formatBannerText } from '../src/i18n.js'
-import { resolveLocale } from '../src/locales/index.js'
+import { localeLoaders, resolveLocale } from '../src/locales/index.js'
 
 // ── DEFAULT_CHARITIES ───────────────────────────────────────────────────
 
@@ -1226,5 +1226,77 @@ describe('injectShadowStyles', () => {
     const styles2 = host2.shadowRoot!.children.filter(child => child.tagName === 'STYLE')
     assert.equal(styles1.length, 1, 'first shadow root should have one style')
     assert.equal(styles2.length, 1, 'second shadow root should have one style')
+  })
+})
+
+// ── per-locale entries ───────────────────────────────────────────────────
+
+// Literal specifiers, one per locale — a computed `import(`../src/entries/${locale}.js`)`
+// can't be bundled by esbuild/tsup, same reason a bundler can't resolve it in consumer code.
+const entryLoaders: Record<
+  string,
+  () => Promise<{ supportUkraineBlock: typeof supportUkraineBlock }>
+> = {
+  ar: () => import('../src/entries/ar.js'),
+  de: () => import('../src/entries/de.js'),
+  en: () => import('../src/entries/en.js'),
+  es: () => import('../src/entries/es.js'),
+  fr: () => import('../src/entries/fr.js'),
+  hi: () => import('../src/entries/hi.js'),
+  it: () => import('../src/entries/it.js'),
+  ja: () => import('../src/entries/ja.js'),
+  ko: () => import('../src/entries/ko.js'),
+  nl: () => import('../src/entries/nl.js'),
+  pl: () => import('../src/entries/pl.js'),
+  pt: () => import('../src/entries/pt.js'),
+  sv: () => import('../src/entries/sv.js'),
+  th: () => import('../src/entries/th.js'),
+  uk: () => import('../src/entries/uk.js'),
+  zh: () => import('../src/entries/zh.js')
+}
+
+describe('per-locale entries', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  for (const locale of Object.keys(localeLoaders)) {
+    it(`${locale} entry mounts lang="${locale}" with its own messages`, async () => {
+      const { supportUkraineBlock: localizedBlock } = await entryLoaders[locale]!()
+      const host = await localizedBlock({ dontRepeat: false })
+      const banner = host.shadowRoot!.banner!
+      assert.equal((banner as unknown as { lang: string }).lang, locale)
+
+      const expected = await loadLocale(locale)
+      const link = banner.firstChild as MockElement
+      const prefix = link.querySelector('.support-ukraine-block__prefix') as MockElement
+      assert.ok(
+        prefix.textContent.includes(expected.supportUkraine),
+        `${locale} entry should bundle its own locale's messages`
+      )
+
+      const direction = (banner as unknown as { getAttribute: (n: string) => string }).getAttribute(
+        'dir'
+      )
+      if (locale === 'ar') {
+        assert.equal(direction, 'rtl')
+      } else {
+        assert.notEqual(direction, 'rtl')
+      }
+    })
+  }
+
+  it('ignores the locale option — the bundle is already localized', async () => {
+    const { supportUkraineBlock: esBlock } = await entryLoaders.es!()
+    const host = await esBlock({ locale: 'fr', dontRepeat: false })
+    const banner = host.shadowRoot!.banner!
+    assert.equal((banner as unknown as { lang: string }).lang, 'es')
   })
 })
