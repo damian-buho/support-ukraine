@@ -526,6 +526,11 @@ class MockShadowRoot {
 
 const body = new MockBody()
 
+function setupWindow(hostname = 'example.com'): void {
+  // eslint-disable-next-line unicorn/no-global-object-property-assignment
+  globalThis.window = { location: { hostname } }
+}
+
 function setupDom(): void {
   if (!globalThis.document) {
     Object.defineProperty(globalThis, 'document', {
@@ -1169,6 +1174,171 @@ describe('showRefreshAnimation', () => {
     await new Promise(resolve => setTimeout(resolve, 250))
     assert.ok(!banner.className.includes('--refreshing'), 'refreshing class removed after timeout')
     assert.notEqual(link.href, before, 'charity changed after animation')
+  })
+})
+
+// ── UTM parameters ──────────────────────────────────────────────────────
+
+describe('UTM parameters', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+    setupWindow()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+    body.children.length = 0
+    setupWindow()
+  })
+
+  it('adds UTM parameters by default', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false, tags: ['animals'] })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as unknown as { href: string }
+
+    assert.ok(link.href.includes('utm_source=example.com'), 'should include utm_source')
+    assert.ok(link.href.includes('utm_medium=support-ukraine-banner'), 'should include utm_medium')
+  })
+
+  it('does not add UTM parameters when utmEnabled is false', async () => {
+    const host = await supportUkraineBlock({
+      utmEnabled: false,
+      dontRepeat: false,
+      tags: ['animals']
+    })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as unknown as { href: string }
+
+    assert.ok(!link.href.includes('utm_source'), 'should not include utm_source')
+    assert.ok(!link.href.includes('utm_medium'), 'should not include utm_medium')
+  })
+
+  it('uses custom utmSource when provided', async () => {
+    const host = await supportUkraineBlock({
+      utmSource: 'custom-domain.com',
+      dontRepeat: false,
+      tags: ['animals']
+    })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as unknown as { href: string }
+
+    assert.ok(link.href.includes('utm_source=custom-domain.com'), 'should use custom utm_source')
+  })
+
+  it('uses custom utmMedium when provided', async () => {
+    const host = await supportUkraineBlock({
+      utmMedium: 'custom-medium',
+      dontRepeat: false,
+      tags: ['animals']
+    })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as unknown as { href: string }
+
+    assert.ok(link.href.includes('utm_medium=custom-medium'), 'should use custom utm_medium')
+  })
+
+  it('respects Do-Not-Track header', async () => {
+    const originalNavigator = navigator
+    // eslint-disable-next-line unicorn/no-global-object-property-assignment
+    globalThis.navigator = { doNotTrack: '1' }
+
+    const host = await supportUkraineBlock({ dontRepeat: false, tags: ['animals'] })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as unknown as { href: string }
+
+    assert.ok(!link.href.includes('utm_source'), 'should not add UTM when DNT is enabled')
+
+    // eslint-disable-next-line unicorn/no-global-object-property-assignment
+    globalThis.navigator = originalNavigator
+  })
+
+  it('respects window.doNotTrack', async () => {
+    const originalNavigator = navigator
+    const originalWindow = globalThis.window
+    // eslint-disable-next-line unicorn/no-global-object-property-assignment
+    globalThis.navigator = { doNotTrack: 'no' }
+    // eslint-disable-next-line unicorn/no-global-object-property-assignment
+    globalThis.window = { doNotTrack: 'yes', location: { hostname: 'test.com' } }
+
+    const host = await supportUkraineBlock({ dontRepeat: false, tags: ['animals'] })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as unknown as { href: string }
+
+    assert.ok(!link.href.includes('utm_source'), 'should not add UTM when window.doNotTrack is yes')
+
+    // eslint-disable-next-line unicorn/no-global-object-property-assignment
+    globalThis.navigator = originalNavigator
+    // eslint-disable-next-line unicorn/no-global-object-property-assignment
+    globalThis.window = originalWindow
+  })
+
+  it('respects navigator.msDoNotTrack', async () => {
+    const originalNavigator = navigator
+    // eslint-disable-next-line unicorn/no-global-object-property-assignment
+    globalThis.navigator = { doNotTrack: 'no', msDoNotTrack: '1' }
+
+    const host = await supportUkraineBlock({ dontRepeat: false, tags: ['animals'] })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as unknown as { href: string }
+
+    assert.ok(!link.href.includes('utm_source'), 'should not add UTM when msDoNotTrack is 1')
+
+    // eslint-disable-next-line unicorn/no-global-object-property-assignment
+    globalThis.navigator = originalNavigator
+  })
+
+  it('applies UTM to more link as well', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false, tags: ['animals'] })
+    const banner = host.shadowRoot!.banner!
+    const moreLink = banner.children.find(
+      child => child.className === 'support-ukraine-block__more'
+    )! as unknown as { href: string }
+
+    assert.ok(
+      moreLink.href.includes('utm_source=example.com'),
+      'more link should include utm_source'
+    )
+    assert.ok(
+      moreLink.href.includes('utm_medium=support-ukraine-banner'),
+      'more link should include utm_medium'
+    )
+  })
+
+  it('applies UTM on refresh', async () => {
+    const manyCharities: Charity[] = Array.from({ length: 50 }, (_, index) => ({
+      id: `charity-${index}`,
+      name: `Charity ${index}`,
+      tagline: `Tagline ${index}`,
+      url: `https://charity-${index}.example.org`,
+      tags: ['humanitarian']
+    }))
+
+    const host = await supportUkraineBlock({
+      showRefreshButton: true,
+      dontRepeat: false,
+      charities: manyCharities
+    })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as unknown as { href: string }
+    const firstHref = link.href
+
+    const refresh = banner.children.find(
+      child => child.className === 'support-ukraine-block__refresh'
+    )!
+    refresh.click()
+
+    assert.ok(
+      link.href.includes('utm_source=example.com'),
+      'refreshed link should include utm_source'
+    )
+    assert.ok(
+      link.href.includes('utm_medium=support-ukraine-banner'),
+      'refreshed link should include utm_medium'
+    )
+    // With 50 charities and dontRepeat=false, it's extremely unlikely to pick the same one
+    assert.notEqual(link.href, firstHref, 'charity should change on refresh')
   })
 })
 
