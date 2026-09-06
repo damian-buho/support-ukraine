@@ -150,4 +150,20 @@ export interface SupportUkraineBlockOptions {
    * If omitted the locale is detected from `navigator.language`.
    */
   locale?: string
+  /**
+   * Enable UTM parameters on charity links. Enabled by default.
+   */
+  utmEnabled?: boolean
+  /**
+   * UTM source parameter. Defaults to the current domain (window.location.hostname).
+   */
+  utmSource?: string
+  /**
+   * UTM medium parameter. Defaults to 'support-ukraine-banner'.
+   */
+  utmMedium?: string
+  /**
+   * UTM campaign parameter. Empty by default.
+   */
+  utmCampaign?: string
 }
