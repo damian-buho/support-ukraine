@@ -55,8 +55,13 @@ export function randomItem<T>(items: T[]): T {
   return items[Math.floor(Math.random() * items.length)]!
 }
 
-function pickCharity(candidates: Charity[], shouldAvoidRepeat: boolean): Charity {
-  let pool = candidates
+function pickCharity(
+  candidates: Charity[],
+  shouldAvoidRepeat: boolean,
+  excludeUrl?: string
+): Charity {
+  let pool = excludeUrl ? candidates.filter(c => c.url !== excludeUrl) : candidates
+  if (pool.length === 0) pool = candidates
 
   if (shouldAvoidRepeat) {
     updateSeen(seen => {
@@ -276,7 +281,7 @@ export function mountBanner(
   }
 
   function updateCharity(): void {
-    const next = pickCharity(candidates, dontRepeat)
+    const next = pickCharity(candidates, dontRepeat, link.href)
     if (showRefreshAnimation) {
       banner.classList.add(`${CSS_PREFIX}--refreshing`)
       setTimeout(() => {
