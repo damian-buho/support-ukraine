@@ -187,8 +187,7 @@ header.#{$prefix} {
   }
 
   @media (max-width: 35rem) {
-    .#{$prefix}__name,
-    .#{$prefix}__colon {
+    .#{$prefix}__name {
       display: initial;
     }
 
