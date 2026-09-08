@@ -55,8 +55,13 @@ export function randomItem<T>(items: T[]): T {
   return items[Math.floor(Math.random() * items.length)]!
 }
 
-function pickCharity(candidates: Charity[], shouldAvoidRepeat: boolean): Charity {
-  let pool = candidates
+function pickCharity(
+  candidates: Charity[],
+  shouldAvoidRepeat: boolean,
+  excludeUrl?: string
+): Charity {
+  let pool = excludeUrl ? candidates.filter(c => c.url !== excludeUrl) : candidates
+  if (pool.length === 0) pool = candidates
 
   if (shouldAvoidRepeat) {
     updateSeen(seen => {
@@ -108,6 +113,42 @@ export function mergeCharities(base: readonly Charity[], locale: LocaleMessages)
 export function isRTL(lang: string): boolean {
   const base = (lang.split('-', 1)[0] ?? '').toLowerCase()
   return base === 'ar'
+}
+
+export function isDoNotTrackEnabled(): boolean {
+  if (typeof navigator === 'undefined') return false
+  const dnt = navigator.doNotTrack
+  if (dnt === '1' || dnt === 'yes') return true
+  const win = globalThis.window
+  if (win) {
+    const dntWin = (win as unknown as { doNotTrack?: string }).doNotTrack
+    if (dntWin === '1' || dntWin === 'yes') return true
+    const msDnt = (navigator as unknown as { msDoNotTrack?: string }).msDoNotTrack
+    if (msDnt === '1') return true
+  }
+  return false
+}
+
+export function buildUtmUrl(baseUrl: string, options: SupportUkraineBlockOptions): string {
+  // Default utmEnabled to true if not explicitly set to false
+  if (options.utmEnabled === false) return baseUrl
+  if (isDoNotTrackEnabled()) return baseUrl
+
+  const source = options.utmSource ?? globalThis.window?.location?.hostname ?? ''
+  if (!source) return baseUrl
+
+  const medium = options.utmMedium ?? 'support-ukraine-banner'
+  const campaign = options.utmCampaign ?? ''
+
+  try {
+    const url = new URL(baseUrl)
+    url.searchParams.set('utm_source', source)
+    url.searchParams.set('utm_medium', medium)
+    if (campaign) url.searchParams.set('utm_campaign', campaign)
+    return url.href
+  } catch {
+    return baseUrl
+  }
 }
 
 export function formatBannerText(charity: Charity, messages: LocaleMessages): string {
@@ -164,7 +205,7 @@ export function mountBanner(
 
   const link = document.createElement('a')
   link.className = `${CSS_PREFIX}__link`
-  link.href = charity.url
+  link.href = buildUtmUrl(charity.url, options)
   link.target = '_blank'
   link.rel = 'noopener noreferrer'
   link.style.fontSize = fontSize
@@ -206,7 +247,7 @@ export function mountBanner(
 
   const moreLink = document.createElement('a')
   moreLink.className = `${CSS_PREFIX}__more`
-  moreLink.href = 'https://damian-buho.github.io/support-ukraine/'
+  moreLink.href = buildUtmUrl('https://damian-buho.github.io/support-ukraine/', options)
   moreLink.target = '_blank'
   moreLink.rel = 'noopener noreferrer'
   moreLink.style.fontSize = fontSize
@@ -231,7 +272,7 @@ export function mountBanner(
   banner.append(linkNewTabHint, moreNewTabHint)
 
   function applyNext(next: Charity): void {
-    link.href = next.url
+    link.href = buildUtmUrl(next.url, options)
     name.textContent = next.name
     tagline.textContent = next.tagline
     if (isInConsole) {
@@ -240,7 +281,7 @@ export function mountBanner(
   }
 
   function updateCharity(): void {
-    const next = pickCharity(candidates, dontRepeat)
+    const next = pickCharity(candidates, dontRepeat, link.href)
     if (showRefreshAnimation) {
       banner.classList.add(`${CSS_PREFIX}--refreshing`)
       setTimeout(() => {

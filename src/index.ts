@@ -9,7 +9,15 @@ import { mountBanner } from './banner.js'
 export type { Charity, CharityTag, SupportUkraineBlockOptions } from './types.js'
 export { charitySchema, charitiesSchema } from './types.js'
 export { detectLocale, loadLocale } from './i18n.js'
-export { mergeCharities, isRTL, formatBannerText, randomItem, DEFAULT_CHARITIES } from './banner.js'
+export {
+  mergeCharities,
+  isRTL,
+  formatBannerText,
+  randomItem,
+  DEFAULT_CHARITIES,
+  isDoNotTrackEnabled,
+  buildUtmUrl
+} from './banner.js'
 export { resolveLocale, RTL_LOCALES } from './locales/index.js'
 export type { SupportedLocale } from './locales/index.js'
 
