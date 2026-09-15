@@ -274,7 +274,6 @@ export function mountBanner(
 
   function applyNext(next: Charity): void {
     link.href = buildUtmUrl(next.url, options)
-    currentCharityUrl = next.url
     name.textContent = next.name
     tagline.textContent = next.tagline
     if (isInConsole) {
@@ -284,6 +283,7 @@ export function mountBanner(
 
   function updateCharity(): void {
     const next = pickCharity(candidates, dontRepeat, currentCharityUrl)
+    currentCharityUrl = next.url
     if (showRefreshAnimation) {
       banner.classList.add(`${CSS_PREFIX}--refreshing`)
       setTimeout(() => {
