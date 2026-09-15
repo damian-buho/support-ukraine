@@ -1337,7 +1337,6 @@ describe('UTM parameters', () => {
       link.href.includes('utm_medium=support-ukraine-banner'),
       'refreshed link should include utm_medium'
     )
-    // With 50 charities and dontRepeat=false, it's extremely unlikely to pick the same one
     assert.notEqual(link.href, firstHref, 'charity should change on refresh')
   })
 })
