@@ -330,10 +330,9 @@ class MockElement {
   }
 
   get textContent(): string {
-    if (this._children.length === 0) {
-      return this._textContent
-    }
-    return this._children.map(child => child.textContent).join('')
+    return this._children.length === 0
+      ? this._textContent
+      : this._children.map(child => child.textContent).join('')
   }
 
   set textContent(value: string) {
@@ -399,10 +398,9 @@ class MockElement {
       return this._children.find(child => child._attrs.has('data-support-ukraine')) ?? undefined
     }
     const classMatch = selector.match(/^\.([\w-]+)$/)
-    if (classMatch) {
-      const className = classMatch[1]
-      return this._children.find(child => child.className === className) ?? undefined
-    }
+    if (!classMatch) return
+    const className = classMatch[1]
+    return this._children.find(child => child.className === className) ?? undefined
   }
 
   attachShadow(_options: { mode: string }): MockShadowRoot {
@@ -458,15 +456,14 @@ class MockBody {
       )
     }
     const classMatch = selector.match(/^(\w*)\.([\w-]+(?:\.[\w-]+)*)$/)
-    if (classMatch) {
-      const [, tag, classChain] = classMatch
-      const classes = classChain.split('.')
-      return this._children.find(
-        child =>
-          (!tag || child.tagName === tag.toUpperCase()) &&
-          classes.every(c => child.className.includes(c))
-      )
-    }
+    if (!classMatch) return
+    const [, tag, classChain] = classMatch
+    const classes = classChain.split('.')
+    return this._children.find(
+      child =>
+        (!tag || child.tagName === tag.toUpperCase()) &&
+        classes.every(c => child.className.includes(c))
+    )
   }
 
   get children() {

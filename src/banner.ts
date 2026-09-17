@@ -103,10 +103,7 @@ function injectShadowStyles(shadowRoot: ShadowRoot): void {
 export function mergeCharities(base: readonly Charity[], locale: LocaleMessages): Charity[] {
   return base.map(charity => {
     const translated = locale.charities[charity.id]
-    if (translated?.tagline) {
-      return { ...charity, tagline: translated.tagline }
-    }
-    return charity
+    return translated?.tagline ? { ...charity, tagline: translated.tagline } : charity
   })
 }
 

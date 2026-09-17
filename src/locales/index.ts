@@ -41,8 +41,5 @@ Resolve a raw BCP 47 tag to a supported locale code, or 'en'.
 */
 export function resolveLocale(tag: string): SupportedLocale {
   const base = (tag.split('-', 1)[0] ?? '').toLowerCase()
-  if (Object.hasOwn(localeLoaders, base)) {
-    return base as SupportedLocale
-  }
-  return 'en'
+  return Object.hasOwn(localeLoaders, base) ? (base as SupportedLocale) : 'en'
 }
