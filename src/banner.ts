@@ -103,10 +103,7 @@ function injectShadowStyles(shadowRoot: ShadowRoot): void {
 export function mergeCharities(base: readonly Charity[], locale: LocaleMessages): Charity[] {
   return base.map(charity => {
     const translated = locale.charities[charity.id]
-    if (translated?.tagline) {
-      return { ...charity, tagline: translated.tagline }
-    }
-    return charity
+    return translated?.tagline ? { ...charity, tagline: translated.tagline } : charity
   })
 }
 
@@ -189,6 +186,7 @@ export function mountBanner(
   }
 
   const charity = pickCharity(candidates, dontRepeat)
+  let currentCharityUrl = charity.url
 
   const host = document.createElement('div')
 
@@ -281,7 +279,8 @@ export function mountBanner(
   }
 
   function updateCharity(): void {
-    const next = pickCharity(candidates, dontRepeat, link.href)
+    const next = pickCharity(candidates, dontRepeat, currentCharityUrl)
+    currentCharityUrl = next.url
     if (showRefreshAnimation) {
       banner.classList.add(`${CSS_PREFIX}--refreshing`)
       setTimeout(() => {
