@@ -237,8 +237,11 @@ describe('mergeCharities', () => {
   it('keeps English tagline when charity id is missing from locale', async () => {
     const messages = {
       supportUkraine: 'Test',
+      regionLabel: 'Test banner',
       more: 'Test',
       donate: 'Test',
+      refresh: 'Test',
+      opensInNewTab: 'Test',
       charities: {}
     }
     const merged = mergeCharities(DEFAULT_CHARITIES, messages)
@@ -514,10 +517,10 @@ class MockShadowRoot {
   }
 
   /**
-  Find the <header> banner element inside the shadow root.
+  Find the <section> banner element inside the shadow root.
   */
   get banner(): MockElement | undefined {
-    return this._children.find(child => child.tagName === 'HEADER')
+    return this._children.find(child => child.tagName === 'SECTION')
   }
 }
 
@@ -986,6 +989,82 @@ describe('replace mode', () => {
     await supportUkraineBlock({ mode: 'replace', dontRepeat: false })
     assert.equal(body.children.length, 1)
     assert.notEqual(body.firstElementChild, div, 'div placeholder was replaced')
+  })
+})
+
+// ── accessibility (landmarks) ────────────────────────────────────────────
+
+describe('accessibility', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  it('renders a labeled section landmark, not a second banner', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false, locale: 'en' })
+    const banner = host.shadowRoot!.banner!
+    assert.equal(banner.tagName, 'SECTION')
+    const label = (banner as unknown as { getAttribute: (n: string) => string }).getAttribute(
+      'aria-label'
+    )
+    assert.equal(label, 'Support Ukraine banner')
+  })
+
+  it('localizes the landmark name with the banner language', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false, locale: 'es' })
+    const banner = host.shadowRoot!.banner!
+    const label = (banner as unknown as { getAttribute: (n: string) => string }).getAttribute(
+      'aria-label'
+    )
+    assert.equal(label, 'Banner de apoyo a Ucrania')
+  })
+
+  it('uses unique hint ids when two banners share a page', async () => {
+    const first = await supportUkraineBlock({ dontRepeat: false })
+    const second = await supportUkraineBlock({ dontRepeat: false })
+    const ids = [first, second].flatMap(host =>
+      host
+        .shadowRoot!.banner!.children.filter(child => child.tagName === 'A')
+        .map(link =>
+          (link as unknown as { getAttribute: (n: string) => string }).getAttribute(
+            'aria-describedby'
+          )
+        )
+    )
+    assert.equal(new Set(ids).size, ids.length)
+    assert.ok(ids.every(id => id.length > 0))
+  })
+
+  it('hides the flag emoji from assistive tech', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as MockElement
+    const flag = link.querySelector('.support-ukraine-block__flag') as MockElement
+    const hidden = (flag as unknown as { getAttribute: (n: string) => string }).getAttribute(
+      'aria-hidden'
+    )
+    assert.equal(hidden, 'true')
+  })
+
+  it('hides the refresh glyph — the button name comes from aria-label', async () => {
+    const host = await supportUkraineBlock({ showRefreshButton: true, dontRepeat: false })
+    const banner = host.shadowRoot!.banner!
+    const refresh = banner.children.find(
+      child => child.className === 'support-ukraine-block__refresh'
+    )!
+    const label = (refresh as unknown as { getAttribute: (n: string) => string }).getAttribute(
+      'aria-label'
+    )
+    assert.ok(label.length > 0)
+    const glyph = refresh.firstChild as unknown as { getAttribute: (n: string) => string }
+    assert.equal(glyph.getAttribute('aria-hidden'), 'true')
+    assert.equal(refresh.textContent, '⟳') // U+27F3 refresh glyph.
   })
 })
 
@@ -1464,6 +1543,11 @@ describe('per-locale entries', () => {
       } else {
         assert.notEqual(direction, 'rtl')
       }
+
+      const label = (banner as unknown as { getAttribute: (n: string) => string }).getAttribute(
+        'aria-label'
+      )
+      assert.equal(label, expected.regionLabel)
     })
   }
 

@@ -155,7 +155,7 @@ page content:
 ```html
 <!-- Static HTML: renders nothing until JS runs. Mirror the host box (font-size 16px,
      min-height 2.5em = the banner's reserved height) so swap-in causes zero shift. -->
-<header class="support-ukraine-block" style="font-size:16px;min-height:2.5em"></header>
+<section aria-label="Support Ukraine banner" class="support-ukraine-block" style="font-size:16px;min-height:2.5em"></section>
 ```
 
 ```ts

@@ -19,6 +19,7 @@ const CSS_PREFIX = 'support-ukraine-block'
 const STORAGE_KEY = 'support-ukraine-seen'
 const REFRESH_GLYPH = '\u{27F3}'
 const VISUALLY_HIDDEN_CLASS = `${CSS_PREFIX}__visually-hidden`
+const bannerState = { count: 0 } // Suffix for hint ids so repeated banners stay unique.
 
 function readSeen(): Set<string> {
   try {
@@ -193,9 +194,10 @@ export function mountBanner(
   const shadow = host.attachShadow({ mode: 'open' })
   injectShadowStyles(shadow)
 
-  const banner = document.createElement('header')
+  const banner = document.createElement('section')
   banner.className = `${CSS_PREFIX} ${CSS_PREFIX}--${mode}`
   banner.lang = lang
+  banner.setAttribute('aria-label', messages.regionLabel)
 
   if (isRTL(lang)) {
     banner.setAttribute('dir', 'rtl')
@@ -208,7 +210,8 @@ export function mountBanner(
   link.rel = 'noopener noreferrer'
   link.style.fontSize = fontSize
 
-  const linkNewTabId = `${CSS_PREFIX}-link-new-tab`
+  const instanceSuffix = ++bannerState.count // Unique per mount for hint ids.
+  const linkNewTabId = `${CSS_PREFIX}-link-new-tab-${instanceSuffix}`
   const linkNewTabHint = document.createElement('span')
   linkNewTabHint.id = linkNewTabId
   linkNewTabHint.className = VISUALLY_HIDDEN_CLASS
@@ -218,6 +221,7 @@ export function mountBanner(
   const flag = document.createElement('span')
   flag.className = `${CSS_PREFIX}__flag`
   flag.textContent = `\u{1F1FA}\u{1F1E6} `
+  flag.setAttribute('aria-hidden', 'true') // Flag duplicates "Ukraine" in link text.
 
   const prefix = document.createElement('span')
   prefix.className = `${CSS_PREFIX}__prefix`
@@ -250,7 +254,7 @@ export function mountBanner(
   moreLink.rel = 'noopener noreferrer'
   moreLink.style.fontSize = fontSize
 
-  const moreNewTabId = `${CSS_PREFIX}-more-new-tab`
+  const moreNewTabId = `${CSS_PREFIX}-more-new-tab-${instanceSuffix}`
   const moreNewTabHint = document.createElement('span')
   moreNewTabHint.id = moreNewTabId
   moreNewTabHint.className = VISUALLY_HIDDEN_CLASS
@@ -296,10 +300,14 @@ export function mountBanner(
     const refreshButton = document.createElement('button')
     refreshButton.className = `${CSS_PREFIX}__refresh`
     refreshButton.type = 'button'
-    refreshButton.textContent = REFRESH_GLYPH
+    refreshButton.textContent = ''
     refreshButton.style.fontSize = fontSize
     refreshButton.setAttribute('aria-label', messages.refresh)
     refreshButton.addEventListener('click', updateCharity)
+    const refreshGlyph = document.createElement('span')
+    refreshGlyph.textContent = REFRESH_GLYPH
+    refreshGlyph.setAttribute('aria-hidden', 'true') // Name comes from aria-label.
+    refreshButton.append(refreshGlyph)
     // eslint-disable-next-line unicorn/prefer-modern-dom-apis
     banner.insertBefore(refreshButton, moreLink)
   }

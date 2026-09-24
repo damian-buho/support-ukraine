@@ -110,7 +110,7 @@ Shared after `mountBanner`:
 mergeCharities()            → Charity[] (localized taglines)
   → filter by tags         → Charity[]
   → updateSeen()+randomItem → Charity (dontRepeat via localStorage)
-  → header with lang+dir   → mount.prepend
+  → section with lang+dir   → mount.prepend
 ```
 
 ### SupportUkraineBlockOptions
