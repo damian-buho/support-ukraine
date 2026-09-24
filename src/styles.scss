@@ -28,7 +28,7 @@ $prefix: support-ukraine-block;
   border: 0;
 }
 
-header.#{$prefix} {
+section.#{$prefix} {
   margin: 0;
   padding: 0;
   border: none;
@@ -196,55 +196,55 @@ header.#{$prefix} {
 }
 
 // RTL
-[dir="rtl"] header.#{$prefix} .#{$prefix}__link {
+[dir="rtl"] section.#{$prefix} .#{$prefix}__link {
   text-align: right;
   justify-content: flex-end;
 }
 
-[dir="rtl"] header.#{$prefix} .#{$prefix}__more {
+[dir="rtl"] section.#{$prefix} .#{$prefix}__more {
   text-align: right;
 }
 
-[dir="rtl"] header.#{$prefix} .#{$prefix}__refresh {
+[dir="rtl"] section.#{$prefix} .#{$prefix}__refresh {
   text-align: right;
 }
 
 // data-theme support — for sites that toggle theme via attribute.
 // Uses :host-context() so selectors cross the Shadow DOM boundary.
-:host-context([data-theme="dark"]) header.#{$prefix} {
+:host-context([data-theme="dark"]) section.#{$prefix} {
   background-color: #ffd700;
 }
 
-:host-context([data-theme="dark"]) header.#{$prefix} .#{$prefix}__link {
+:host-context([data-theme="dark"]) section.#{$prefix} .#{$prefix}__link {
   color: #000;
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
 }
 
-:host-context([data-theme="dark"]) header.#{$prefix} .#{$prefix}__more {
+:host-context([data-theme="dark"]) section.#{$prefix} .#{$prefix}__more {
   color: #000;
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
 }
 
-:host-context([data-theme="dark"]) header.#{$prefix} .#{$prefix}__refresh {
+:host-context([data-theme="dark"]) section.#{$prefix} .#{$prefix}__refresh {
   color: #000;
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
 }
 
-:host-context([data-theme="light"]) header.#{$prefix} {
+:host-context([data-theme="light"]) section.#{$prefix} {
   background-color: #0057b7;
 }
 
-:host-context([data-theme="light"]) header.#{$prefix} .#{$prefix}__link {
+:host-context([data-theme="light"]) section.#{$prefix} .#{$prefix}__link {
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
-:host-context([data-theme="light"]) header.#{$prefix} .#{$prefix}__more {
+:host-context([data-theme="light"]) section.#{$prefix} .#{$prefix}__more {
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
-:host-context([data-theme="light"]) header.#{$prefix} .#{$prefix}__refresh {
+:host-context([data-theme="light"]) section.#{$prefix} .#{$prefix}__refresh {
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }

@@ -83,6 +83,10 @@ export interface LocaleMessages {
   */
   supportUkraine: string
   /**
+  Accessible name for the banner landmark, e.g. "Support Ukraine banner".
+  */
+  regionLabel: string
+  /**
   "More…" link text.
   */
   more: string
