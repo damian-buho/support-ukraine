@@ -59,12 +59,13 @@ export function randomItem<T>(items: T[]): T {
 function pickCharity(
   candidates: Charity[],
   shouldAvoidRepeat: boolean,
+  lang: string,
   excludeId?: string,
   excludeUrl?: string
 ): Charity {
   let pool = excludeId ? candidates.filter(c => c.id !== excludeId) : candidates
   if (excludeUrl && pool.length > 1) {
-    const withoutUrl = pool.filter(c => c.url !== excludeUrl)
+    const withoutUrl = pool.filter(c => charityUrlFor(c, lang) !== excludeUrl)
     if (withoutUrl.length > 0) pool = withoutUrl
   }
   if (pool.length === 0) pool = candidates
@@ -115,12 +116,11 @@ export function mergeCharities(base: readonly Charity[], locale: LocaleMessages)
 
 /**
  * Resolve the donation URL for a charity in the given banner language.
- * Falls back to English, then to the default `url`.
+ * Falls back to English.
  */
 export function charityUrlFor(charity: Charity, lang: string): string {
-  if (!charity.urls) return charity.url
   const base = (lang.split('-', 1)[0] ?? '').toLowerCase()
-  return charity.urls[base] ?? charity.urls.en ?? charity.url
+  return charity.urls[base] ?? charity.urls.en
 }
 
 export function isRTL(lang: string): boolean {
@@ -190,7 +190,7 @@ export function mountBanner(
     showRefreshAnimation = false
   } = options
 
-  const baseCharities = charities ?? DEFAULT_CHARITIES
+  const baseCharities = charities ? charitiesSchema.parse(charities) : DEFAULT_CHARITIES
   const localizedCharities = mergeCharities(baseCharities, messages)
 
   let candidates =
@@ -208,7 +208,7 @@ export function mountBanner(
     candidates = localizedCharities
   }
 
-  const charity = pickCharity(candidates, dontRepeat)
+  const charity = pickCharity(candidates, dontRepeat, lang)
   let currentCharity = charity
   let currentCharityUrl = charityUrlFor(charity, lang)
 
@@ -308,7 +308,7 @@ export function mountBanner(
   }
 
   function updateCharity(): void {
-    const next = pickCharity(candidates, dontRepeat, currentCharity.id, currentCharityUrl)
+    const next = pickCharity(candidates, dontRepeat, lang, currentCharity.id, currentCharityUrl)
     if (showRefreshAnimation) {
       banner.classList.add(`${CSS_PREFIX}--refreshing`)
       setTimeout(() => {

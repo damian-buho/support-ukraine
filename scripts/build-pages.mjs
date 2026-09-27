@@ -291,7 +291,7 @@ ${localeOptions}
       gridEl.innerHTML = '';
       for (const c of CHARITIES) {
         const localized = t.charities[c.id] || { tagline: c.tagline };
-        const href = (c.urls && (c.urls[code] || c.urls.en)) || c.url;
+        const href = c.urls[code] || c.urls.en;
 
         const card = document.createElement('article');
         card.className = 'card';

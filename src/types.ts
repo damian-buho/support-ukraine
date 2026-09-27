@@ -41,16 +41,14 @@ export interface Charity {
   id: string
   name: string
   tagline: string
-  url: string
   /**
-   * Localized donation URLs keyed by base language code (e.g. `{ en: '…/en/', de: '…/de' }`).
+   * Donation URLs keyed by base language code. `en` is required and is the fallback.
    */
-  urls?: Record<string, string>
+  urls: Record<string, string> & { en: string }
   tags: CharityTag[]
 }
 
-function parseLocalizedUrls(value: unknown): Record<string, string> | undefined {
-  if (value === undefined) return undefined
+function parseLocalizedUrls(value: unknown): Record<string, string> & { en: string } {
   assert(value !== null && typeof value === 'object', 'urls must be an object')
   const entries = Object.entries(value as Record<string, unknown>)
   assert(entries.length > 0, 'urls must not be empty')
@@ -59,7 +57,8 @@ function parseLocalizedUrls(value: unknown): Record<string, string> | undefined 
     assertUrl(entry, `urls.${key}`)
     result[key.toLowerCase()] = entry as string
   }
-  return result
+  assert(typeof result.en === 'string', 'urls must include an "en" entry')
+  return result as Record<string, string> & { en: string }
 }
 
 function parseCharity(value: unknown): Charity {
@@ -68,15 +67,13 @@ function parseCharity(value: unknown): Charity {
   assertNonEmptyString(record.id, 'id')
   assertNonEmptyString(record.name, 'name')
   assertNonEmptyString(record.tagline, 'tagline')
-  assertUrl(record.url, 'url')
   assert(Array.isArray(record.tags), 'tags must be an array')
   assert(record.tags.length > 0, 'tags must not be empty')
   return {
     id: record.id,
     name: record.name,
     tagline: record.tagline,
-    url: record.url,
-    ...(record.urls !== undefined && { urls: parseLocalizedUrls(record.urls) }),
+    urls: parseLocalizedUrls(record.urls),
     tags: record.tags.map(tag => parseCharityTag(tag))
   }
 }

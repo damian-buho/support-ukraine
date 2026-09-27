@@ -36,7 +36,7 @@ describe('DEFAULT_CHARITIES', () => {
     assert.ok(DEFAULT_CHARITIES.length > 0)
   })
 
-  it('every charity has id, name, tagline, url, and tags', () => {
+  it('every charity has id, name, tagline, urls, and tags', () => {
     const validTags = new Set<CharityTag>(['military', 'humanitarian', 'animals'])
     for (const charity of DEFAULT_CHARITIES) {
       assert.equal(typeof charity.id, 'string', 'id must be a string')
@@ -45,12 +45,10 @@ describe('DEFAULT_CHARITIES', () => {
       assert.ok(charity.name.length > 0, 'name must not be empty')
       assert.equal(typeof charity.tagline, 'string', 'tagline must be a string')
       assert.ok(charity.tagline.length > 0, 'tagline must not be empty')
-      assert.equal(typeof charity.url, 'string', 'url must be a string')
-      assert.ok(charity.url.startsWith('http'), 'url must start with http')
-      if (charity.urls !== undefined) {
-        for (const [key, value] of Object.entries(charity.urls)) {
-          assert.ok(value.startsWith('http'), `urls.${key} must start with http`)
-        }
+      assert.equal(typeof charity.urls.en, 'string', 'urls.en must be a string')
+      assert.ok(charity.urls.en.startsWith('http'), 'urls.en must start with http')
+      for (const [key, value] of Object.entries(charity.urls)) {
+        assert.ok(value.startsWith('http'), `urls.${key} must start with http`)
       }
       assert.ok(Array.isArray(charity.tags), 'tags must be an array')
       assert.ok(charity.tags.length > 0, 'tags must not be empty')
@@ -98,7 +96,7 @@ describe('charitiesSchema', () => {
         id: 'test',
         name: 'Test',
         tagline: 'Helping',
-        url: 'https://example.com',
+        urls: { en: 'https://example.com' },
         tags: ['military']
       }
     ]
@@ -110,18 +108,22 @@ describe('charitiesSchema', () => {
     assert.throws(() => charitiesSchema.parse(incomplete))
   })
 
-  it('rejects invalid url', () => {
-    const bad = [{ id: 't', name: 'T', tagline: 'T', url: 'not-a-url', tags: ['military'] }]
+  it('rejects invalid urls entry', () => {
+    const bad = [
+      { id: 't', name: 'T', tagline: 'T', urls: { en: 'not-a-url' }, tags: ['military'] }
+    ]
     assert.throws(() => charitiesSchema.parse(bad))
   })
 
   it('rejects invalid tag', () => {
-    const bad = [{ id: 't', name: 'T', tagline: 'T', url: 'https://x.com', tags: ['invalid'] }]
+    const bad = [
+      { id: 't', name: 'T', tagline: 'T', urls: { en: 'https://x.com' }, tags: ['invalid'] }
+    ]
     assert.throws(() => charitiesSchema.parse(bad))
   })
 
   it('rejects empty tags array', () => {
-    const bad = [{ id: 't', name: 'T', tagline: 'T', url: 'https://x.com', tags: [] }]
+    const bad = [{ id: 't', name: 'T', tagline: 'T', urls: { en: 'https://x.com' }, tags: [] }]
     assert.throws(() => charitiesSchema.parse(bad))
   })
 
@@ -131,12 +133,23 @@ describe('charitiesSchema', () => {
         id: 't',
         name: 'T',
         tagline: 'T',
-        url: 'https://x.com',
         urls: { en: 'https://x.com/en', de: 'https://x.com/de' },
         tags: ['military']
       }
     ]
     assert.doesNotThrow(() => charitiesSchema.parse(valid))
+  })
+
+  it('rejects missing urls', () => {
+    const bad = [{ id: 't', name: 'T', tagline: 'T', tags: ['military'] }]
+    assert.throws(() => charitiesSchema.parse(bad), /urls must be an object/)
+  })
+
+  it('rejects urls without an english entry', () => {
+    const bad = [
+      { id: 't', name: 'T', tagline: 'T', urls: { uk: 'https://x.com/uk' }, tags: ['military'] }
+    ]
+    assert.throws(() => charitiesSchema.parse(bad), /urls must include an "en" entry/)
   })
 
   it('rejects invalid localized urls', () => {
@@ -145,7 +158,6 @@ describe('charitiesSchema', () => {
         id: 't',
         name: 'T',
         tagline: 'T',
-        url: 'https://x.com',
         urls: { en: 'not-a-url' },
         tags: ['military']
       }
@@ -154,9 +166,7 @@ describe('charitiesSchema', () => {
   })
 
   it('rejects empty localized urls', () => {
-    const bad = [
-      { id: 't', name: 'T', tagline: 'T', url: 'https://x.com', urls: {}, tags: ['military'] }
-    ]
+    const bad = [{ id: 't', name: 'T', tagline: 'T', urls: {}, tags: ['military'] }]
     assert.throws(() => charitiesSchema.parse(bad))
   })
 })
@@ -365,9 +375,9 @@ describe('charityUrlFor', () => {
     body.children.length = 0
   })
 
-  it('returns the default url when no localized map exists', () => {
-    const charity = DEFAULT_CHARITIES.find(c => c.id === 'army-of-drones')!
-    assert.equal(charityUrlFor(charity, 'de'), charity.url)
+  it('falls back to english when the banner language has no variant', () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'cats-of-kyiv')!
+    assert.equal(charityUrlFor(charity, 'de'), 'https://cats.kiev.ua')
   })
 
   it('resolves the banner language variant', () => {
@@ -392,19 +402,18 @@ describe('charityUrlFor', () => {
     assert.equal(charityUrlFor(charity, 'zh'), 'https://liferobots.com.ua/en')
   })
 
-  it('falls back to english, then to the default url', () => {
+  it('falls back to english when the language variant is missing', () => {
     const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')!
     assert.equal(charityUrlFor(charity, 'uk'), 'https://www.hospitallers.org.uk')
-    const noEnglish: Charity = {
+    const noVariant: Charity = {
       id: 'x',
       name: 'X',
       tagline: 'X',
-      url: 'https://x.com',
-      urls: { uk: 'https://x.com/uk' },
+      urls: { en: 'https://x.com/en', uk: 'https://x.com/uk' },
       tags: ['military']
     }
-    assert.equal(charityUrlFor(noEnglish, 'uk'), 'https://x.com/uk')
-    assert.equal(charityUrlFor(noEnglish, 'es'), 'https://x.com')
+    assert.equal(charityUrlFor(noVariant, 'uk'), 'https://x.com/uk')
+    assert.equal(charityUrlFor(noVariant, 'es'), 'https://x.com/en')
   })
 
   it('links the banner to the localized variant', async () => {
@@ -828,7 +837,7 @@ describe('dontRepeat', () => {
     const link = banner.firstChild as unknown as { href: string }
     const animals = DEFAULT_CHARITIES.filter((c: Charity) => c.tags.includes('animals'))
     const seenLink = link.href
-    assert.ok(animals.some(c => seenLink.includes(new URL(c.url).hostname)))
+    assert.ok(animals.some(c => seenLink.includes(new URL(c.urls.en).hostname)))
   })
 
   it('works with tags filter', async () => {
@@ -987,7 +996,7 @@ describe('custom charities', () => {
         id: 'custom-1',
         name: 'Custom Charity',
         tagline: 'A test charity',
-        url: 'https://example.com/donate',
+        urls: { en: 'https://example.com/donate' },
         tags: ['humanitarian']
       }
     ]
@@ -1009,7 +1018,7 @@ describe('custom charities', () => {
         id: 'only-custom',
         name: 'Sole Charity',
         tagline: 'The one and only',
-        url: 'https://custom.example.org',
+        urls: { en: 'https://custom.example.org' },
         tags: ['humanitarian']
       }
     ]
@@ -1034,14 +1043,14 @@ describe('custom charities', () => {
         id: 'c-mil',
         name: 'Military One',
         tagline: 'Defense',
-        url: 'https://military.example.com',
+        urls: { en: 'https://military.example.com' },
         tags: ['military']
       },
       {
         id: 'c-hum',
         name: 'Humanitarian One',
         tagline: 'Aid',
-        url: 'https://aid.example.com',
+        urls: { en: 'https://aid.example.com' },
         tags: ['humanitarian']
       }
     ]
@@ -1061,7 +1070,7 @@ describe('custom charities', () => {
         id: 'united24',
         name: 'Custom United24',
         tagline: 'English fallback',
-        url: 'https://custom.example.org',
+        urls: { en: 'https://custom.example.org' },
         tags: ['humanitarian']
       }
     ]
@@ -1077,6 +1086,22 @@ describe('custom charities', () => {
     assert.ok(
       !text.includes('English fallback'),
       'should use translated tagline, not English fallback'
+    )
+  })
+
+  it('rejects legacy charities without a urls map', async () => {
+    const legacy = [
+      {
+        id: 'legacy',
+        name: 'Legacy',
+        tagline: 'Old shape',
+        url: 'https://legacy.example.org',
+        tags: ['humanitarian']
+      }
+    ]
+    await assert.rejects(
+      supportUkraineBlock({ charities: legacy as unknown as Charity[], dontRepeat: false }),
+      /urls must be an object/
     )
   })
 })
@@ -1457,7 +1482,7 @@ describe('showRefreshAnimation', () => {
       id: `charity-${index}`,
       name: `Charity ${index}`,
       tagline: `Tagline ${index}`,
-      url: `https://charity-${index}.example.org`,
+      urls: { en: `https://charity-${index}.example.org` },
       tags: ['humanitarian']
     }))
     const host = await supportUkraineBlock({
@@ -1616,7 +1641,7 @@ describe('UTM parameters', () => {
       id: `charity-${index}`,
       name: `Charity ${index}`,
       tagline: `Tagline ${index}`,
-      url: `https://charity-${index}.example.org`,
+      urls: { en: `https://charity-${index}.example.org` },
       tags: ['humanitarian']
     }))
 

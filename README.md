@@ -175,8 +175,8 @@ await supportUkraineBlock({ exclude: ['united24'] })
 
 ### Localized charity URLs
 
-Charities can carry per-language donation URLs via an optional `urls` map (base language code → URL).
-The banner follows the visitor’s language, falls back to `en`, then to `url`:
+Charities carry per-language donation URLs via a `urls` map (base language code → URL, `en` required).
+The banner follows the visitor’s language and falls back to `en`:
 
 ```ts
 await supportUkraineBlock({
@@ -185,7 +185,6 @@ await supportUkraineBlock({
       id: 'hospitallers',
       name: 'Hospitallers',
       tagline: '…',
-      url: 'https://www.hospitallers.org.uk',
       urls: { en: 'https://www.hospitallers.org.uk', de: 'https://www.hospitallers.org.uk/de' },
       tags: ['humanitarian']
     }
