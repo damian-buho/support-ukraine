@@ -383,6 +383,15 @@ describe('charityUrlFor', () => {
     assert.equal(charityUrlFor(charity, 'cs'), 'https://www.hospitallers.org.uk/cs')
   })
 
+  it('resolves life-robots multi-language variants', () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'life-robots-ukraine')!
+    assert.equal(charityUrlFor(charity, 'ja'), 'https://liferobots.com.ua/ja')
+    assert.equal(charityUrlFor(charity, 'ko'), 'https://liferobots.com.ua/ko')
+    assert.equal(charityUrlFor(charity, 'pl'), 'https://liferobots.com.ua/pl')
+    assert.equal(charityUrlFor(charity, 'uk'), 'https://liferobots.com.ua/')
+    assert.equal(charityUrlFor(charity, 'zh'), 'https://liferobots.com.ua/en')
+  })
+
   it('falls back to english, then to the default url', () => {
     const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')!
     assert.equal(charityUrlFor(charity, 'uk'), 'https://www.hospitallers.org.uk')

@@ -127,6 +127,19 @@
   urls:
     en: https://liferobots.com.ua/en
     uk: https://liferobots.com.ua/
+    de: https://liferobots.com.ua/de
+    es: https://liferobots.com.ua/es
+    fr: https://liferobots.com.ua/fr
+    ja: https://liferobots.com.ua/ja
+    ko: https://liferobots.com.ua/ko
+    nl: https://liferobots.com.ua/nl
+    pl: https://liferobots.com.ua/pl
+    he: https://liferobots.com.ua/he
+    lt: https://liferobots.com.ua/lt
+    lv: https://liferobots.com.ua/lv
+    no: https://liferobots.com.ua/no
+    ro: https://liferobots.com.ua/ro
+    ru: https://liferobots.com.ua/ru
   tags: [humanitarian]
 
 - id: sirius-shelter
