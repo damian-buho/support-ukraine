@@ -174,6 +174,38 @@ section.#{$prefix} {
     font-weight: bold;
   }
 
+  @media (prefers-contrast: more) {
+    background-color: #003580;
+    .#{$prefix}__link,
+    .#{$prefix}__more,
+    .#{$prefix}__refresh {
+      opacity: 1;
+      text-shadow: none;
+    }
+    .#{$prefix}__link:hover,
+    .#{$prefix}__more:hover,
+    .#{$prefix}__refresh:hover {
+      opacity: 1;
+    }
+    @media (prefers-color-scheme: dark) {
+      background-color: #ffd700;
+      .#{$prefix}__link,
+      .#{$prefix}__more,
+      .#{$prefix}__refresh {
+        opacity: 1;
+        text-shadow: none;
+      }
+    }
+  }
+
+  @media (forced-colors: active) {
+    .#{$prefix}__link:focus-visible,
+    .#{$prefix}__more:focus-visible,
+    .#{$prefix}__refresh:focus-visible {
+      outline: 2px solid Highlight;
+    }
+  }
+
   @media (max-width: 58rem) {
     .#{$prefix}__prefix,
     .#{$prefix}__name,
@@ -247,4 +279,19 @@ section.#{$prefix} {
 :host-context([data-theme="light"]) section.#{$prefix} .#{$prefix}__refresh {
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+@media (prefers-contrast: more) {
+  :host-context([data-theme="light"]) section.#{$prefix} {
+    background-color: #003580;
+  }
+  :host-context([data-theme="light"]) section.#{$prefix} .#{$prefix}__link,
+  :host-context([data-theme="light"]) section.#{$prefix} .#{$prefix}__more,
+  :host-context([data-theme="light"]) section.#{$prefix} .#{$prefix}__refresh,
+  :host-context([data-theme="dark"]) section.#{$prefix} .#{$prefix}__link,
+  :host-context([data-theme="dark"]) section.#{$prefix} .#{$prefix}__more,
+  :host-context([data-theme="dark"]) section.#{$prefix} .#{$prefix}__refresh {
+    opacity: 1;
+    text-shadow: none;
+  }
 }

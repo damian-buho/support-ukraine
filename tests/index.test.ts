@@ -9,6 +9,24 @@ import { charitiesSchema } from '../src/types.js'
 import { supportUkraineBlock, DEFAULT_CHARITIES, randomItem } from '../src/index.js'
 import { detectLocale, loadLocale, mergeCharities, isRTL, formatBannerText } from '../src/i18n.js'
 import { localeLoaders, resolveLocale } from '../src/locales/index.js'
+import styles from '../src/styles.scss'
+
+// ── contrast helpers ────────────────────────────────────────────────────
+
+function channelToLinear(channel: number): number {
+  return channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+}
+function hexLuminance(hex: string): number {
+  const r = Number.parseInt(hex.slice(1, 3), 16) / 255
+  const g = Number.parseInt(hex.slice(3, 5), 16) / 255
+  const b = Number.parseInt(hex.slice(5, 7), 16) / 255
+  return 0.2126 * channelToLinear(r) + 0.7152 * channelToLinear(g) + 0.0722 * channelToLinear(b)
+}
+function contrastRatio(foreground: string, background: string): number {
+  const high = Math.max(hexLuminance(foreground), hexLuminance(background))
+  const low = Math.min(hexLuminance(foreground), hexLuminance(background))
+  return (high + 0.05) / (low + 0.05)
+}
 
 // ── DEFAULT_CHARITIES ───────────────────────────────────────────────────
 
@@ -1065,6 +1083,45 @@ describe('accessibility', () => {
     const glyph = refresh.firstChild as unknown as { getAttribute: (n: string) => string }
     assert.equal(glyph.getAttribute('aria-hidden'), 'true')
     assert.equal(refresh.textContent, '⟳') // U+27F3 refresh glyph.
+  })
+})
+
+// ── contrast (prefers-contrast: more + forced-colors) ───────────────────
+
+describe('contrast', () => {
+  const css = styles.replaceAll(/\s+/g, ' ')
+  it('lifts the dimmed parts to full opacity without text-shadow under prefers-contrast: more', () => {
+    assert.match(css, /prefers-contrast: *more/)
+    for (const part of ['__link', '__more', '__refresh']) {
+      const rule = new RegExp(`prefers-contrast: *more.*?${part}.*?opacity: *1`, 'u')
+      assert.match(css, rule, `${part} must reach opacity 1 under prefers-contrast: more`)
+    }
+    assert.match(
+      css,
+      /prefers-contrast: *more.*?text-shadow: *none/,
+      'more-contrast text must drop its shadow'
+    )
+  })
+  it('keeps every banner pair at axe color-contrast-enhanced (7:1) under prefers-contrast: more', () => {
+    assert.ok(contrastRatio('#ffffff', '#003580') >= 7, 'light more-contrast pair must reach 7:1')
+    assert.ok(contrastRatio('#000000', '#ffd700') >= 7, 'dark more-contrast pair must reach 7:1')
+    assert.match(
+      css,
+      /prefers-contrast: *more.*?background-color: *#003580/,
+      'more-contrast must darken the light background'
+    )
+  })
+  it('keeps a real focus outline under forced-colors: active', () => {
+    assert.match(css, /forced-colors: *active/, 'banner must answer forced-colors')
+    for (const part of ['__link', '__more', '__refresh']) {
+      const rule = new RegExp(`forced-colors: *active.*?${part}.*?outline: *2px solid`, 'u')
+      assert.match(css, rule, `${part} focus outline must survive forced colors`)
+    }
+    assert.match(
+      css,
+      /forced-colors: *active.*?Highlight/,
+      'forced-colors outline must use a system color'
+    )
   })
 })
 
