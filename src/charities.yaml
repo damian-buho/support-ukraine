@@ -12,6 +12,9 @@
   name: Come Back Alive
   tagline: Supporting the Ukrainian Armed Forces since 2014
   url: https://www.comebackalive.in.ua
+  urls:
+    en: https://savelife.in.ua/en/
+    uk: https://savelife.in.ua/
   tags: [military]
 
 - id: razom-for-ukraine
@@ -36,6 +39,9 @@
   name: Voices of Children
   tagline: Psychological support for children affected by war
   url: https://voices.org.ua/en/
+  urls:
+    en: https://voices.org.ua/en/
+    uk: https://voices.org.ua/
   tags: [humanitarian]
 
 - id: prytula-foundation
@@ -72,6 +78,10 @@
   name: Hospitallers
   tagline: Ukrainian voluntary paramedics providing first aid and evacuation
   url: https://www.hospitallers.org.uk
+  urls:
+    en: https://www.hospitallers.org.uk
+    de: https://www.hospitallers.org.uk/de
+    it: https://www.hospitallers.org.uk/it
   tags: [humanitarian]
 
 - id: sternenko-fund

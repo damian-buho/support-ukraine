@@ -42,7 +42,24 @@ export interface Charity {
   name: string
   tagline: string
   url: string
+  /**
+   * Localized donation URLs keyed by base language code (e.g. `{ en: '…/en/', de: '…/de' }`).
+   */
+  urls?: Record<string, string>
   tags: CharityTag[]
+}
+
+function parseLocalizedUrls(value: unknown): Record<string, string> | undefined {
+  if (value === undefined) return undefined
+  assert(value !== null && typeof value === 'object', 'urls must be an object')
+  const entries = Object.entries(value as Record<string, unknown>)
+  assert(entries.length > 0, 'urls must not be empty')
+  const result: Record<string, string> = {}
+  for (const [key, entry] of entries) {
+    assertUrl(entry, `urls.${key}`)
+    result[key.toLowerCase()] = entry as string
+  }
+  return result
 }
 
 function parseCharity(value: unknown): Charity {
@@ -59,6 +76,7 @@ function parseCharity(value: unknown): Charity {
     name: record.name,
     tagline: record.tagline,
     url: record.url,
+    ...(record.urls !== undefined && { urls: parseLocalizedUrls(record.urls) }),
     tags: record.tags.map(tag => parseCharityTag(tag))
   }
 }

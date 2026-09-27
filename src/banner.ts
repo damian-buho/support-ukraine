@@ -59,14 +59,19 @@ export function randomItem<T>(items: T[]): T {
 function pickCharity(
   candidates: Charity[],
   shouldAvoidRepeat: boolean,
+  excludeId?: string,
   excludeUrl?: string
 ): Charity {
-  let pool = excludeUrl ? candidates.filter(c => c.url !== excludeUrl) : candidates
+  let pool = excludeId ? candidates.filter(c => c.id !== excludeId) : candidates
+  if (excludeUrl && pool.length > 1) {
+    const withoutUrl = pool.filter(c => c.url !== excludeUrl)
+    if (withoutUrl.length > 0) pool = withoutUrl
+  }
   if (pool.length === 0) pool = candidates
 
   if (shouldAvoidRepeat) {
     updateSeen(seen => {
-      const unseen = pool.filter(c => !seen.has(c.url))
+      const unseen = pool.filter(c => !seen.has(c.id))
       if (unseen.length > 0) {
         pool = unseen
       } else {
@@ -79,7 +84,7 @@ function pickCharity(
 
   if (shouldAvoidRepeat) {
     updateSeen(seen => {
-      seen.add(charity.url)
+      seen.add(charity.id)
     })
   }
 
@@ -106,6 +111,16 @@ export function mergeCharities(base: readonly Charity[], locale: LocaleMessages)
     const translated = locale.charities[charity.id]
     return translated?.tagline ? { ...charity, tagline: translated.tagline } : charity
   })
+}
+
+/**
+ * Resolve the donation URL for a charity in the given banner language.
+ * Falls back to English, then to the default `url`.
+ */
+export function charityUrlFor(charity: Charity, lang: string): string {
+  if (!charity.urls) return charity.url
+  const base = (lang.split('-', 1)[0] ?? '').toLowerCase()
+  return charity.urls[base] ?? charity.urls.en ?? charity.url
 }
 
 export function isRTL(lang: string): boolean {
@@ -194,7 +209,8 @@ export function mountBanner(
   }
 
   const charity = pickCharity(candidates, dontRepeat)
-  let currentCharityUrl = charity.url
+  let currentCharity = charity
+  let currentCharityUrl = charityUrlFor(charity, lang)
 
   const host = document.createElement('div')
 
@@ -212,7 +228,7 @@ export function mountBanner(
 
   const link = document.createElement('a')
   link.className = `${CSS_PREFIX}__link`
-  link.href = buildUtmUrl(charity.url, options)
+  link.href = buildUtmUrl(currentCharityUrl, options)
   link.target = '_blank'
   link.rel = 'noopener noreferrer'
   link.style.fontSize = fontSize
@@ -281,17 +297,18 @@ export function mountBanner(
   banner.append(linkNewTabHint, moreNewTabHint)
 
   function applyNext(next: Charity): void {
-    link.href = buildUtmUrl(next.url, options)
+    currentCharity = next
+    currentCharityUrl = charityUrlFor(next, lang)
+    link.href = buildUtmUrl(currentCharityUrl, options)
     name.textContent = next.name
     tagline.textContent = next.tagline
     if (isInConsole) {
-      console.info('[support-ukraine] banner', `${next.name}: ${next.tagline}`, next.url)
+      console.info('[support-ukraine] banner', `${next.name}: ${next.tagline}`, currentCharityUrl)
     }
   }
 
   function updateCharity(): void {
-    const next = pickCharity(candidates, dontRepeat, currentCharityUrl)
-    currentCharityUrl = next.url
+    const next = pickCharity(candidates, dontRepeat, currentCharity.id, currentCharityUrl)
     if (showRefreshAnimation) {
       banner.classList.add(`${CSS_PREFIX}--refreshing`)
       setTimeout(() => {
@@ -335,7 +352,11 @@ export function mountBanner(
   }
 
   if (isInConsole) {
-    console.info('[support-ukraine] banner', `${charity.name}: ${charity.tagline}`, charity.url)
+    console.info(
+      '[support-ukraine] banner',
+      `${charity.name}: ${charity.tagline}`,
+      currentCharityUrl
+    )
   }
 
   host.dataset.supportUkraine = ''

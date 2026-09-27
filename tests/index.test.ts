@@ -6,7 +6,7 @@ import { describe, it, before, beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
 import type { Charity, CharityTag } from '../src/types.js'
 import { charitiesSchema } from '../src/types.js'
-import { supportUkraineBlock, DEFAULT_CHARITIES, randomItem } from '../src/index.js'
+import { supportUkraineBlock, DEFAULT_CHARITIES, charityUrlFor, randomItem } from '../src/index.js'
 import { detectLocale, loadLocale, mergeCharities, isRTL, formatBannerText } from '../src/i18n.js'
 import { localeLoaders, resolveLocale } from '../src/locales/index.js'
 import styles from '../src/styles.scss'
@@ -47,6 +47,11 @@ describe('DEFAULT_CHARITIES', () => {
       assert.ok(charity.tagline.length > 0, 'tagline must not be empty')
       assert.equal(typeof charity.url, 'string', 'url must be a string')
       assert.ok(charity.url.startsWith('http'), 'url must start with http')
+      if (charity.urls !== undefined) {
+        for (const [key, value] of Object.entries(charity.urls)) {
+          assert.ok(value.startsWith('http'), `urls.${key} must start with http`)
+        }
+      }
       assert.ok(Array.isArray(charity.tags), 'tags must be an array')
       assert.ok(charity.tags.length > 0, 'tags must not be empty')
       for (const tag of charity.tags) {
@@ -117,6 +122,41 @@ describe('charitiesSchema', () => {
 
   it('rejects empty tags array', () => {
     const bad = [{ id: 't', name: 'T', tagline: 'T', url: 'https://x.com', tags: [] }]
+    assert.throws(() => charitiesSchema.parse(bad))
+  })
+
+  it('accepts localized urls', () => {
+    const valid = [
+      {
+        id: 't',
+        name: 'T',
+        tagline: 'T',
+        url: 'https://x.com',
+        urls: { en: 'https://x.com/en', de: 'https://x.com/de' },
+        tags: ['military']
+      }
+    ]
+    assert.doesNotThrow(() => charitiesSchema.parse(valid))
+  })
+
+  it('rejects invalid localized urls', () => {
+    const bad = [
+      {
+        id: 't',
+        name: 'T',
+        tagline: 'T',
+        url: 'https://x.com',
+        urls: { en: 'not-a-url' },
+        tags: ['military']
+      }
+    ]
+    assert.throws(() => charitiesSchema.parse(bad))
+  })
+
+  it('rejects empty localized urls', () => {
+    const bad = [
+      { id: 't', name: 'T', tagline: 'T', url: 'https://x.com', urls: {}, tags: ['military'] }
+    ]
     assert.throws(() => charitiesSchema.parse(bad))
   })
 })
@@ -304,6 +344,65 @@ describe('formatBannerText', () => {
 describe('supportUkraineBlock', () => {
   it('is a function', () => {
     assert.equal(typeof supportUkraineBlock, 'function')
+  })
+})
+
+// ── charityUrlFor ─────────────────────────────────────────────────────────
+
+describe('charityUrlFor', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  afterEach(() => {
+    body.children.length = 0
+  })
+
+  it('returns the default url when no localized map exists', () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'united24')!
+    assert.equal(charityUrlFor(charity, 'de'), charity.url)
+  })
+
+  it('resolves the banner language variant', () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')!
+    assert.equal(charityUrlFor(charity, 'de'), 'https://www.hospitallers.org.uk/de')
+    assert.equal(charityUrlFor(charity, 'de-AT'), 'https://www.hospitallers.org.uk/de')
+    assert.equal(charityUrlFor(charity, 'it'), 'https://www.hospitallers.org.uk/it')
+  })
+
+  it('falls back to english, then to the default url', () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')!
+    assert.equal(charityUrlFor(charity, 'es'), 'https://www.hospitallers.org.uk')
+    const noEnglish: Charity = {
+      id: 'x',
+      name: 'X',
+      tagline: 'X',
+      url: 'https://x.com',
+      urls: { uk: 'https://x.com/uk' },
+      tags: ['military']
+    }
+    assert.equal(charityUrlFor(noEnglish, 'uk'), 'https://x.com/uk')
+    assert.equal(charityUrlFor(noEnglish, 'es'), 'https://x.com')
+  })
+
+  it('links the banner to the localized variant', async () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'come-back-alive')!
+    assert.ok(charity.urls, 'fixture needs localized urls')
+    const host = await supportUkraineBlock({
+      charities: [charity],
+      locale: 'en',
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as unknown as { href: string }
+    assert.ok(link.href.startsWith('https://savelife.in.ua/en/'), `unexpected href ${link.href}`)
   })
 })
 
@@ -673,29 +772,31 @@ describe('dontRepeat', () => {
     assert.equal(storage.store.size, 0)
   })
 
-  it('writes seen URL to localStorage after mounting', async () => {
+  it('writes seen id to localStorage after mounting', async () => {
     const host = await supportUkraineBlock({
       dontRepeat: true,
       tags: ['animals']
     })
     const seen = JSON.parse(storage.store.get(STORAGE_KEY) ?? '[]') as string[]
     assert.equal(seen.length, 1)
+    const animals = DEFAULT_CHARITIES.filter(c => c.tags.includes('animals'))
+    assert.ok(animals.some(c => c.id === seen[0]))
     const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as unknown as { href: string }
-    assert.equal(seen[0], link.href)
+    assert.ok(link.href.length > 0)
   })
 
   it('avoids repeating charities across calls', async () => {
-    const seenUrls = new Set<string>()
+    const seenIds = new Set<string>()
 
     for (let index = 0; index < 3; index++) {
       const host = await supportUkraineBlock({ tags: ['animals'], dontRepeat: true })
-      const banner = host.shadowRoot!.banner!
-      const link = banner.firstChild as unknown as { href: string }
-      seenUrls.add(link.href)
+      void host
+      const seen = JSON.parse(storage.store.get(STORAGE_KEY) ?? '[]') as string[]
+      for (const id of seen) seenIds.add(id)
     }
 
-    assert.equal(seenUrls.size, 3, 'all 3 animal charities should appear exactly once')
+    assert.equal(seenIds.size, 3, 'all 3 animal charities should appear exactly once')
   })
 
   it('resets after all charities have been seen', async () => {
@@ -711,27 +812,27 @@ describe('dontRepeat', () => {
     const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as unknown as { href: string }
     const animals = DEFAULT_CHARITIES.filter((c: Charity) => c.tags.includes('animals'))
-    assert.ok(animals.some((c: Charity) => c.url === link.href))
+    const seenLink = link.href
+    assert.ok(animals.some(c => seenLink.includes(new URL(c.url).hostname)))
   })
 
   it('works with tags filter', async () => {
     const military = DEFAULT_CHARITIES.filter((c: Charity) => c.tags.includes('military'))
-    const seenUrls = new Set<string>()
+    const seenIds = new Set<string>()
 
     for (let index = 0; index < military.length; index++) {
-      const host = await supportUkraineBlock({
+      await supportUkraineBlock({
         tags: ['military'],
         dontRepeat: true
       })
-      const banner = host.shadowRoot!.banner!
-      const link = banner.firstChild as unknown as { href: string }
-      seenUrls.add(link.href)
+      const seen = JSON.parse(storage.store.get(STORAGE_KEY) ?? '[]') as string[]
+      for (const id of seen) seenIds.add(id)
     }
 
-    assert.equal(seenUrls.size, military.length)
-    for (const url of seenUrls) {
+    assert.equal(seenIds.size, military.length)
+    for (const id of seenIds) {
       assert.ok(
-        military.some((c: Charity) => c.url === url),
+        military.some((c: Charity) => c.id === id),
         'only military charities shown'
       )
     }

@@ -173,6 +173,26 @@ Hide specific charities by id (unknown ids are ignored):
 await supportUkraineBlock({ exclude: ['united24'] })
 ```
 
+### Localized charity URLs
+
+Charities can carry per-language donation URLs via an optional `urls` map (base language code → URL).
+The banner follows the visitor’s language, falls back to `en`, then to `url`:
+
+```ts
+await supportUkraineBlock({
+  charities: [
+    {
+      id: 'hospitallers',
+      name: 'Hospitallers',
+      tagline: '…',
+      url: 'https://www.hospitallers.org.uk',
+      urls: { en: 'https://www.hospitallers.org.uk', de: 'https://www.hospitallers.org.uk/de' },
+      tags: ['humanitarian']
+    }
+  ]
+})
+```
+
 ### Replace mode (no layout shift)
 
 Use `replace` mode to swap a same-class placeholder element (any tag) so the banner takes its place without shifting
