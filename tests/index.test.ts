@@ -6,7 +6,13 @@ import { describe, it, before, beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
 import type { Charity, CharityTag } from '../src/types.js'
 import { charitiesSchema } from '../src/types.js'
-import { supportUkraineBlock, DEFAULT_CHARITIES, charityUrlFor, randomItem } from '../src/index.js'
+import {
+  supportUkraineBlock,
+  DEFAULT_CHARITIES,
+  charityUrlFor,
+  randomItem,
+  resetMemorySeen
+} from '../src/index.js'
 import { detectLocale, loadLocale, mergeCharities, isRTL, formatBannerText } from '../src/i18n.js'
 import { localeLoaders, resolveLocale } from '../src/locales/index.js'
 import styles from '../src/styles.scss'
@@ -788,6 +794,7 @@ describe('dontRepeat', () => {
 
   beforeEach(() => {
     storage.store.clear()
+    resetMemorySeen()
     head.children.length = 0
   })
 
@@ -796,9 +803,25 @@ describe('dontRepeat', () => {
     assert.equal(storage.store.size, 0)
   })
 
+  it('does not touch localStorage by default', async () => {
+    await supportUkraineBlock({ dontRepeat: true, tags: ['animals'] })
+    assert.equal(storage.store.size, 0)
+  })
+
+  it('avoids repeats within the session without localStorage', async () => {
+    const names = new Set<string>()
+    for (let index = 0; index < 3; index++) {
+      const host = await supportUkraineBlock({ tags: ['animals'], dontRepeat: true })
+      names.add(bannerName(host))
+    }
+    assert.equal(names.size, 3, 'all 3 animal charities should appear exactly once')
+    assert.equal(storage.store.size, 0, 'session dedup must not write to localStorage')
+  })
+
   it('writes seen id to localStorage after mounting', async () => {
     const host = await supportUkraineBlock({
       dontRepeat: true,
+      persistSeen: true,
       tags: ['animals']
     })
     const seen = JSON.parse(storage.store.get(STORAGE_KEY) ?? '[]') as string[]
@@ -814,7 +837,11 @@ describe('dontRepeat', () => {
     const seenIds = new Set<string>()
 
     for (let index = 0; index < 3; index++) {
-      const host = await supportUkraineBlock({ tags: ['animals'], dontRepeat: true })
+      const host = await supportUkraineBlock({
+        tags: ['animals'],
+        dontRepeat: true,
+        persistSeen: true
+      })
       void host
       const seen = JSON.parse(storage.store.get(STORAGE_KEY) ?? '[]') as string[]
       for (const id of seen) seenIds.add(id)
@@ -825,14 +852,18 @@ describe('dontRepeat', () => {
 
   it('resets after all charities have been seen', async () => {
     // First cycle: all animal charities appear
-    await supportUkraineBlock({ tags: ['animals'], dontRepeat: true })
-    await supportUkraineBlock({ tags: ['animals'], dontRepeat: true })
+    await supportUkraineBlock({ tags: ['animals'], dontRepeat: true, persistSeen: true })
+    await supportUkraineBlock({ tags: ['animals'], dontRepeat: true, persistSeen: true })
 
     const afterFirstCycle = JSON.parse(storage.store.get(STORAGE_KEY) ?? '[]') as string[]
     assert.equal(afterFirstCycle.length, 2)
 
     // Third call: cycle resets, picks from full list again
-    const host = await supportUkraineBlock({ tags: ['animals'], dontRepeat: true })
+    const host = await supportUkraineBlock({
+      tags: ['animals'],
+      dontRepeat: true,
+      persistSeen: true
+    })
     const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as unknown as { href: string }
     const animals = DEFAULT_CHARITIES.filter((c: Charity) => c.tags.includes('animals'))
@@ -847,7 +878,8 @@ describe('dontRepeat', () => {
     for (let index = 0; index < military.length; index++) {
       await supportUkraineBlock({
         tags: ['military'],
-        dontRepeat: true
+        dontRepeat: true,
+        persistSeen: true
       })
       const seen = JSON.parse(storage.store.get(STORAGE_KEY) ?? '[]') as string[]
       for (const id of seen) seenIds.add(id)

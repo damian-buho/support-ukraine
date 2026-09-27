@@ -153,7 +153,8 @@ The entire block is a clickable link to the charity's donation page.
 | `charities`   | `Charity[]`                         | _(built-in)_      | Custom charity list; replaces the built-in database                                                               |
 | `tags`        | `CharityTag[]`                      | _(all)_           | Filter charities by category: `'military'`, `'humanitarian'`, `'animals'`                                         |
 | `exclude`     | `string[]`                          | _(none)_          | Exclude charities by id; unknown ids are ignored                                                                  |
-| `dontRepeat`  | `boolean`                           | `true`            | Avoid repeating charities across page loads using `localStorage`                                                  |
+| `dontRepeat`  | `boolean`                           | `true`            | Avoid repeating charities; seen ids stay in session memory by default                                             |
+| `persistSeen` | `boolean`                           | `false`           | Persist seen charity ids in `localStorage` across visits (needs visitor consent)                                  |
 | `isInConsole` | `boolean`                           | `true`            | Log the selected charity to the dev console                                                                       |
 | `locale`      | `string`                            | _(auto-detected)_ | Override the auto-detected BCP 47 language tag                                                                    |
 
@@ -221,6 +222,17 @@ Allow the same charity to appear on every page load:
 
 ```ts
 await supportUkraineBlock({ dontRepeat: false })
+```
+
+### Persisting seen charities
+
+By default the repeat prevention above keeps seen charity ids in session memory only — nothing is
+written to the visitor’s device. Set `persistSeen` to remember them in `localStorage` across visits.
+Storing data on a visitor’s device needs their consent under the GDPR/ePrivacy rules, so only enable
+this after the site owner has obtained it:
+
+```ts
+await supportUkraineBlock({ persistSeen: true })
 ```
 
 ## Locale support

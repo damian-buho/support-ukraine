@@ -109,7 +109,7 @@ Shared after `mountBanner`:
 ```
 mergeCharities()            → Charity[] (localized taglines)
   → filter by tags         → Charity[]
-  → updateSeen()+randomItem → Charity (dontRepeat via localStorage)
+  → updateSeen()+randomItem → Charity (dontRepeat: session memory, or localStorage with persistSeen)
   → section with lang+dir   → mount.prepend
 ```
 
@@ -123,7 +123,8 @@ mergeCharities()            → Charity[] (localized taglines)
 | `charities`   | `Charity[]`                         | _(built-in)_      | Custom charity list; `urls` maps language codes to localized donation URLs              |
 | `tags`        | `CharityTag[]`                      | _(all)_           | Filter: `'military'`, `'humanitarian'`, `'animals'`                                     |
 | `exclude`     | `string[]`                          | _(none)_          | Exclude charities by id; unknown ids are ignored                                        |
-| `dontRepeat`  | `boolean`                           | `true`            | Avoid repeats via localStorage                                                          |
+| `dontRepeat`  | `boolean`                           | `true`            | Avoid repeats; seen ids stay in session memory unless `persistSeen` is set                                        |
+| `persistSeen` | `boolean`                           | `false`           | Persist seen charity ids in `localStorage` across visits (needs visitor consent)                                  |
 | `isInConsole` | `boolean`                           | `true`            | Log selected charity to dev console                                                     |
 | `locale`      | `string`                            | _(auto-detected)_ | Override BCP 47 language tag                                                            |
 

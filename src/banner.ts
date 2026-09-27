@@ -21,7 +21,15 @@ const REFRESH_GLYPH = '\u{27F3}'
 const VISUALLY_HIDDEN_CLASS = `${CSS_PREFIX}__visually-hidden`
 const bannerState = { count: 0 } // Suffix for hint ids so repeated banners stay unique.
 
-function readSeen(): Set<string> {
+const memorySeen = new Set<string>() // Session-only seen ids, used when persistSeen is false.
+
+// @internal — test helper resetting the session-only seen set.
+export function resetMemorySeen(): void {
+  memorySeen.clear()
+}
+
+function readSeen(shouldPersist: boolean): Set<string> {
+  if (!shouldPersist) return new Set(memorySeen)
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     return raw ? new Set(JSON.parse(raw) as string[]) : new Set()
@@ -30,7 +38,12 @@ function readSeen(): Set<string> {
   }
 }
 
-function writeSeen(seen: Set<string>): void {
+function writeSeen(seen: Set<string>, shouldPersist: boolean): void {
+  if (!shouldPersist) {
+    memorySeen.clear()
+    for (const id of seen) memorySeen.add(id)
+    return
+  }
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify([...seen]))
   } catch {
@@ -38,10 +51,10 @@ function writeSeen(seen: Set<string>): void {
   }
 }
 
-function updateSeen(mutate: (seen: Set<string>) => void): void {
-  const seen = readSeen()
+function updateSeen(mutate: (seen: Set<string>) => void, shouldPersist: boolean): void {
+  const seen = readSeen(shouldPersist)
   mutate(seen)
-  writeSeen(seen)
+  writeSeen(seen, shouldPersist)
 }
 
 /**
@@ -59,6 +72,7 @@ export function randomItem<T>(items: T[]): T {
 function pickCharity(
   candidates: Charity[],
   shouldAvoidRepeat: boolean,
+  shouldPersist: boolean,
   lang: string,
   excludeId?: string,
   excludeUrl?: string
@@ -78,7 +92,7 @@ function pickCharity(
       } else {
         seen.clear()
       }
-    })
+    }, shouldPersist)
   }
 
   const charity = randomItem(pool)
@@ -86,7 +100,7 @@ function pickCharity(
   if (shouldAvoidRepeat) {
     updateSeen(seen => {
       seen.add(charity.id)
-    })
+    }, shouldPersist)
   }
 
   return charity
@@ -184,6 +198,7 @@ export function mountBanner(
     tags,
     exclude,
     dontRepeat = true,
+    persistSeen = false,
     isInConsole = true,
     showRefreshButton = false,
     autoRefreshInterval = 0,
@@ -208,7 +223,7 @@ export function mountBanner(
     candidates = localizedCharities
   }
 
-  const charity = pickCharity(candidates, dontRepeat, lang)
+  const charity = pickCharity(candidates, dontRepeat, persistSeen, lang)
   let currentCharity = charity
   let currentCharityUrl = charityUrlFor(charity, lang)
 
@@ -308,7 +323,14 @@ export function mountBanner(
   }
 
   function updateCharity(): void {
-    const next = pickCharity(candidates, dontRepeat, lang, currentCharity.id, currentCharityUrl)
+    const next = pickCharity(
+      candidates,
+      dontRepeat,
+      persistSeen,
+      lang,
+      currentCharity.id,
+      currentCharityUrl
+    )
     if (showRefreshAnimation) {
       banner.classList.add(`${CSS_PREFIX}--refreshing`)
       setTimeout(() => {

@@ -15,6 +15,7 @@ export {
   isRTL,
   formatBannerText,
   randomItem,
+  resetMemorySeen,
   DEFAULT_CHARITIES,
   isDoNotTrackEnabled,
   buildUtmUrl

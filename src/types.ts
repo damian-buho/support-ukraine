@@ -148,10 +148,10 @@ export interface SupportUkraineBlockOptions {
    * Charity ids to exclude from rotation. Unknown ids are ignored.
    */
   exclude?: string[]
-  /**
-  Avoid repeating charities across page loads using localStorage.
-  */
+  // Avoid repeating charities. Seen ids stay in session memory unless persistSeen is set.
   dontRepeat?: boolean
+  // Persist the seen-charity list in localStorage. Default false (session memory only).
+  persistSeen?: boolean
   /**
   Log a message to the dev console.
   */
