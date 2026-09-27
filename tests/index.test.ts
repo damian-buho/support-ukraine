@@ -366,7 +366,7 @@ describe('charityUrlFor', () => {
   })
 
   it('returns the default url when no localized map exists', () => {
-    const charity = DEFAULT_CHARITIES.find(c => c.id === 'united24')!
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'army-of-drones')!
     assert.equal(charityUrlFor(charity, 'de'), charity.url)
   })
 
@@ -375,11 +375,17 @@ describe('charityUrlFor', () => {
     assert.equal(charityUrlFor(charity, 'de'), 'https://www.hospitallers.org.uk/de')
     assert.equal(charityUrlFor(charity, 'de-AT'), 'https://www.hospitallers.org.uk/de')
     assert.equal(charityUrlFor(charity, 'it'), 'https://www.hospitallers.org.uk/it')
+    assert.equal(charityUrlFor(charity, 'es'), 'https://www.hospitallers.org.uk/es')
+    assert.equal(charityUrlFor(charity, 'fr'), 'https://www.hospitallers.org.uk/fr')
+    assert.equal(charityUrlFor(charity, 'nl'), 'https://www.hospitallers.org.uk/nl')
+    assert.equal(charityUrlFor(charity, 'pl'), 'https://www.hospitallers.org.uk/pl')
+    assert.equal(charityUrlFor(charity, 'sv'), 'https://www.hospitallers.org.uk/sv')
+    assert.equal(charityUrlFor(charity, 'cs'), 'https://www.hospitallers.org.uk/cs')
   })
 
   it('falls back to english, then to the default url', () => {
     const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')!
-    assert.equal(charityUrlFor(charity, 'es'), 'https://www.hospitallers.org.uk')
+    assert.equal(charityUrlFor(charity, 'uk'), 'https://www.hospitallers.org.uk')
     const noEnglish: Charity = {
       id: 'x',
       name: 'X',

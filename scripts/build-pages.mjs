@@ -291,6 +291,7 @@ ${localeOptions}
       gridEl.innerHTML = '';
       for (const c of CHARITIES) {
         const localized = t.charities[c.id] || { tagline: c.tagline };
+        const href = (c.urls && (c.urls[code] || c.urls.en)) || c.url;
 
         const card = document.createElement('article');
         card.className = 'card';
@@ -300,7 +301,7 @@ ${localeOptions}
           <div class="card__tags">
             \${c.tags.map(tag => \`<span class="tag">\${tag}</span>\`).join('')}
           </div>
-          <a class="card__link" href="\${c.url}" target="_blank" rel="noopener noreferrer">
+          <a class="card__link" href="\${href}" target="_blank" rel="noopener noreferrer">
             \${t.donate} \u{2192}
           </a>
         \`;

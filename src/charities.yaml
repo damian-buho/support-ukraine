@@ -6,6 +6,9 @@
   name: United24
   tagline: Official fundraising platform of Ukraine
   url: https://u24.gov.ua
+  urls:
+    en: https://u24.gov.ua/en
+    uk: https://u24.gov.ua/uk
   tags: [humanitarian]
 
 - id: come-back-alive
@@ -21,18 +24,27 @@
   name: Razom for Ukraine
   tagline: Emergency response and humanitarian aid
   url: https://www.razomforukraine.org
+  urls:
+    en: https://www.razomforukraine.org
+    uk: https://www.razomforukraine.org/ua/
   tags: [humanitarian]
 
 - id: ukrainian-red-cross
   name: Ukrainian Red Cross
   tagline: Humanitarian assistance in conflict zones
   url: https://redcross.org.ua/en/
+  urls:
+    en: https://redcross.org.ua/en/
+    uk: https://redcross.org.ua/
   tags: [humanitarian]
 
 - id: nova-ukraine
   name: Nova Ukraine
   tagline: Humanitarian aid and advocacy
   url: https://novaukraine.org
+  urls:
+    en: https://novaukraine.org
+    uk: https://novaukraine.org.ua/
   tags: [humanitarian]
 
 - id: voices-of-children
@@ -48,6 +60,9 @@
   name: Prytula Foundation
   tagline: Defence technology and equipment for Ukraine
   url: https://prytulafoundation.org/en
+  urls:
+    en: https://prytulafoundation.org/en
+    uk: https://prytulafoundation.org/
   tags: [military]
 
 - id: army-of-drones
@@ -60,6 +75,9 @@
   name: World Central Kitchen
   tagline: Fresh meals for people in conflict zones
   url: https://wck.org/relief/activation-chefs-for-ukraine/
+  urls:
+    en: https://wck.org/relief/activation-chefs-for-ukraine/
+    es: https://wck.org/es/relief/
   tags: [humanitarian]
 
 - id: cats-of-kyiv
@@ -72,6 +90,9 @@
   name: UAnimals
   tagline: Animal rescue and advocacy organization in Ukraine
   url: https://uanimals.org
+  urls:
+    en: https://uanimals.org/en/
+    uk: https://uanimals.org/
   tags: [animals]
 
 - id: hospitallers
@@ -81,41 +102,71 @@
   urls:
     en: https://www.hospitallers.org.uk
     de: https://www.hospitallers.org.uk/de
+    es: https://www.hospitallers.org.uk/es
+    fr: https://www.hospitallers.org.uk/fr
     it: https://www.hospitallers.org.uk/it
+    nl: https://www.hospitallers.org.uk/nl
+    pl: https://www.hospitallers.org.uk/pl
+    cs: https://www.hospitallers.org.uk/cs
+    sv: https://www.hospitallers.org.uk/sv
   tags: [humanitarian]
 
 - id: sternenko-fund
   name: Sternenko Fund
   tagline: FPV drone supply for Ukrainian defence forces
   url: https://www.sternenkofund.org
+  urls:
+    en: https://www.sternenkofund.org/en
+    uk: https://www.sternenkofund.org/
   tags: [military]
 
 - id: life-robots-ukraine
   name: Life Robots Ukraine
   tagline: Robots for demining Ukraine
   url: https://liferobots.com.ua
+  urls:
+    en: https://liferobots.com.ua/en
+    uk: https://liferobots.com.ua/
   tags: [humanitarian]
 
 - id: sirius-shelter
   name: Sirius
   tagline: Ukraine's largest animal shelter for dogs and cats
   url: https://dogcat.com.ua
+  urls:
+    en: https://dogcat.com.ua/en
+    uk: https://dogcat.com.ua/
   tags: [animals]
 
 - id: dignitas
   name: Dignitas
   tagline: Technology and support for Ukrainian defenders and veterans
   url: https://dignitas.fund
+  urls:
+    en: https://dignitas.fund/
+    uk: https://dignitas.fund/uk/
   tags: [military]
 
 - id: leleka
   name: Leleka Foundation
   tagline: Tactical medical supplies for Ukraine's frontline medics
   url: https://leleka.care/en
+  urls:
+    en: https://leleka.care/en
+    uk: https://leleka.care/ua
   tags: [humanitarian]
 
 - id: superhumans
   name: Superhumans Center
   tagline: Prosthetics, surgery, and rehabilitation for war survivors
   url: https://superhumans.com/en/
+  urls:
+    en: https://superhumans.com/en/
+    uk: https://superhumans.com/
   tags: [humanitarian]
+
+- id: nikopol-chance
+  name: Nikopol Chance
+  tagline: Dog shelter rescuing and rehoming strays in frontline Nikopol
+  url: https://nikopolchance.com
+  tags: [animals]
