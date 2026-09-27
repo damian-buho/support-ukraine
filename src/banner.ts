@@ -21,7 +21,15 @@ const REFRESH_GLYPH = '\u{27F3}'
 const VISUALLY_HIDDEN_CLASS = `${CSS_PREFIX}__visually-hidden`
 const bannerState = { count: 0 } // Suffix for hint ids so repeated banners stay unique.
 
-function readSeen(): Set<string> {
+const memorySeen = new Set<string>() // Session-only seen ids, used when persistSeen is false.
+
+// @internal — test helper resetting the session-only seen set.
+export function resetMemorySeen(): void {
+  memorySeen.clear()
+}
+
+function readSeen(shouldPersist: boolean): Set<string> {
+  if (!shouldPersist) return new Set(memorySeen)
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     return raw ? new Set(JSON.parse(raw) as string[]) : new Set()
@@ -30,7 +38,12 @@ function readSeen(): Set<string> {
   }
 }
 
-function writeSeen(seen: Set<string>): void {
+function writeSeen(seen: Set<string>, shouldPersist: boolean): void {
+  if (!shouldPersist) {
+    memorySeen.clear()
+    for (const id of seen) memorySeen.add(id)
+    return
+  }
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify([...seen]))
   } catch {
@@ -38,10 +51,10 @@ function writeSeen(seen: Set<string>): void {
   }
 }
 
-function updateSeen(mutate: (seen: Set<string>) => void): void {
-  const seen = readSeen()
+function updateSeen(mutate: (seen: Set<string>) => void, shouldPersist: boolean): void {
+  const seen = readSeen(shouldPersist)
   mutate(seen)
-  writeSeen(seen)
+  writeSeen(seen, shouldPersist)
 }
 
 /**
@@ -59,28 +72,35 @@ export function randomItem<T>(items: T[]): T {
 function pickCharity(
   candidates: Charity[],
   shouldAvoidRepeat: boolean,
+  shouldPersist: boolean,
+  lang: string,
+  excludeId?: string,
   excludeUrl?: string
 ): Charity {
-  let pool = excludeUrl ? candidates.filter(c => c.url !== excludeUrl) : candidates
+  let pool = excludeId ? candidates.filter(c => c.id !== excludeId) : candidates
+  if (excludeUrl && pool.length > 1) {
+    const withoutUrl = pool.filter(c => charityUrlFor(c, lang) !== excludeUrl)
+    if (withoutUrl.length > 0) pool = withoutUrl
+  }
   if (pool.length === 0) pool = candidates
 
   if (shouldAvoidRepeat) {
     updateSeen(seen => {
-      const unseen = pool.filter(c => !seen.has(c.url))
+      const unseen = pool.filter(c => !seen.has(c.id))
       if (unseen.length > 0) {
         pool = unseen
       } else {
         seen.clear()
       }
-    })
+    }, shouldPersist)
   }
 
   const charity = randomItem(pool)
 
   if (shouldAvoidRepeat) {
     updateSeen(seen => {
-      seen.add(charity.url)
-    })
+      seen.add(charity.id)
+    }, shouldPersist)
   }
 
   return charity
@@ -106,6 +126,15 @@ export function mergeCharities(base: readonly Charity[], locale: LocaleMessages)
     const translated = locale.charities[charity.id]
     return translated?.tagline ? { ...charity, tagline: translated.tagline } : charity
   })
+}
+
+/**
+ * Resolve the donation URL for a charity in the given banner language.
+ * Falls back to English.
+ */
+export function charityUrlFor(charity: Charity, lang: string): string {
+  const base = (lang.split('-', 1)[0] ?? '').toLowerCase()
+  return charity.urls[base] ?? charity.urls.en
 }
 
 export function isRTL(lang: string): boolean {
@@ -167,14 +196,16 @@ export function mountBanner(
     fontSize = '87.5%',
     charities,
     tags,
+    exclude,
     dontRepeat = true,
+    persistSeen = false,
     isInConsole = true,
     showRefreshButton = false,
     autoRefreshInterval = 0,
     showRefreshAnimation = false
   } = options
 
-  const baseCharities = charities ?? DEFAULT_CHARITIES
+  const baseCharities = charities ? charitiesSchema.parse(charities) : DEFAULT_CHARITIES
   const localizedCharities = mergeCharities(baseCharities, messages)
 
   let candidates =
@@ -182,12 +213,19 @@ export function mountBanner(
       ? localizedCharities.filter(charity => charity.tags.some(t => tags.includes(t)))
       : localizedCharities
 
+  if (exclude && exclude.length > 0) {
+    const excluded = new Set(exclude)
+    const kept = candidates.filter(charity => !excluded.has(charity.id))
+    if (kept.length > 0) candidates = kept
+  }
+
   if (candidates.length === 0) {
     candidates = localizedCharities
   }
 
-  const charity = pickCharity(candidates, dontRepeat)
-  let currentCharityUrl = charity.url
+  const charity = pickCharity(candidates, dontRepeat, persistSeen, lang)
+  let currentCharity = charity
+  let currentCharityUrl = charityUrlFor(charity, lang)
 
   const host = document.createElement('div')
 
@@ -205,7 +243,7 @@ export function mountBanner(
 
   const link = document.createElement('a')
   link.className = `${CSS_PREFIX}__link`
-  link.href = buildUtmUrl(charity.url, options)
+  link.href = buildUtmUrl(currentCharityUrl, options)
   link.target = '_blank'
   link.rel = 'noopener noreferrer'
   link.style.fontSize = fontSize
@@ -274,17 +312,25 @@ export function mountBanner(
   banner.append(linkNewTabHint, moreNewTabHint)
 
   function applyNext(next: Charity): void {
-    link.href = buildUtmUrl(next.url, options)
+    currentCharity = next
+    currentCharityUrl = charityUrlFor(next, lang)
+    link.href = buildUtmUrl(currentCharityUrl, options)
     name.textContent = next.name
     tagline.textContent = next.tagline
     if (isInConsole) {
-      console.info('[support-ukraine] banner', `${next.name}: ${next.tagline}`, next.url)
+      console.info('[support-ukraine] banner', `${next.name}: ${next.tagline}`, currentCharityUrl)
     }
   }
 
   function updateCharity(): void {
-    const next = pickCharity(candidates, dontRepeat, currentCharityUrl)
-    currentCharityUrl = next.url
+    const next = pickCharity(
+      candidates,
+      dontRepeat,
+      persistSeen,
+      lang,
+      currentCharity.id,
+      currentCharityUrl
+    )
     if (showRefreshAnimation) {
       banner.classList.add(`${CSS_PREFIX}--refreshing`)
       setTimeout(() => {
@@ -328,7 +374,11 @@ export function mountBanner(
   }
 
   if (isInConsole) {
-    console.info('[support-ukraine] banner', `${charity.name}: ${charity.tagline}`, charity.url)
+    console.info(
+      '[support-ukraine] banner',
+      `${charity.name}: ${charity.tagline}`,
+      currentCharityUrl
+    )
   }
 
   host.dataset.supportUkraine = ''

@@ -10,10 +10,12 @@ export type { Charity, CharityTag, SupportUkraineBlockOptions } from './types.js
 export { charitySchema, charitiesSchema } from './types.js'
 export { detectLocale, loadLocale } from './i18n.js'
 export {
+  charityUrlFor,
   mergeCharities,
   isRTL,
   formatBannerText,
   randomItem,
+  resetMemorySeen,
   DEFAULT_CHARITIES,
   isDoNotTrackEnabled,
   buildUtmUrl

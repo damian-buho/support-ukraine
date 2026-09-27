@@ -123,21 +123,21 @@
   "homepage": "https://github.com/damian-buho/support-ukraine#readme",
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@size-limit/preset-small-lib": "14.0.0",
+    "@size-limit/preset-small-lib": "14.0.1",
     "@types/eslint": "9.6.1",
-    "@types/node": "26.6.2",
+    "@types/node": "26.6.3",
     "esbuild": "0.28.2",
     "eslint": "10.11.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-import-x": "4.17.1",
-    "eslint-plugin-n": "18.3.0",
+    "eslint-plugin-n": "18.4.0",
     "eslint-plugin-promise": "7.3.0",
     "eslint-plugin-tsdoc": "0.5.3",
     "eslint-plugin-unicorn": "76.0.0",
     "globals": "17.12.0",
     "prettier": "3.9.9",
     "sass": "1.105.0",
-    "size-limit": "14.0.0",
+    "size-limit": "14.0.1",
     "tsup": "8.5.1",
     "typescript": "6.0.3",
     "typescript-eslint": "8.70.1",
@@ -161,7 +161,7 @@
   "size-limit": [
     {
       "path": "./dist/index.js",
-      "limit": "16 kB"
+      "limit": "17 kB"
     }
   ]
 }

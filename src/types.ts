@@ -41,8 +41,24 @@ export interface Charity {
   id: string
   name: string
   tagline: string
-  url: string
+  /**
+   * Donation URLs keyed by base language code. `en` is required and is the fallback.
+   */
+  urls: Record<string, string> & { en: string }
   tags: CharityTag[]
+}
+
+function parseLocalizedUrls(value: unknown): Record<string, string> & { en: string } {
+  assert(value !== null && typeof value === 'object', 'urls must be an object')
+  const entries = Object.entries(value as Record<string, unknown>)
+  assert(entries.length > 0, 'urls must not be empty')
+  const result: Record<string, string> = {}
+  for (const [key, entry] of entries) {
+    assertUrl(entry, `urls.${key}`)
+    result[key.toLowerCase()] = entry as string
+  }
+  assert(typeof result.en === 'string', 'urls must include an "en" entry')
+  return result as Record<string, string> & { en: string }
 }
 
 function parseCharity(value: unknown): Charity {
@@ -51,14 +67,13 @@ function parseCharity(value: unknown): Charity {
   assertNonEmptyString(record.id, 'id')
   assertNonEmptyString(record.name, 'name')
   assertNonEmptyString(record.tagline, 'tagline')
-  assertUrl(record.url, 'url')
   assert(Array.isArray(record.tags), 'tags must be an array')
   assert(record.tags.length > 0, 'tags must not be empty')
   return {
     id: record.id,
     name: record.name,
     tagline: record.tagline,
-    url: record.url,
+    urls: parseLocalizedUrls(record.urls),
     tags: record.tags.map(tag => parseCharityTag(tag))
   }
 }
@@ -130,9 +145,13 @@ export interface SupportUkraineBlockOptions {
    */
   tags?: CharityTag[]
   /**
-  Avoid repeating charities across page loads using localStorage.
-  */
+   * Charity ids to exclude from rotation. Unknown ids are ignored.
+   */
+  exclude?: string[]
+  // Avoid repeating charities. Seen ids stay in session memory unless persistSeen is set.
   dontRepeat?: boolean
+  // Persist the seen-charity list in localStorage. Default false (session memory only).
+  persistSeen?: boolean
   /**
   Log a message to the dev console.
   */

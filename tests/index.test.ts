@@ -6,9 +6,33 @@ import { describe, it, before, beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
 import type { Charity, CharityTag } from '../src/types.js'
 import { charitiesSchema } from '../src/types.js'
-import { supportUkraineBlock, DEFAULT_CHARITIES, randomItem } from '../src/index.js'
+import {
+  supportUkraineBlock,
+  DEFAULT_CHARITIES,
+  charityUrlFor,
+  randomItem,
+  resetMemorySeen
+} from '../src/index.js'
 import { detectLocale, loadLocale, mergeCharities, isRTL, formatBannerText } from '../src/i18n.js'
 import { localeLoaders, resolveLocale } from '../src/locales/index.js'
+import styles from '../src/styles.scss'
+
+// ── contrast helpers ────────────────────────────────────────────────────
+
+function channelToLinear(channel: number): number {
+  return channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+}
+function hexLuminance(hex: string): number {
+  const r = Number.parseInt(hex.slice(1, 3), 16) / 255
+  const g = Number.parseInt(hex.slice(3, 5), 16) / 255
+  const b = Number.parseInt(hex.slice(5, 7), 16) / 255
+  return 0.2126 * channelToLinear(r) + 0.7152 * channelToLinear(g) + 0.0722 * channelToLinear(b)
+}
+function contrastRatio(foreground: string, background: string): number {
+  const high = Math.max(hexLuminance(foreground), hexLuminance(background))
+  const low = Math.min(hexLuminance(foreground), hexLuminance(background))
+  return (high + 0.05) / (low + 0.05)
+}
 
 // ── DEFAULT_CHARITIES ───────────────────────────────────────────────────
 
@@ -18,7 +42,7 @@ describe('DEFAULT_CHARITIES', () => {
     assert.ok(DEFAULT_CHARITIES.length > 0)
   })
 
-  it('every charity has id, name, tagline, url, and tags', () => {
+  it('every charity has id, name, tagline, urls, and tags', () => {
     const validTags = new Set<CharityTag>(['military', 'humanitarian', 'animals'])
     for (const charity of DEFAULT_CHARITIES) {
       assert.equal(typeof charity.id, 'string', 'id must be a string')
@@ -27,8 +51,11 @@ describe('DEFAULT_CHARITIES', () => {
       assert.ok(charity.name.length > 0, 'name must not be empty')
       assert.equal(typeof charity.tagline, 'string', 'tagline must be a string')
       assert.ok(charity.tagline.length > 0, 'tagline must not be empty')
-      assert.equal(typeof charity.url, 'string', 'url must be a string')
-      assert.ok(charity.url.startsWith('http'), 'url must start with http')
+      assert.equal(typeof charity.urls.en, 'string', 'urls.en must be a string')
+      assert.ok(charity.urls.en.startsWith('http'), 'urls.en must start with http')
+      for (const [key, value] of Object.entries(charity.urls)) {
+        assert.ok(value.startsWith('http'), `urls.${key} must start with http`)
+      }
       assert.ok(Array.isArray(charity.tags), 'tags must be an array')
       assert.ok(charity.tags.length > 0, 'tags must not be empty')
       for (const tag of charity.tags) {
@@ -75,7 +102,7 @@ describe('charitiesSchema', () => {
         id: 'test',
         name: 'Test',
         tagline: 'Helping',
-        url: 'https://example.com',
+        urls: { en: 'https://example.com' },
         tags: ['military']
       }
     ]
@@ -87,18 +114,65 @@ describe('charitiesSchema', () => {
     assert.throws(() => charitiesSchema.parse(incomplete))
   })
 
-  it('rejects invalid url', () => {
-    const bad = [{ id: 't', name: 'T', tagline: 'T', url: 'not-a-url', tags: ['military'] }]
+  it('rejects invalid urls entry', () => {
+    const bad = [
+      { id: 't', name: 'T', tagline: 'T', urls: { en: 'not-a-url' }, tags: ['military'] }
+    ]
     assert.throws(() => charitiesSchema.parse(bad))
   })
 
   it('rejects invalid tag', () => {
-    const bad = [{ id: 't', name: 'T', tagline: 'T', url: 'https://x.com', tags: ['invalid'] }]
+    const bad = [
+      { id: 't', name: 'T', tagline: 'T', urls: { en: 'https://x.com' }, tags: ['invalid'] }
+    ]
     assert.throws(() => charitiesSchema.parse(bad))
   })
 
   it('rejects empty tags array', () => {
-    const bad = [{ id: 't', name: 'T', tagline: 'T', url: 'https://x.com', tags: [] }]
+    const bad = [{ id: 't', name: 'T', tagline: 'T', urls: { en: 'https://x.com' }, tags: [] }]
+    assert.throws(() => charitiesSchema.parse(bad))
+  })
+
+  it('accepts localized urls', () => {
+    const valid = [
+      {
+        id: 't',
+        name: 'T',
+        tagline: 'T',
+        urls: { en: 'https://x.com/en', de: 'https://x.com/de' },
+        tags: ['military']
+      }
+    ]
+    assert.doesNotThrow(() => charitiesSchema.parse(valid))
+  })
+
+  it('rejects missing urls', () => {
+    const bad = [{ id: 't', name: 'T', tagline: 'T', tags: ['military'] }]
+    assert.throws(() => charitiesSchema.parse(bad), /urls must be an object/)
+  })
+
+  it('rejects urls without an english entry', () => {
+    const bad = [
+      { id: 't', name: 'T', tagline: 'T', urls: { uk: 'https://x.com/uk' }, tags: ['military'] }
+    ]
+    assert.throws(() => charitiesSchema.parse(bad), /urls must include an "en" entry/)
+  })
+
+  it('rejects invalid localized urls', () => {
+    const bad = [
+      {
+        id: 't',
+        name: 'T',
+        tagline: 'T',
+        urls: { en: 'not-a-url' },
+        tags: ['military']
+      }
+    ]
+    assert.throws(() => charitiesSchema.parse(bad))
+  })
+
+  it('rejects empty localized urls', () => {
+    const bad = [{ id: 't', name: 'T', tagline: 'T', urls: {}, tags: ['military'] }]
     assert.throws(() => charitiesSchema.parse(bad))
   })
 })
@@ -286,6 +360,135 @@ describe('formatBannerText', () => {
 describe('supportUkraineBlock', () => {
   it('is a function', () => {
     assert.equal(typeof supportUkraineBlock, 'function')
+  })
+})
+
+// ── charityUrlFor ─────────────────────────────────────────────────────────
+
+describe('charityUrlFor', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  afterEach(() => {
+    body.children.length = 0
+  })
+
+  it('falls back to english when the banner language has no variant', () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'cats-of-kyiv')!
+    assert.equal(charityUrlFor(charity, 'de'), 'https://cats.kiev.ua')
+  })
+
+  it('resolves the banner language variant', () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')!
+    assert.equal(charityUrlFor(charity, 'de'), 'https://www.hospitallers.org.uk/de')
+    assert.equal(charityUrlFor(charity, 'de-AT'), 'https://www.hospitallers.org.uk/de')
+    assert.equal(charityUrlFor(charity, 'it'), 'https://www.hospitallers.org.uk/it')
+    assert.equal(charityUrlFor(charity, 'es'), 'https://www.hospitallers.org.uk/es')
+    assert.equal(charityUrlFor(charity, 'fr'), 'https://www.hospitallers.org.uk/fr')
+    assert.equal(charityUrlFor(charity, 'nl'), 'https://www.hospitallers.org.uk/nl')
+    assert.equal(charityUrlFor(charity, 'pl'), 'https://www.hospitallers.org.uk/pl')
+    assert.equal(charityUrlFor(charity, 'sv'), 'https://www.hospitallers.org.uk/sv')
+    assert.equal(charityUrlFor(charity, 'cs'), 'https://www.hospitallers.org.uk/cs')
+  })
+
+  it('resolves life-robots multi-language variants', () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'life-robots-ukraine')!
+    assert.equal(charityUrlFor(charity, 'ja'), 'https://liferobots.com.ua/ja')
+    assert.equal(charityUrlFor(charity, 'ko'), 'https://liferobots.com.ua/ko')
+    assert.equal(charityUrlFor(charity, 'pl'), 'https://liferobots.com.ua/pl')
+    assert.equal(charityUrlFor(charity, 'uk'), 'https://liferobots.com.ua/')
+    assert.equal(charityUrlFor(charity, 'zh'), 'https://liferobots.com.ua/en')
+  })
+
+  it('falls back to english when the language variant is missing', () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')!
+    assert.equal(charityUrlFor(charity, 'uk'), 'https://www.hospitallers.org.uk')
+    const noVariant: Charity = {
+      id: 'x',
+      name: 'X',
+      tagline: 'X',
+      urls: { en: 'https://x.com/en', uk: 'https://x.com/uk' },
+      tags: ['military']
+    }
+    assert.equal(charityUrlFor(noVariant, 'uk'), 'https://x.com/uk')
+    assert.equal(charityUrlFor(noVariant, 'es'), 'https://x.com/en')
+  })
+
+  it('links the banner to the localized variant', async () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'come-back-alive')!
+    assert.ok(charity.urls, 'fixture needs localized urls')
+    const host = await supportUkraineBlock({
+      charities: [charity],
+      locale: 'en',
+      dontRepeat: false
+    })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as unknown as { href: string }
+    assert.ok(link.href.startsWith('https://savelife.in.ua/en/'), `unexpected href ${link.href}`)
+  })
+})
+
+// ── exclude ─────────────────────────────────────────────────────────────
+
+function bannerName(host: HTMLElement): string {
+  const banner = host.shadowRoot!.banner!
+  const link = banner.firstChild as MockElement
+  const info = link.lastChild as MockElement
+  const name = info.children.find(child => child.className === 'support-ukraine-block__name')!
+  return name.textContent
+}
+
+describe('exclude', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  afterEach(() => {
+    body.children.length = 0
+  })
+
+  it('never shows an excluded charity id', async () => {
+    const excluded = DEFAULT_CHARITIES[0]!
+    for (let index = 0; index < 5; index++) {
+      const host = await supportUkraineBlock({ exclude: [excluded.id], dontRepeat: false })
+      assert.notEqual(bannerName(host), excluded.name)
+    }
+  })
+
+  it('combines with the tags filter', async () => {
+    const excluded = DEFAULT_CHARITIES.find(c => c.tags.includes('military'))!
+    const host = await supportUkraineBlock({
+      exclude: [excluded.id],
+      tags: ['military'],
+      dontRepeat: false
+    })
+    assert.notEqual(bannerName(host), excluded.name)
+  })
+
+  it('ignores unknown ids', async () => {
+    const host = await supportUkraineBlock({ exclude: ['no-such-charity'], dontRepeat: false })
+    assert.ok(bannerName(host).length > 0)
+  })
+
+  it('falls back to the full list when every candidate is excluded', async () => {
+    const all = DEFAULT_CHARITIES.map(c => c.id)
+    const host = await supportUkraineBlock({ exclude: all, dontRepeat: false })
+    assert.ok(bannerName(host).length > 0)
   })
 })
 
@@ -591,6 +794,7 @@ describe('dontRepeat', () => {
 
   beforeEach(() => {
     storage.store.clear()
+    resetMemorySeen()
     head.children.length = 0
   })
 
@@ -599,65 +803,92 @@ describe('dontRepeat', () => {
     assert.equal(storage.store.size, 0)
   })
 
-  it('writes seen URL to localStorage after mounting', async () => {
+  it('does not touch localStorage by default', async () => {
+    await supportUkraineBlock({ dontRepeat: true, tags: ['animals'] })
+    assert.equal(storage.store.size, 0)
+  })
+
+  it('avoids repeats within the session without localStorage', async () => {
+    const names = new Set<string>()
+    for (let index = 0; index < 3; index++) {
+      const host = await supportUkraineBlock({ tags: ['animals'], dontRepeat: true })
+      names.add(bannerName(host))
+    }
+    assert.equal(names.size, 3, 'all 3 animal charities should appear exactly once')
+    assert.equal(storage.store.size, 0, 'session dedup must not write to localStorage')
+  })
+
+  it('writes seen id to localStorage after mounting', async () => {
     const host = await supportUkraineBlock({
       dontRepeat: true,
+      persistSeen: true,
       tags: ['animals']
     })
     const seen = JSON.parse(storage.store.get(STORAGE_KEY) ?? '[]') as string[]
     assert.equal(seen.length, 1)
+    const animals = DEFAULT_CHARITIES.filter(c => c.tags.includes('animals'))
+    assert.ok(animals.some(c => c.id === seen[0]))
     const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as unknown as { href: string }
-    assert.equal(seen[0], link.href)
+    assert.ok(link.href.length > 0)
   })
 
   it('avoids repeating charities across calls', async () => {
-    const seenUrls = new Set<string>()
+    const seenIds = new Set<string>()
 
     for (let index = 0; index < 3; index++) {
-      const host = await supportUkraineBlock({ tags: ['animals'], dontRepeat: true })
-      const banner = host.shadowRoot!.banner!
-      const link = banner.firstChild as unknown as { href: string }
-      seenUrls.add(link.href)
+      const host = await supportUkraineBlock({
+        tags: ['animals'],
+        dontRepeat: true,
+        persistSeen: true
+      })
+      void host
+      const seen = JSON.parse(storage.store.get(STORAGE_KEY) ?? '[]') as string[]
+      for (const id of seen) seenIds.add(id)
     }
 
-    assert.equal(seenUrls.size, 3, 'all 3 animal charities should appear exactly once')
+    assert.equal(seenIds.size, 3, 'all 3 animal charities should appear exactly once')
   })
 
   it('resets after all charities have been seen', async () => {
     // First cycle: all animal charities appear
-    await supportUkraineBlock({ tags: ['animals'], dontRepeat: true })
-    await supportUkraineBlock({ tags: ['animals'], dontRepeat: true })
+    await supportUkraineBlock({ tags: ['animals'], dontRepeat: true, persistSeen: true })
+    await supportUkraineBlock({ tags: ['animals'], dontRepeat: true, persistSeen: true })
 
     const afterFirstCycle = JSON.parse(storage.store.get(STORAGE_KEY) ?? '[]') as string[]
     assert.equal(afterFirstCycle.length, 2)
 
     // Third call: cycle resets, picks from full list again
-    const host = await supportUkraineBlock({ tags: ['animals'], dontRepeat: true })
+    const host = await supportUkraineBlock({
+      tags: ['animals'],
+      dontRepeat: true,
+      persistSeen: true
+    })
     const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as unknown as { href: string }
     const animals = DEFAULT_CHARITIES.filter((c: Charity) => c.tags.includes('animals'))
-    assert.ok(animals.some((c: Charity) => c.url === link.href))
+    const seenLink = link.href
+    assert.ok(animals.some(c => seenLink.includes(new URL(c.urls.en).hostname)))
   })
 
   it('works with tags filter', async () => {
     const military = DEFAULT_CHARITIES.filter((c: Charity) => c.tags.includes('military'))
-    const seenUrls = new Set<string>()
+    const seenIds = new Set<string>()
 
     for (let index = 0; index < military.length; index++) {
-      const host = await supportUkraineBlock({
+      await supportUkraineBlock({
         tags: ['military'],
-        dontRepeat: true
+        dontRepeat: true,
+        persistSeen: true
       })
-      const banner = host.shadowRoot!.banner!
-      const link = banner.firstChild as unknown as { href: string }
-      seenUrls.add(link.href)
+      const seen = JSON.parse(storage.store.get(STORAGE_KEY) ?? '[]') as string[]
+      for (const id of seen) seenIds.add(id)
     }
 
-    assert.equal(seenUrls.size, military.length)
-    for (const url of seenUrls) {
+    assert.equal(seenIds.size, military.length)
+    for (const id of seenIds) {
       assert.ok(
-        military.some((c: Charity) => c.url === url),
+        military.some((c: Charity) => c.id === id),
         'only military charities shown'
       )
     }
@@ -797,7 +1028,7 @@ describe('custom charities', () => {
         id: 'custom-1',
         name: 'Custom Charity',
         tagline: 'A test charity',
-        url: 'https://example.com/donate',
+        urls: { en: 'https://example.com/donate' },
         tags: ['humanitarian']
       }
     ]
@@ -819,7 +1050,7 @@ describe('custom charities', () => {
         id: 'only-custom',
         name: 'Sole Charity',
         tagline: 'The one and only',
-        url: 'https://custom.example.org',
+        urls: { en: 'https://custom.example.org' },
         tags: ['humanitarian']
       }
     ]
@@ -844,14 +1075,14 @@ describe('custom charities', () => {
         id: 'c-mil',
         name: 'Military One',
         tagline: 'Defense',
-        url: 'https://military.example.com',
+        urls: { en: 'https://military.example.com' },
         tags: ['military']
       },
       {
         id: 'c-hum',
         name: 'Humanitarian One',
         tagline: 'Aid',
-        url: 'https://aid.example.com',
+        urls: { en: 'https://aid.example.com' },
         tags: ['humanitarian']
       }
     ]
@@ -871,7 +1102,7 @@ describe('custom charities', () => {
         id: 'united24',
         name: 'Custom United24',
         tagline: 'English fallback',
-        url: 'https://custom.example.org',
+        urls: { en: 'https://custom.example.org' },
         tags: ['humanitarian']
       }
     ]
@@ -887,6 +1118,22 @@ describe('custom charities', () => {
     assert.ok(
       !text.includes('English fallback'),
       'should use translated tagline, not English fallback'
+    )
+  })
+
+  it('rejects legacy charities without a urls map', async () => {
+    const legacy = [
+      {
+        id: 'legacy',
+        name: 'Legacy',
+        tagline: 'Old shape',
+        url: 'https://legacy.example.org',
+        tags: ['humanitarian']
+      }
+    ]
+    await assert.rejects(
+      supportUkraineBlock({ charities: legacy as unknown as Charity[], dontRepeat: false }),
+      /urls must be an object/
     )
   })
 })
@@ -1068,6 +1315,45 @@ describe('accessibility', () => {
   })
 })
 
+// ── contrast (prefers-contrast: more + forced-colors) ───────────────────
+
+describe('contrast', () => {
+  const css = styles.replaceAll(/\s+/g, ' ')
+  it('lifts the dimmed parts to full opacity without text-shadow under prefers-contrast: more', () => {
+    assert.match(css, /prefers-contrast: *more/)
+    for (const part of ['__link', '__more', '__refresh']) {
+      const rule = new RegExp(`prefers-contrast: *more.*?${part}.*?opacity: *1`, 'u')
+      assert.match(css, rule, `${part} must reach opacity 1 under prefers-contrast: more`)
+    }
+    assert.match(
+      css,
+      /prefers-contrast: *more.*?text-shadow: *none/,
+      'more-contrast text must drop its shadow'
+    )
+  })
+  it('keeps every banner pair at axe color-contrast-enhanced (7:1) under prefers-contrast: more', () => {
+    assert.ok(contrastRatio('#ffffff', '#003580') >= 7, 'light more-contrast pair must reach 7:1')
+    assert.ok(contrastRatio('#000000', '#ffd700') >= 7, 'dark more-contrast pair must reach 7:1')
+    assert.match(
+      css,
+      /prefers-contrast: *more.*?background-color: *#003580/,
+      'more-contrast must darken the light background'
+    )
+  })
+  it('keeps a real focus outline under forced-colors: active', () => {
+    assert.match(css, /forced-colors: *active/, 'banner must answer forced-colors')
+    for (const part of ['__link', '__more', '__refresh']) {
+      const rule = new RegExp(`forced-colors: *active.*?${part}.*?outline: *2px solid`, 'u')
+      assert.match(css, rule, `${part} focus outline must survive forced colors`)
+    }
+    assert.match(
+      css,
+      /forced-colors: *active.*?Highlight/,
+      'forced-colors outline must use a system color'
+    )
+  })
+})
+
 // ── showRefreshButton ────────────────────────────────────────────────
 
 describe('showRefreshButton', () => {
@@ -1228,7 +1514,7 @@ describe('showRefreshAnimation', () => {
       id: `charity-${index}`,
       name: `Charity ${index}`,
       tagline: `Tagline ${index}`,
-      url: `https://charity-${index}.example.org`,
+      urls: { en: `https://charity-${index}.example.org` },
       tags: ['humanitarian']
     }))
     const host = await supportUkraineBlock({
@@ -1387,7 +1673,7 @@ describe('UTM parameters', () => {
       id: `charity-${index}`,
       name: `Charity ${index}`,
       tagline: `Tagline ${index}`,
-      url: `https://charity-${index}.example.org`,
+      urls: { en: `https://charity-${index}.example.org` },
       tags: ['humanitarian']
     }))
 

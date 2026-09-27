@@ -109,22 +109,24 @@ Shared after `mountBanner`:
 ```
 mergeCharities()            → Charity[] (localized taglines)
   → filter by tags         → Charity[]
-  → updateSeen()+randomItem → Charity (dontRepeat via localStorage)
+  → updateSeen()+randomItem → Charity (dontRepeat: session memory, or localStorage with persistSeen)
   → section with lang+dir   → mount.prepend
 ```
 
 ### SupportUkraineBlockOptions
 
-| Field | Type | Default | Notes |
-|---|---|---|---|
-| `element` | `HTMLElement` | `document.body` | Target mount point |
-| `mode` | `'shift' \| 'overlap' \| 'replace'` | `'shift'` | Shifts content down, floats on top, or swaps a same-class placeholder element (any tag) |
-| `fontSize` | `string` | `'87.5%'` | Banner font size — % resolves against the host box's 16px base, immune to root scaling |
-| `charities` | `Charity[]` | _(built-in)_ | Custom charity list |
-| `tags` | `CharityTag[]` | _(all)_ | Filter: `'military'`, `'humanitarian'`, `'animals'` |
-| `dontRepeat` | `boolean` | `true` | Avoid repeats via localStorage |
-| `isInConsole` | `boolean` | `true` | Log selected charity to dev console |
-| `locale` | `string` | _(auto-detected)_ | Override BCP 47 language tag |
+| Field         | Type                                | Default           | Notes                                                                                   |
+| ------------- | ----------------------------------- | ----------------- | --------------------------------------------------------------------------------------- |
+| `element`     | `HTMLElement`                       | `document.body`   | Target mount point                                                                      |
+| `mode`        | `'shift' \| 'overlap' \| 'replace'` | `'shift'`         | Shifts content down, floats on top, or swaps a same-class placeholder element (any tag) |
+| `fontSize`    | `string`                            | `'87.5%'`         | Banner font size — % resolves against the host box's 16px base, immune to root scaling  |
+| `charities`   | `Charity[]`                         | _(built-in)_      | Custom charity list; `urls` maps language codes to localized donation URLs              |
+| `tags`        | `CharityTag[]`                      | _(all)_           | Filter: `'military'`, `'humanitarian'`, `'animals'`                                     |
+| `exclude`     | `string[]`                          | _(none)_          | Exclude charities by id; unknown ids are ignored                                        |
+| `dontRepeat`  | `boolean`                           | `true`            | Avoid repeats; seen ids stay in session memory unless `persistSeen` is set                                        |
+| `persistSeen` | `boolean`                           | `false`           | Persist seen charity ids in `localStorage` across visits (needs visitor consent)                                  |
+| `isInConsole` | `boolean`                           | `true`            | Log selected charity to dev console                                                     |
+| `locale`      | `string`                            | _(auto-detected)_ | Override BCP 47 language tag                                                            |
 
 ## Testing
 
