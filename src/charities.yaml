@@ -65,12 +65,6 @@
     uk: https://prytulafoundation.org/
   tags: [military]
 
-- id: army-of-drones
-  name: Army of Drones
-  tagline: Reconnaissance drones for the frontline
-  url: https://armyofdrones.com
-  tags: [military]
-
 - id: world-central-kitchen
   name: World Central Kitchen
   tagline: Fresh meals for people in conflict zones
