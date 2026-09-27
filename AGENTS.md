@@ -115,16 +115,17 @@ mergeCharities()            → Charity[] (localized taglines)
 
 ### SupportUkraineBlockOptions
 
-| Field | Type | Default | Notes |
-|---|---|---|---|
-| `element` | `HTMLElement` | `document.body` | Target mount point |
-| `mode` | `'shift' \| 'overlap' \| 'replace'` | `'shift'` | Shifts content down, floats on top, or swaps a same-class placeholder element (any tag) |
-| `fontSize` | `string` | `'87.5%'` | Banner font size — % resolves against the host box's 16px base, immune to root scaling |
-| `charities` | `Charity[]` | _(built-in)_ | Custom charity list |
-| `tags` | `CharityTag[]` | _(all)_ | Filter: `'military'`, `'humanitarian'`, `'animals'` |
-| `dontRepeat` | `boolean` | `true` | Avoid repeats via localStorage |
-| `isInConsole` | `boolean` | `true` | Log selected charity to dev console |
-| `locale` | `string` | _(auto-detected)_ | Override BCP 47 language tag |
+| Field         | Type                                | Default           | Notes                                                                                   |
+| ------------- | ----------------------------------- | ----------------- | --------------------------------------------------------------------------------------- |
+| `element`     | `HTMLElement`                       | `document.body`   | Target mount point                                                                      |
+| `mode`        | `'shift' \| 'overlap' \| 'replace'` | `'shift'`         | Shifts content down, floats on top, or swaps a same-class placeholder element (any tag) |
+| `fontSize`    | `string`                            | `'87.5%'`         | Banner font size — % resolves against the host box's 16px base, immune to root scaling  |
+| `charities`   | `Charity[]`                         | _(built-in)_      | Custom charity list                                                                     |
+| `tags`        | `CharityTag[]`                      | _(all)_           | Filter: `'military'`, `'humanitarian'`, `'animals'`                                     |
+| `exclude`     | `string[]`                          | _(none)_          | Exclude charities by id; unknown ids are ignored                                        |
+| `dontRepeat`  | `boolean`                           | `true`            | Avoid repeats via localStorage                                                          |
+| `isInConsole` | `boolean`                           | `true`            | Log selected charity to dev console                                                     |
+| `locale`      | `string`                            | _(auto-detected)_ | Override BCP 47 language tag                                                            |
 
 ## Testing
 

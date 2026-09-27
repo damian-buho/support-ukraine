@@ -130,6 +130,10 @@ export interface SupportUkraineBlockOptions {
    */
   tags?: CharityTag[]
   /**
+   * Charity ids to exclude from rotation. Unknown ids are ignored.
+   */
+  exclude?: string[]
+  /**
   Avoid repeating charities across page loads using localStorage.
   */
   dontRepeat?: boolean

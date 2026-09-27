@@ -46,9 +46,9 @@ npm install @damian-buho/support-ukraine
 
 ```html
 <script type="module">
-    import {supportUkraineBlock} from 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@1/+esm'
+  import { supportUkraineBlock } from 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@1/+esm'
 
-    await supportUkraineBlock()
+  await supportUkraineBlock()
 </script>
 ```
 
@@ -56,28 +56,28 @@ For optimal Core Web Vitals, avoid the chained locale fetch by loading a pre-loc
 
 ```html
 <script type="module">
-    import {supportUkraineBlock} from 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@1/dist/es.js'
+  import { supportUkraineBlock } from 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@1/dist/es.js'
 
-    await supportUkraineBlock()
+  await supportUkraineBlock()
 </script>
 ```
 
 ## Usage
 
 ```ts
-import {supportUkraineBlock} from '@damian-buho/support-ukraine'
+import { supportUkraineBlock } from '@damian-buho/support-ukraine'
 
 // Auto-detect locale from navigator.language
 await supportUkraineBlock()
 
 // Force a specific locale
-await supportUkraineBlock({locale: 'es'})
+await supportUkraineBlock({ locale: 'es' })
 ```
 
 For optimal Core Web Vitals, let your server or router decide the language and load only the needed build — no second network request:
 
 ```ts
-import {supportUkraineBlock} from '@damian-buho/support-ukraine/es'
+import { supportUkraineBlock } from '@damian-buho/support-ukraine/es'
 
 await supportUkraineBlock()
 ```
@@ -90,7 +90,24 @@ language tag and load the matching bundle:
 ```html
 <script type="module">
   const base = navigator.language.split('-')[0]
-  const supported = ['ar','de','en','es','fr','hi','it','ja','ko','nl','pl','pt','sv','th','uk','zh']
+  const supported = [
+    'ar',
+    'de',
+    'en',
+    'es',
+    'fr',
+    'hi',
+    'it',
+    'ja',
+    'ko',
+    'nl',
+    'pl',
+    'pt',
+    'sv',
+    'th',
+    'uk',
+    'zh'
+  ]
   const locale = supported.includes(base) ? base : 'en'
 
   const { supportUkraineBlock } = await import(
@@ -128,23 +145,32 @@ The entire block is a clickable link to the charity's donation page.
 
 ## Options
 
-| Option        | Type                                | Default           | Description                                                                                                          |
-|---------------|-------------------------------------|-------------------|----------------------------------------------------------------------------------------------------------------------|
-| `element`     | `HTMLElement`                       | `document.body`   | Target mount element for the banner                                                                                  |
+| Option        | Type                                | Default           | Description                                                                                                       |
+| ------------- | ----------------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `element`     | `HTMLElement`                       | `document.body`   | Target mount element for the banner                                                                               |
 | `mode`        | `'shift' \| 'overlap' \| 'replace'` | `'shift'`         | `'shift'` pushes page content down, `'overlap'` floats on top, `'replace'` swaps a same-class placeholder element |
-| `fontSize`    | `string`                            | `'87.5%'`         | Banner font size; `%` anchors to the widget's own 16px host box, ignoring document root scaling                      |
-| `charities`   | `Charity[]`                         | _(built-in)_      | Custom charity list; replaces the built-in database                                                       |
-| `tags`        | `CharityTag[]`                      | _(all)_           | Filter charities by category: `'military'`, `'humanitarian'`, `'animals'`                                            |
-| `dontRepeat`  | `boolean`                           | `true`            | Avoid repeating charities across page loads using `localStorage`                                                     |
-| `isInConsole` | `boolean`                           | `true`            | Log the selected charity to the dev console                                                                          |
-| `locale`      | `string`                            | _(auto-detected)_ | Override the auto-detected BCP 47 language tag                                                                       |
+| `fontSize`    | `string`                            | `'87.5%'`         | Banner font size; `%` anchors to the widget's own 16px host box, ignoring document root scaling                   |
+| `charities`   | `Charity[]`                         | _(built-in)_      | Custom charity list; replaces the built-in database                                                               |
+| `tags`        | `CharityTag[]`                      | _(all)_           | Filter charities by category: `'military'`, `'humanitarian'`, `'animals'`                                         |
+| `exclude`     | `string[]`                          | _(none)_          | Exclude charities by id; unknown ids are ignored                                                                  |
+| `dontRepeat`  | `boolean`                           | `true`            | Avoid repeating charities across page loads using `localStorage`                                                  |
+| `isInConsole` | `boolean`                           | `true`            | Log the selected charity to the dev console                                                                       |
+| `locale`      | `string`                            | _(auto-detected)_ | Override the auto-detected BCP 47 language tag                                                                    |
 
 ### Filtering by category
 
 Show only military charities:
 
 ```ts
-await supportUkraineBlock({tags: ['military']})
+await supportUkraineBlock({ tags: ['military'] })
+```
+
+### Excluding charities
+
+Hide specific charities by id (unknown ids are ignored):
+
+```ts
+await supportUkraineBlock({ exclude: ['united24'] })
 ```
 
 ### Replace mode (no layout shift)
@@ -155,11 +181,15 @@ page content:
 ```html
 <!-- Static HTML: renders nothing until JS runs. Mirror the host box (font-size 16px,
      min-height 2.5em = the banner's reserved height) so swap-in causes zero shift. -->
-<section aria-label="Support Ukraine banner" class="support-ukraine-block" style="font-size:16px;min-height:2.5em"></section>
+<section
+  aria-label="Support Ukraine banner"
+  class="support-ukraine-block"
+  style="font-size:16px;min-height:2.5em"
+></section>
 ```
 
 ```ts
-await supportUkraineBlock({mode: 'replace'})
+await supportUkraineBlock({ mode: 'replace' })
 ```
 
 The banner finds the first element with class `support-ukraine-block` inside the mount element and replaces it in place.
@@ -171,7 +201,7 @@ placeholder already reserves the exact space the banner needs.
 Allow the same charity to appear on every page load:
 
 ```ts
-await supportUkraineBlock({dontRepeat: false})
+await supportUkraineBlock({ dontRepeat: false })
 ```
 
 ## Locale support
@@ -179,7 +209,7 @@ await supportUkraineBlock({dontRepeat: false})
 The banner is translated to the visitor's language automatically. The following locales are supported:
 
 | Language   | Code | RTL                |
-|------------|------|--------------------|
+| ---------- | ---- | ------------------ |
 | Arabic     | `ar` | Yes                |
 | Chinese    | `zh` |                    |
 | Dutch      | `nl` |                    |

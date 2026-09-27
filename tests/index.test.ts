@@ -307,6 +307,62 @@ describe('supportUkraineBlock', () => {
   })
 })
 
+// ── exclude ─────────────────────────────────────────────────────────────
+
+function bannerName(host: HTMLElement): string {
+  const banner = host.shadowRoot!.banner!
+  const link = banner.firstChild as MockElement
+  const info = link.lastChild as MockElement
+  const name = info.children.find(child => child.className === 'support-ukraine-block__name')!
+  return name.textContent
+}
+
+describe('exclude', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  afterEach(() => {
+    body.children.length = 0
+  })
+
+  it('never shows an excluded charity id', async () => {
+    const excluded = DEFAULT_CHARITIES[0]!
+    for (let index = 0; index < 5; index++) {
+      const host = await supportUkraineBlock({ exclude: [excluded.id], dontRepeat: false })
+      assert.notEqual(bannerName(host), excluded.name)
+    }
+  })
+
+  it('combines with the tags filter', async () => {
+    const excluded = DEFAULT_CHARITIES.find(c => c.tags.includes('military'))!
+    const host = await supportUkraineBlock({
+      exclude: [excluded.id],
+      tags: ['military'],
+      dontRepeat: false
+    })
+    assert.notEqual(bannerName(host), excluded.name)
+  })
+
+  it('ignores unknown ids', async () => {
+    const host = await supportUkraineBlock({ exclude: ['no-such-charity'], dontRepeat: false })
+    assert.ok(bannerName(host).length > 0)
+  })
+
+  it('falls back to the full list when every candidate is excluded', async () => {
+    const all = DEFAULT_CHARITIES.map(c => c.id)
+    const host = await supportUkraineBlock({ exclude: all, dontRepeat: false })
+    assert.ok(bannerName(host).length > 0)
+  })
+})
+
 // ── dontRepeat ─────────────────────────────────────────────────────────
 
 // Minimal DOM stub so supportUkraineBlock can run in Node

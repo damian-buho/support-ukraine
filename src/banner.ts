@@ -167,6 +167,7 @@ export function mountBanner(
     fontSize = '87.5%',
     charities,
     tags,
+    exclude,
     dontRepeat = true,
     isInConsole = true,
     showRefreshButton = false,
@@ -181,6 +182,12 @@ export function mountBanner(
     tags && tags.length > 0
       ? localizedCharities.filter(charity => charity.tags.some(t => tags.includes(t)))
       : localizedCharities
+
+  if (exclude && exclude.length > 0) {
+    const excluded = new Set(exclude)
+    const kept = candidates.filter(charity => !excluded.has(charity.id))
+    if (kept.length > 0) candidates = kept
+  }
 
   if (candidates.length === 0) {
     candidates = localizedCharities
