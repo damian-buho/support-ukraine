@@ -20,7 +20,7 @@ SPDX-License-Identifier: MIT
 [![REUSE status](https://api.reuse.software/badge/github.com/damian-buho/support-ukraine)](https://api.reuse.software/info/github.com/damian-buho/support-ukraine)
 
 - Browser library that adds a Ukraine-support charity banner to any website.
-- Shows randomly selected Ukrainian charity localized to the visitor's language and respect RTL scripts.
+- Shows randomly selected Ukrainian charity localized to the visitor's language and respects RTL scripts.
 - You can choose kinds of charities.
 - Inspired by [hejny/Ukraine](https://github.com/hejny/Ukraine).
 
@@ -28,11 +28,11 @@ SPDX-License-Identifier: MIT
 
 [Demo / Play with settings](https://damian-buho.github.io/support-ukraine/dev.html)
 
-![I18N support](https://raw.githubusercontent.com/damian-buho/support-ukraine/dev/docs/screenshots/english.png)
+![I18N support](docs/screenshots/english.png)
 
-![Dark theme support](https://raw.githubusercontent.com/damian-buho/support-ukraine/dev/docs/screenshots/spanish.png)
+![Dark theme support](docs/screenshots/spanish.png)
 
-![RTL Support](https://raw.githubusercontent.com/damian-buho/support-ukraine/dev/docs/screenshots/arabic.png)
+![RTL Support](docs/screenshots/arabic.png)
 
 ## Install
 
@@ -46,7 +46,7 @@ npm install @damian-buho/support-ukraine
 
 ```html
 <script type="module">
-  import { supportUkraineBlock } from 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@1/+esm'
+  import { supportUkraineBlock } from 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@2/+esm'
 
   await supportUkraineBlock()
 </script>
@@ -56,7 +56,7 @@ For optimal Core Web Vitals, avoid the chained locale fetch by loading a pre-loc
 
 ```html
 <script type="module">
-  import { supportUkraineBlock } from 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@1/dist/es.js'
+  import { supportUkraineBlock } from 'https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@2/dist/es.js'
 
   await supportUkraineBlock()
 </script>
@@ -111,7 +111,7 @@ language tag and load the matching bundle:
   const locale = supported.includes(base) ? base : 'en'
 
   const { supportUkraineBlock } = await import(
-    `https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@1/dist/${locale}.js`
+    `https://cdn.jsdelivr.net/npm/@damian-buho/support-ukraine@2/dist/${locale}.js`
   )
 
   await supportUkraineBlock()
@@ -156,6 +156,9 @@ The entire block is a clickable link to the charity's donation page.
 | `dontRepeat`  | `boolean`                           | `true`            | Avoid repeating charities; seen ids stay in session memory by default                                             |
 | `persistSeen` | `boolean`                           | `false`           | Persist seen charity ids in `localStorage` across visits (needs visitor consent)                                  |
 | `isInConsole` | `boolean`                           | `true`            | Log the selected charity to the dev console                                                                       |
+| `showRefreshButton` | `boolean`                     | `false`           | Show a refresh button that loads the next random charity                                                          |
+| `autoRefreshInterval` | `number`                    | `0`               | Auto-refresh interval in milliseconds; `0` disables automatic refresh                                             |
+| `showRefreshAnimation` | `boolean`                  | `false`           | Show a fade animation when the charity changes (respects `prefers-reduced-motion`)                                |
 | `locale`      | `string`                            | _(auto-detected)_ | Override the auto-detected BCP 47 language tag                                                                    |
 
 ### Filtering by category
@@ -287,4 +290,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
 
 ## License
 
-MIT
+[MIT](LICENSE)
