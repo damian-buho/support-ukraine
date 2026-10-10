@@ -203,6 +203,7 @@ export function mountBanner(
     showRefreshButton = false,
     autoRefreshInterval = 0,
     refreshOnClick = true,
+    refreshOnClickDelay = 2000,
     showRefreshAnimation = false
   } = options
 
@@ -343,8 +344,36 @@ export function mountBanner(
     }
   }
 
+  let clickRefreshTimer: ReturnType<typeof setTimeout> | undefined
+  function cancelClickRefresh(): void {
+    if (clickRefreshTimer !== undefined) {
+      clearTimeout(clickRefreshTimer)
+      clickRefreshTimer = undefined
+    }
+    document.removeEventListener('visibilitychange', handlePageHidden)
+    globalThis.window?.removeEventListener?.('blur', handleWindowBlur)
+  }
+  function handlePageHidden(): void {
+    if (!document.hidden) return
+    cancelClickRefresh()
+    updateCharity()
+  }
+  function handleWindowBlur(): void {
+    cancelClickRefresh()
+    updateCharity()
+  }
+  function scheduleClickRefresh(): void {
+    if (clickRefreshTimer !== undefined) return
+    document.addEventListener('visibilitychange', handlePageHidden)
+    globalThis.window?.addEventListener?.('blur', handleWindowBlur)
+    clickRefreshTimer = setTimeout(() => {
+      cancelClickRefresh()
+      updateCharity()
+    }, refreshOnClickDelay)
+  }
+
   if (refreshOnClick) {
-    link.addEventListener('click', updateCharity)
+    link.addEventListener('click', scheduleClickRefresh)
   }
 
   if (showRefreshButton) {
@@ -396,6 +425,7 @@ export function mountBanner(
 
   const instance = host as HTMLElement & { destroy: () => void }
   instance.destroy = () => {
+    cancelClickRefresh()
     if (intervalId !== undefined) {
       clearInterval(intervalId)
     }

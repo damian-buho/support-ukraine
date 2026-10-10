@@ -729,9 +729,55 @@ class MockShadowRoot {
 
 const body = new MockBody()
 
+type FocusHandler = (...arguments_: unknown[]) => void
+
+const documentListeners = new Map<string, FocusHandler[]>()
+const windowListeners = new Map<string, FocusHandler[]>()
+
+function addListenerTo(
+  store: Map<string, FocusHandler[]>,
+  event: string,
+  handler: FocusHandler
+): void {
+  const list = store.get(event) ?? []
+  list.push(handler)
+  store.set(event, list)
+}
+
+function removeListenerFrom(
+  store: Map<string, FocusHandler[]>,
+  event: string,
+  handler: FocusHandler
+): void {
+  store.set((store.get(event) ?? []).filter(item => item !== handler))
+}
+
+function fireDocumentEvent(event: string): void {
+  const handlers = documentListeners.get(event) ?? []
+  for (const handler of handlers) handler()
+}
+
+function fireWindowEvent(event: string): void {
+  const handlers = windowListeners.get(event) ?? []
+  for (const handler of handlers) handler()
+}
+
+function setDocumentHidden(isHidden: boolean): void {
+  ;(globalThis.document as unknown as { hidden: boolean }).hidden = isHidden
+}
+
 function setupWindow(hostname = 'example.com'): void {
+  windowListeners.clear()
   // eslint-disable-next-line unicorn/no-global-object-property-assignment
-  globalThis.window = { location: { hostname } }
+  globalThis.window = {
+    location: { hostname },
+    addEventListener(event: string, handler: FocusHandler) {
+      addListenerTo(windowListeners, event, handler)
+    },
+    removeEventListener(event: string, handler: FocusHandler) {
+      removeListenerFrom(windowListeners, event, handler)
+    }
+  }
 }
 
 function setupDom(): void {
@@ -740,6 +786,13 @@ function setupDom(): void {
       value: {
         head,
         body,
+        hidden: false,
+        addEventListener(event: string, handler: FocusHandler) {
+          addListenerTo(documentListeners, event, handler)
+        },
+        removeEventListener(event: string, handler: FocusHandler) {
+          removeListenerFrom(documentListeners, event, handler)
+        },
         createElement(tag: string): MockElement {
           const element = new MockElement()
           element.tagName = tag.toUpperCase()
@@ -1446,11 +1499,15 @@ describe('refreshOnClick', () => {
   before(() => {
     setupDom()
     setupStorage()
+    setupWindow()
   })
 
   beforeEach(() => {
     storage.store.clear()
     resetMemorySeen()
+    documentListeners.clear()
+    setupWindow()
+    setDocumentHidden(false)
     head.children.length = 0
     body.children.length = 0
   })
@@ -1459,12 +1516,25 @@ describe('refreshOnClick', () => {
     body.children.length = 0
   })
 
-  it('shows the next charity after clicking the banner link by default', async () => {
+  it('keeps the banner while visible, rotates once the page hides after a click', async () => {
     const host = await supportUkraineBlock({ charities: twoCharities })
     const before = bannerName(host)
     const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as MockElement
     link.click()
+    assert.equal(bannerName(host), before, 'nothing swaps in front of the visitor')
+    setDocumentHidden(true)
+    fireDocumentEvent('visibilitychange')
+    assert.notEqual(bannerName(host), before)
+  })
+
+  it('rotates on window blur after a click', async () => {
+    const host = await supportUkraineBlock({ charities: twoCharities })
+    const before = bannerName(host)
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as MockElement
+    link.click()
+    fireWindowEvent('blur')
     assert.notEqual(bannerName(host), before)
   })
 
@@ -1474,7 +1544,21 @@ describe('refreshOnClick', () => {
     const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as MockElement
     link.click()
+    fireWindowEvent('blur')
+    setDocumentHidden(true)
+    fireDocumentEvent('visibilitychange')
     assert.equal(bannerName(host), before)
+  })
+
+  it('rotates after refreshOnClickDelay when focus never leaves', async () => {
+    const host = await supportUkraineBlock({ charities: twoCharities, refreshOnClickDelay: 150 })
+    const before = bannerName(host)
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as MockElement
+    link.click()
+    assert.equal(bannerName(host), before, 'nothing swaps before the delay elapses')
+    await new Promise(resolve => setTimeout(resolve, 550))
+    assert.notEqual(bannerName(host), before)
   })
 
   it('does not throw with a single charity', async () => {
@@ -1482,7 +1566,20 @@ describe('refreshOnClick', () => {
     const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as MockElement
     link.click()
+    fireWindowEvent('blur')
     assert.equal(bannerName(host), 'Charity A')
+  })
+
+  it('destroy cancels a pending click rotation', async () => {
+    const host = await supportUkraineBlock({ charities: twoCharities })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as MockElement
+    link.click()
+    host.destroy()
+    fireWindowEvent('blur')
+    setDocumentHidden(true)
+    fireDocumentEvent('visibilitychange')
+    assert.equal(body.children.length, 0, 'host stays removed, no rotation revives it')
   })
 })
 
