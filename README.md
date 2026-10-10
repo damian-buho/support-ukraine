@@ -159,6 +159,8 @@ The entire block is a clickable link to the charity's donation page.
 | `showRefreshButton` | `boolean`                     | `false`           | Show a refresh button that loads the next random charity                                                          |
 | `autoRefreshInterval` | `number`                    | `0`               | Auto-refresh interval in milliseconds; `0` disables automatic refresh                                             |
 | `showRefreshAnimation` | `boolean`                  | `false`           | Show a fade animation when the charity changes (respects `prefers-reduced-motion`)                                |
+| `refreshOnClick` | `boolean`                       | `true`            | Show the next random charity after a click on the banner link                                                     |
+| `refreshOnClickDelay` | `number`                   | `2000`            | Fallback delay in ms before rotating after a click when the page never loses focus                                |
 | `locale`      | `string`                            | _(auto-detected)_ | Override the auto-detected BCP 47 language tag                                                                    |
 
 ### Filtering by category
@@ -225,6 +227,24 @@ Allow the same charity to appear on every page load:
 
 ```ts
 await supportUkraineBlock({ dontRepeat: false })
+```
+
+### Disabling refresh on click
+
+By default a click on the banner link opens the donation page in a new tab and the banner
+rotates to the next random charity once the page loses focus (with a short delayed fallback),
+so the swap never flashes in front of the visitor and a returning visitor sees a fresh charity.
+Opt out with:
+
+```ts
+await supportUkraineBlock({ refreshOnClick: false })
+```
+
+Tune the fallback delay (milliseconds, default `2000`) for pages that never lose focus
+(pop-up blocker, background tab):
+
+```ts
+await supportUkraineBlock({ refreshOnClickDelay: 5000 })
 ```
 
 ### Persisting seen charities

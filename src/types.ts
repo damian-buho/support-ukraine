@@ -165,6 +165,18 @@ export interface SupportUkraineBlockOptions {
   */
   autoRefreshInterval?: number
   /**
+  Show the next random charity after the visitor clicks the banner link.
+  The banner rotates once the page loses focus (the donation opens in a new tab),
+  with a short delayed fallback, so the swap never flashes in front of the visitor.
+  Enabled by default so a returning visitor sees a fresh charity instead of the one just opened.
+  */
+  refreshOnClick?: boolean
+  /**
+  Fallback delay in milliseconds before the banner rotates after a click
+  when the page never loses focus (pop-up blocker, background tab). Default 2000.
+  */
+  refreshOnClickDelay?: number
+  /**
   Show a fade animation when the charity changes (respects prefers-reduced-motion).
   */
   showRefreshAnimation?: boolean

@@ -126,6 +126,8 @@ mergeCharities()            → Charity[] (localized taglines)
 | `dontRepeat`  | `boolean`                           | `true`            | Avoid repeats; seen ids stay in session memory unless `persistSeen` is set                                        |
 | `persistSeen` | `boolean`                           | `false`           | Persist seen charity ids in `localStorage` across visits (needs visitor consent)                                  |
 | `isInConsole` | `boolean`                           | `true`            | Log selected charity to dev console                                                     |
+| `refreshOnClick` | `boolean`                          | `true`            | Show the next random charity after a click on the banner link                           |
+| `refreshOnClickDelay` | `number`                        | `2000`            | Fallback delay in ms before rotating after a click when the page never loses focus      |
 | `locale`      | `string`                            | _(auto-detected)_ | Override BCP 47 language tag                                                            |
 
 ## Testing

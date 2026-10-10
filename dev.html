@@ -208,6 +208,9 @@ SPDX-License-Identifier: MIT
       <label><input type="checkbox" id="opt-showRefreshButton"> showRefreshButton</label>
       <label><input type="checkbox" id="opt-autoRefresh"> autoRefresh</label>
       <label><input type="checkbox" id="opt-showRefreshAnimation"> showRefreshAnimation</label>
+      <label><input type="checkbox" id="opt-refreshOnClick" checked> refreshOnClick</label>
+      <label><strong>Refresh-on-click fallback delay (ms)</strong></label>
+      <input type="text" id="opt-refreshOnClickDelay" value="2000" placeholder="e.g. 2000">
       <label><strong>Auto-refresh interval (ms)</strong></label>
       <input type="text" id="opt-autoRefreshInterval" value="15000" placeholder="e.g. 15000">
     </div>
@@ -293,7 +296,9 @@ SPDX-License-Identifier: MIT
         ? Number(document.querySelector('#opt-autoRefreshInterval').value) || 15000
         : 0
       const showRefreshAnimation = document.querySelector('#opt-showRefreshAnimation').checked
-      return { build, mode, tags, locale, fontSize, dontRepeat, isInConsole, showRefreshButton, autoRefreshInterval, showRefreshAnimation }
+      const refreshOnClick = document.querySelector('#opt-refreshOnClick').checked
+      const refreshOnClickDelay = Number(document.querySelector('#opt-refreshOnClickDelay').value) || 2000
+      return { build, mode, tags, locale, fontSize, dontRepeat, isInConsole, showRefreshButton, autoRefreshInterval, showRefreshAnimation, refreshOnClick, refreshOnClickDelay }
     }
 
     function updatePreview(opts, importUrl) {
@@ -310,6 +315,8 @@ SPDX-License-Identifier: MIT
       if (opts.showRefreshButton) args.push('showRefreshButton: true')
       if (opts.autoRefreshInterval > 0) args.push(`autoRefreshInterval: ${opts.autoRefreshInterval}`)
       if (opts.showRefreshAnimation) args.push('showRefreshAnimation: true')
+      if (!opts.refreshOnClick) args.push('refreshOnClick: false')
+      if (opts.refreshOnClickDelay !== 2000) args.push(`refreshOnClickDelay: ${opts.refreshOnClickDelay}`)
       const importLine =
         opts.build === 'localized'
           ? `import { supportUkraineBlock } from '@damian-buho/support-ukraine/${opts.locale}'`
@@ -358,6 +365,8 @@ SPDX-License-Identifier: MIT
     document.querySelector('#opt-autoRefresh').addEventListener('change', mount)
     document.querySelector('#opt-autoRefreshInterval').addEventListener('change', mount)
     document.querySelector('#opt-showRefreshAnimation').addEventListener('change', mount)
+    document.querySelector('#opt-refreshOnClick').addEventListener('change', mount)
+    document.querySelector('#opt-refreshOnClickDelay').addEventListener('change', mount)
 
     document.querySelectorAll('input[name="build"]').forEach(r => r.addEventListener('change', mount))
     document.querySelectorAll('input[name="theme"]').forEach(r => r.addEventListener('change', mount))
