@@ -202,6 +202,7 @@ export function mountBanner(
     isInConsole = true,
     showRefreshButton = false,
     autoRefreshInterval = 0,
+    refreshOnClick = true,
     showRefreshAnimation = false
   } = options
 
@@ -340,6 +341,10 @@ export function mountBanner(
     } else {
       applyNext(next)
     }
+  }
+
+  if (refreshOnClick) {
+    link.addEventListener('click', updateCharity)
   }
 
   if (showRefreshButton) {

@@ -165,6 +165,11 @@ export interface SupportUkraineBlockOptions {
   */
   autoRefreshInterval?: number
   /**
+  Show the next random charity after the visitor clicks the banner link.
+  Enabled by default so a returning visitor sees a fresh charity instead of the one just opened.
+  */
+  refreshOnClick?: boolean
+  /**
   Show a fade animation when the charity changes (respects prefers-reduced-motion).
   */
   showRefreshAnimation?: boolean

@@ -1423,6 +1423,69 @@ describe('showRefreshButton', () => {
   })
 })
 
+// ── refreshOnClick ────────────────────────────────────────────────
+
+describe('refreshOnClick', () => {
+  const twoCharities: Charity[] = [
+    {
+      id: 'click-a',
+      name: 'Charity A',
+      tagline: 'Tagline A',
+      urls: { en: 'https://a.example.org' },
+      tags: ['humanitarian']
+    },
+    {
+      id: 'click-b',
+      name: 'Charity B',
+      tagline: 'Tagline B',
+      urls: { en: 'https://b.example.org' },
+      tags: ['humanitarian']
+    }
+  ]
+
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    resetMemorySeen()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  afterEach(() => {
+    body.children.length = 0
+  })
+
+  it('shows the next charity after clicking the banner link by default', async () => {
+    const host = await supportUkraineBlock({ charities: twoCharities })
+    const before = bannerName(host)
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as MockElement
+    link.click()
+    assert.notEqual(bannerName(host), before)
+  })
+
+  it('keeps the charity when refreshOnClick is false', async () => {
+    const host = await supportUkraineBlock({ charities: twoCharities, refreshOnClick: false })
+    const before = bannerName(host)
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as MockElement
+    link.click()
+    assert.equal(bannerName(host), before)
+  })
+
+  it('does not throw with a single charity', async () => {
+    const host = await supportUkraineBlock({ charities: [twoCharities[0]!] })
+    const banner = host.shadowRoot!.banner!
+    const link = banner.firstChild as MockElement
+    link.click()
+    assert.equal(bannerName(host), 'Charity A')
+  })
+})
+
 // ── autoRefreshInterval ─────────────────────────────────────────────
 
 describe('autoRefreshInterval', () => {
