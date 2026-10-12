@@ -752,13 +752,13 @@ function removeListenerFrom(
   store.set((store.get(event) ?? []).filter(item => item !== handler))
 }
 
-function fireDocumentEvent(event: string): void {
-  const handlers = documentListeners.get(event) ?? []
+function fireDocumentEvent(): void {
+  const handlers = documentListeners.get('visibilitychange') ?? []
   for (const handler of handlers) handler()
 }
 
-function fireWindowEvent(event: string): void {
-  const handlers = windowListeners.get(event) ?? []
+function fireWindowEvent(): void {
+  const handlers = windowListeners.get('blur') ?? []
   for (const handler of handlers) handler()
 }
 
@@ -766,11 +766,11 @@ function setDocumentHidden(isHidden: boolean): void {
   ;(globalThis.document as unknown as { hidden: boolean }).hidden = isHidden
 }
 
-function setupWindow(hostname = 'example.com'): void {
+function setupWindow(): void {
   windowListeners.clear()
   // eslint-disable-next-line unicorn/no-global-object-property-assignment
   globalThis.window = {
-    location: { hostname },
+    location: { hostname: 'example.com' },
     addEventListener(event: string, handler: FocusHandler) {
       addListenerTo(windowListeners, event, handler)
     },
@@ -1524,7 +1524,7 @@ describe('refreshOnClick', () => {
     link.click()
     assert.equal(bannerName(host), before, 'nothing swaps in front of the visitor')
     setDocumentHidden(true)
-    fireDocumentEvent('visibilitychange')
+    fireDocumentEvent()
     assert.notEqual(bannerName(host), before)
   })
 
@@ -1534,7 +1534,7 @@ describe('refreshOnClick', () => {
     const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as MockElement
     link.click()
-    fireWindowEvent('blur')
+    fireWindowEvent()
     assert.notEqual(bannerName(host), before)
   })
 
@@ -1544,9 +1544,9 @@ describe('refreshOnClick', () => {
     const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as MockElement
     link.click()
-    fireWindowEvent('blur')
+    fireWindowEvent()
     setDocumentHidden(true)
-    fireDocumentEvent('visibilitychange')
+    fireDocumentEvent()
     assert.equal(bannerName(host), before)
   })
 
@@ -1566,7 +1566,7 @@ describe('refreshOnClick', () => {
     const banner = host.shadowRoot!.banner!
     const link = banner.firstChild as MockElement
     link.click()
-    fireWindowEvent('blur')
+    fireWindowEvent()
     assert.equal(bannerName(host), 'Charity A')
   })
 
@@ -1576,9 +1576,9 @@ describe('refreshOnClick', () => {
     const link = banner.firstChild as MockElement
     link.click()
     host.destroy()
-    fireWindowEvent('blur')
+    fireWindowEvent()
     setDocumentHidden(true)
-    fireDocumentEvent('visibilitychange')
+    fireDocumentEvent()
     assert.equal(body.children.length, 0, 'host stays removed, no rotation revives it')
   })
 })

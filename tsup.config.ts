@@ -58,7 +58,7 @@ const locales = [
   'zh'
 ] as const
 
-export default defineConfig(
+const config = defineConfig(
   isTestBuild
     ? {
         entry: ['tests/index.test.ts'],
@@ -108,3 +108,5 @@ export default defineConfig(
         }
       ]
 )
+
+export default config
