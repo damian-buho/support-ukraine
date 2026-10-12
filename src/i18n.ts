@@ -14,14 +14,14 @@ Cached loaded locale messages per language code.
 const cache = new Map<string, LocaleMessages>()
 
 /**
- * Detect the user's preferred locale from browser APIs.
- *
- * Resolution order:
- * 1. Explicit `locale` option
- * 2. First match from `navigator.languages[]` (user-ordered preference list)
- * 3. `navigator.language` base tag (e.g. "es" from "es-MX")
- * 4. Fallback: "en"
- */
+Detect the user's preferred locale from browser APIs.
+
+Resolution order:
+1. Explicit `locale` option
+2. First match from `navigator.languages[]` (user-ordered preference list)
+3. `navigator.language` base tag (e.g. "es" from "es-MX")
+4. Fallback: "en"
+*/
 export function detectLocale(preferred?: string): SupportedLocale {
   if (preferred) {
     return resolveLocale(preferred)
@@ -47,9 +47,9 @@ export function detectLocale(preferred?: string): SupportedLocale {
 }
 
 /**
- * Load locale messages for the given language code.
- * Returns cached result on repeat calls. Falls back to 'en' on error.
- */
+Load locale messages for the given language code.
+Returns cached result on repeat calls. Falls back to 'en' on error.
+*/
 export async function loadLocale(lang: string): Promise<LocaleMessages> {
   const code = resolveLocale(lang)
 
@@ -72,9 +72,9 @@ export async function loadLocale(lang: string): Promise<LocaleMessages> {
 }
 
 /**
- * Eagerly pre-load the English locale so it is always available synchronously.
- * Other locales are loaded on demand via `loadLocale()`.
- */
+Eagerly pre-load the English locale so it is always available synchronously.
+Other locales are loaded on demand via `loadLocale()`.
+*/
 export async function preloadDefault(): Promise<LocaleMessages> {
   return loadLocale('en')
 }

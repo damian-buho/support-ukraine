@@ -20,21 +20,21 @@ export type { SupportedLocale } from '../locales/index.js'
 const LANG = 'ja'
 
 /**
- * Localized `supportUkraineBlock` with `ja` baked in.
- *
- * This build is self-contained — the locale messages are bundled inline, so
- * no second network request is needed. For optimal Core Web Vitals, load
- * only the locale you need:
- *
- * ```ts
- * import { supportUkraineBlock } from '@damian-buho/support-ukraine/ja'
- * await supportUkraineBlock()
- * ```
- *
- * The `locale` option is ignored in this build (the bundle is already
- * localized). Use the auto-detect build (`@damian-buho/support-ukraine`)
- * if you need runtime locale switching.
- */
+Localized `supportUkraineBlock` with `ja` baked in.
+
+This build is self-contained — the locale messages are bundled inline, so
+no second network request is needed. For optimal Core Web Vitals, load
+only the locale you need:
+
+```ts
+import { supportUkraineBlock } from '@damian-buho/support-ukraine/ja'
+await supportUkraineBlock()
+```
+
+The `locale` option is ignored in this build (the bundle is already
+localized). Use the auto-detect build (`@damian-buho/support-ukraine`)
+if you need runtime locale switching.
+*/
 export function supportUkraineBlock(
   options: SupportUkraineBlockOptions = {}
 ): Promise<HTMLElement> {
