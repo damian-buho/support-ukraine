@@ -42,8 +42,8 @@ export interface Charity {
   name: string
   tagline: string
   /**
-   * Donation URLs keyed by base language code. `en` is required and is the fallback.
-   */
+  Donation URLs keyed by base language code. `en` is required and is the fallback.
+  */
   urls: Record<string, string> & { en: string }
   tags: CharityTag[]
 }
@@ -137,16 +137,16 @@ export interface SupportUkraineBlockOptions {
   */
   fontSize?: string
   /**
-   * Custom charity list. If omitted the built-in defaults are used.
-   */
+  Custom charity list. If omitted the built-in defaults are used.
+  */
   charities?: Charity[]
   /**
-   * Category tags to filter by. If omitted all charities are shown.
-   */
+  Category tags to filter by. If omitted all charities are shown.
+  */
   tags?: CharityTag[]
   /**
-   * Charity ids to exclude from rotation. Unknown ids are ignored.
-   */
+  Charity ids to exclude from rotation. Unknown ids are ignored.
+  */
   exclude?: string[]
   // Avoid repeating charities. Seen ids stay in session memory unless persistSeen is set.
   dontRepeat?: boolean
@@ -181,24 +181,24 @@ export interface SupportUkraineBlockOptions {
   */
   showRefreshAnimation?: boolean
   /**
-   * Override the auto-detected locale (BCP 47 language tag).
-   * If omitted the locale is detected from `navigator.language`.
-   */
+  Override the auto-detected locale (BCP 47 language tag).
+  If omitted the locale is detected from `navigator.language`.
+  */
   locale?: string
   /**
-   * Enable UTM parameters on charity links. Enabled by default.
-   */
+  Enable UTM parameters on charity links. Enabled by default.
+  */
   utmEnabled?: boolean
   /**
-   * UTM source parameter. Defaults to the current domain (window.location.hostname).
-   */
+  UTM source parameter. Defaults to the current domain (window.location.hostname).
+  */
   utmSource?: string
   /**
-   * UTM medium parameter. Defaults to 'support-ukraine-banner'.
-   */
+  UTM medium parameter. Defaults to 'support-ukraine-banner'.
+  */
   utmMedium?: string
   /**
-   * UTM campaign parameter. Empty by default.
-   */
+  UTM campaign parameter. Empty by default.
+  */
   utmCampaign?: string
 }

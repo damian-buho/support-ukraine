@@ -58,10 +58,10 @@ function updateSeen(mutate: (seen: Set<string>) => void, shouldPersist: boolean)
 }
 
 /**
- * Pick a random item from an array.
- *
- * @internal
- */
+Pick a random item from an array.
+
+@internal
+*/
 export function randomItem<T>(items: T[]): T {
   if (items.length === 0) {
     throw new Error('randomItem: cannot pick from an empty array')
@@ -119,8 +119,8 @@ function injectShadowStyles(shadowRoot: ShadowRoot): void {
 }
 
 /**
- * Merge base charities with locale-specific translations.
- */
+Merge base charities with locale-specific translations.
+*/
 export function mergeCharities(base: readonly Charity[], locale: LocaleMessages): Charity[] {
   return base.map(charity => {
     const translated = locale.charities[charity.id]
@@ -129,9 +129,9 @@ export function mergeCharities(base: readonly Charity[], locale: LocaleMessages)
 }
 
 /**
- * Resolve the donation URL for a charity in the given banner language.
- * Falls back to English.
- */
+Resolve the donation URL for a charity in the given banner language.
+Falls back to English.
+*/
 export function charityUrlFor(charity: Charity, lang: string): string {
   const base = (lang.split('-', 1)[0] ?? '').toLowerCase()
   return charity.urls[base] ?? charity.urls.en
@@ -183,9 +183,9 @@ export function formatBannerText(charity: Charity, messages: LocaleMessages): st
 }
 
 /**
- * Mount the banner with already-resolved `lang` and `messages`.
- * Shared by the auto-detect build (`src/index.ts`) and the per-locale builds (`src/entries/*.ts`).
- */
+Mount the banner with already-resolved `lang` and `messages`.
+Shared by the auto-detect build (`src/index.ts`) and the per-locale builds (`src/entries/*.ts`).
+*/
 export function mountBanner(
   lang: string,
   messages: LocaleMessages,

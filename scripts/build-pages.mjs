@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: MIT
 
 /**
- * Build script that generates pages/index.html — a single-page app listing
- * all charities with localized content. Reads source YAML data from src/ and
- * emits a self-contained HTML file with embedded translations.
- *
- * Usage:  node scripts/build-pages.mjs
- * Output: pages/index.html
- */
+Build script that generates pages/index.html — a single-page app listing
+all charities with localized content. Reads source YAML data from src/ and
+emits a self-contained HTML file with embedded translations.
+
+Usage:  node scripts/build-pages.mjs
+Output: pages/index.html
+*/
 
 import { readFileSync, mkdirSync, writeFileSync, copyFileSync } from 'node:fs'
 import path from 'node:path'
