@@ -63,10 +63,9 @@ Pick a random item from an array.
 @internal
 */
 export function randomItem<T>(items: T[]): T {
-  if (items.length === 0) {
-    throw new Error('randomItem: cannot pick from an empty array')
-  }
-  return items[Math.floor(Math.random() * items.length)]!
+  const item = items[Math.floor(Math.random() * items.length)]
+  if (item === undefined) throw new Error('randomItem: cannot pick from an empty array')
+  return item
 }
 
 function pickCharity(

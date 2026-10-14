@@ -304,8 +304,10 @@ describe('mergeCharities', () => {
 
     const united24 = merged.find(c => c.id === 'united24')
     assert.ok(united24)
+    const first = DEFAULT_CHARITIES[0]
+    assert.ok(first)
     // Spanish tagline should differ from English
-    assert.notEqual(united24.tagline, DEFAULT_CHARITIES[0]!.tagline)
+    assert.notEqual(united24.tagline, first.tagline)
   })
 
   it('keeps English tagline when charity id is missing from locale', async () => {
@@ -320,7 +322,9 @@ describe('mergeCharities', () => {
     }
     const merged = mergeCharities(DEFAULT_CHARITIES, messages)
     for (const [index, item] of merged.entries()) {
-      assert.equal(item.tagline, DEFAULT_CHARITIES[index]!.tagline)
+      const expected = DEFAULT_CHARITIES[index]
+      assert.ok(expected)
+      assert.equal(item.tagline, expected.tagline)
     }
   })
 })
@@ -347,7 +351,8 @@ describe('isRTL', () => {
 describe('formatBannerText', () => {
   it('formats the banner text with charity and messages', async () => {
     const messages = await loadLocale('en')
-    const charity = DEFAULT_CHARITIES[0]!
+    const charity = DEFAULT_CHARITIES[0]
+    assert.ok(charity)
     const result = formatBannerText(charity, messages)
     assert.ok(result.includes(charity.name))
     assert.ok(result.includes(charity.tagline))
@@ -382,12 +387,14 @@ describe('charityUrlFor', () => {
   })
 
   it('falls back to english when the banner language has no variant', () => {
-    const charity = DEFAULT_CHARITIES.find(c => c.id === 'cats-of-kyiv')!
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'cats-of-kyiv')
+    assert.ok(charity)
     assert.equal(charityUrlFor(charity, 'de'), 'https://cats.kiev.ua')
   })
 
   it('resolves the banner language variant', () => {
-    const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')!
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')
+    assert.ok(charity)
     assert.equal(charityUrlFor(charity, 'de'), 'https://www.hospitallers.org.uk/de')
     assert.equal(charityUrlFor(charity, 'de-AT'), 'https://www.hospitallers.org.uk/de')
     assert.equal(charityUrlFor(charity, 'it'), 'https://www.hospitallers.org.uk/it')
@@ -400,7 +407,8 @@ describe('charityUrlFor', () => {
   })
 
   it('resolves life-robots multi-language variants', () => {
-    const charity = DEFAULT_CHARITIES.find(c => c.id === 'life-robots-ukraine')!
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'life-robots-ukraine')
+    assert.ok(charity)
     assert.equal(charityUrlFor(charity, 'ja'), 'https://liferobots.com.ua/ja')
     assert.equal(charityUrlFor(charity, 'ko'), 'https://liferobots.com.ua/ko')
     assert.equal(charityUrlFor(charity, 'pl'), 'https://liferobots.com.ua/pl')
@@ -409,7 +417,8 @@ describe('charityUrlFor', () => {
   })
 
   it('falls back to english when the language variant is missing', () => {
-    const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')!
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')
+    assert.ok(charity)
     assert.equal(charityUrlFor(charity, 'uk'), 'https://www.hospitallers.org.uk')
     const noVariant: Charity = {
       id: 'x',
@@ -423,14 +432,14 @@ describe('charityUrlFor', () => {
   })
 
   it('links the banner to the localized variant', async () => {
-    const charity = DEFAULT_CHARITIES.find(c => c.id === 'come-back-alive')!
-    assert.ok(charity.urls, 'fixture needs localized urls')
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'come-back-alive')
+    assert.ok(charity?.urls, 'fixture needs localized urls')
     const host = await supportUkraineBlock({
       charities: [charity],
       locale: 'en',
       dontRepeat: false
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as unknown as { href: string }
     assert.ok(link.href.startsWith('https://savelife.in.ua/en/'), `unexpected href ${link.href}`)
   })
@@ -439,10 +448,11 @@ describe('charityUrlFor', () => {
 // ── exclude ─────────────────────────────────────────────────────────────
 
 function bannerName(host: HTMLElement): string {
-  const banner = host.shadowRoot!.banner!
+  const banner = bannerOf(host)
   const link = banner.firstChild as MockElement
   const info = link.lastChild as MockElement
-  const name = info.children.find(child => child.className === 'support-ukraine-block__name')!
+  const name = info.children.find(child => child.className === 'support-ukraine-block__name')
+  assert.ok(name, 'banner names its charity')
   return name.textContent
 }
 
@@ -463,7 +473,8 @@ describe('exclude', () => {
   })
 
   it('never shows an excluded charity id', async () => {
-    const excluded = DEFAULT_CHARITIES[0]!
+    const excluded = DEFAULT_CHARITIES[0]
+    assert.ok(excluded)
     for (let index = 0; index < 5; index++) {
       const host = await supportUkraineBlock({ exclude: [excluded.id], dontRepeat: false })
       assert.notEqual(bannerName(host), excluded.name)
@@ -471,7 +482,8 @@ describe('exclude', () => {
   })
 
   it('combines with the tags filter', async () => {
-    const excluded = DEFAULT_CHARITIES.find(c => c.tags.includes('military'))!
+    const excluded = DEFAULT_CHARITIES.find(c => c.tags.includes('military'))
+    assert.ok(excluded)
     const host = await supportUkraineBlock({
       exclude: [excluded.id],
       tags: ['military'],
@@ -727,6 +739,18 @@ class MockShadowRoot {
   }
 }
 
+function shadowOf(host: HTMLElement): MockShadowRoot {
+  const root = (host as unknown as MockElement).shadowRoot
+  assert.ok(root, 'banner host mounts a shadow root')
+  return root
+}
+
+function bannerOf(host: HTMLElement): MockElement {
+  const banner = shadowOf(host).banner
+  assert.ok(banner, 'shadow root holds the banner section')
+  return banner
+}
+
 const body = new MockBody()
 
 type FocusHandler = (...arguments_: unknown[]) => void
@@ -881,7 +905,7 @@ describe('dontRepeat', () => {
     assert.equal(seen.length, 1)
     const animals = DEFAULT_CHARITIES.filter(c => c.tags.includes('animals'))
     assert.ok(animals.some(c => c.id === seen[0]))
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as unknown as { href: string }
     assert.ok(link.href.length > 0)
   })
@@ -917,7 +941,7 @@ describe('dontRepeat', () => {
       dontRepeat: true,
       persistSeen: true
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as unknown as { href: string }
     const animals = DEFAULT_CHARITIES.filter((c: Charity) => c.tags.includes('animals'))
     const seenLink = link.href
@@ -952,7 +976,7 @@ describe('dontRepeat', () => {
       tags: [],
       dontRepeat: false
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as unknown as { href: string }
     assert.ok(link.href.length > 0, 'should mount a banner with a valid charity')
   })
@@ -962,7 +986,7 @@ describe('dontRepeat', () => {
       tags: ['nonexistent' as CharityTag],
       dontRepeat: false
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as unknown as { href: string }
     assert.ok(link.href.length > 0, 'should mount a banner despite no tag match')
   })
@@ -987,7 +1011,7 @@ describe('i18n integration', () => {
       tags: ['animals'],
       dontRepeat: false
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as MockElement
     const info = link.lastChild as MockElement
     const text = info.textContent
@@ -1007,7 +1031,7 @@ describe('i18n integration', () => {
         tags: ['animals'],
         dontRepeat: false
       })
-      const banner = host.shadowRoot!.banner!
+      const banner = bannerOf(host)
       const link = banner.firstChild as MockElement
       const prefix = link.querySelector('.support-ukraine-block__prefix') as MockElement
       const text = prefix.textContent
@@ -1024,7 +1048,7 @@ describe('i18n integration', () => {
       tags: ['animals'],
       dontRepeat: false
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const direction = (banner as unknown as { getAttribute: (n: string) => string }).getAttribute(
       'dir'
     )
@@ -1037,7 +1061,7 @@ describe('i18n integration', () => {
       tags: ['animals'],
       dontRepeat: false
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const direction = (banner as unknown as { getAttribute: (n: string) => string }).getAttribute(
       'dir'
     )
@@ -1050,10 +1074,11 @@ describe('i18n integration', () => {
       tags: ['animals'],
       dontRepeat: false
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const moreLink = banner.children.find(
       child => child.className === 'support-ukraine-block__more'
-    )!
+    )
+    assert.ok(moreLink, 'more link found')
     const moreText = moreLink.firstChild as MockElement
     const text = moreText.textContent
     assert.ok(text.length > 0, 'more text should not be empty')
@@ -1089,7 +1114,7 @@ describe('custom charities', () => {
       charities: customCharities,
       dontRepeat: false
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as MockElement
     assert.equal(link.href, 'https://example.com/donate')
     const text = link.textContent
@@ -1112,7 +1137,7 @@ describe('custom charities', () => {
         charities: customCharities,
         dontRepeat: false
       })
-      const banner = host.shadowRoot!.banner!
+      const banner = bannerOf(host)
       const link = banner.firstChild as MockElement
       assert.equal(
         link.href,
@@ -1144,7 +1169,7 @@ describe('custom charities', () => {
       tags: ['military'],
       dontRepeat: false
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as MockElement
     assert.equal(link.href, 'https://military.example.com')
   })
@@ -1164,7 +1189,7 @@ describe('custom charities', () => {
       locale: 'es',
       dontRepeat: false
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as MockElement
     const text = link.textContent
     assert.ok(text.includes('Custom United24'), 'should show custom charity name')
@@ -1308,7 +1333,7 @@ describe('accessibility', () => {
 
   it('renders a labeled section landmark, not a second banner', async () => {
     const host = await supportUkraineBlock({ dontRepeat: false, locale: 'en' })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     assert.equal(banner.tagName, 'SECTION')
     const label = (banner as unknown as { getAttribute: (n: string) => string }).getAttribute(
       'aria-label'
@@ -1318,7 +1343,7 @@ describe('accessibility', () => {
 
   it('localizes the landmark name with the banner language', async () => {
     const host = await supportUkraineBlock({ dontRepeat: false, locale: 'es' })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const label = (banner as unknown as { getAttribute: (n: string) => string }).getAttribute(
       'aria-label'
     )
@@ -1329,8 +1354,8 @@ describe('accessibility', () => {
     const first = await supportUkraineBlock({ dontRepeat: false })
     const second = await supportUkraineBlock({ dontRepeat: false })
     const ids = [first, second].flatMap(host =>
-      host
-        .shadowRoot!.banner!.children.filter(child => child.tagName === 'A')
+      bannerOf(host)
+        .children.filter(child => child.tagName === 'A')
         .map(link =>
           (link as unknown as { getAttribute: (n: string) => string }).getAttribute(
             'aria-describedby'
@@ -1343,7 +1368,7 @@ describe('accessibility', () => {
 
   it('hides the flag emoji from assistive tech', async () => {
     const host = await supportUkraineBlock({ dontRepeat: false })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as MockElement
     const flag = link.querySelector('.support-ukraine-block__flag') as MockElement
     const hidden = (flag as unknown as { getAttribute: (n: string) => string }).getAttribute(
@@ -1354,10 +1379,11 @@ describe('accessibility', () => {
 
   it('hides the refresh glyph — the button name comes from aria-label', async () => {
     const host = await supportUkraineBlock({ showRefreshButton: true, dontRepeat: false })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const refresh = banner.children.find(
       child => child.className === 'support-ukraine-block__refresh'
-    )!
+    )
+    assert.ok(refresh, 'refresh button found')
     const label = (refresh as unknown as { getAttribute: (n: string) => string }).getAttribute(
       'aria-label'
     )
@@ -1422,7 +1448,7 @@ describe('showRefreshButton', () => {
 
   it('does not render refresh button by default', async () => {
     const host = await supportUkraineBlock({ dontRepeat: false })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const refresh = banner.children.find(
       child => child.className === 'support-ukraine-block__refresh'
     )
@@ -1434,12 +1460,12 @@ describe('showRefreshButton', () => {
       showRefreshButton: true,
       dontRepeat: false
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const refresh = banner.children.find(
       child => child.className === 'support-ukraine-block__refresh'
     )
     assert.ok(refresh, 'refresh button should exist')
-    assert.equal(refresh!.textContent, '\u{27F3}')
+    assert.equal(refresh.textContent, '\u{27F3}')
   })
 
   it('refresh button is placed before the more link', async () => {
@@ -1447,7 +1473,7 @@ describe('showRefreshButton', () => {
       showRefreshButton: true,
       dontRepeat: false
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const refreshIndex = banner.children.findIndex(
       child => child.className === 'support-ukraine-block__refresh'
     )
@@ -1464,12 +1490,13 @@ describe('showRefreshButton', () => {
       showRefreshButton: true,
       dontRepeat: false
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as unknown as { href: string }
 
     const refresh = banner.children.find(
       child => child.className === 'support-ukraine-block__refresh'
-    )!
+    )
+    assert.ok(refresh, 'refresh button found')
     refresh.click()
 
     assert.ok(link.href.length > 0, 'link still has a valid href after refresh')
@@ -1519,7 +1546,7 @@ describe('refreshOnClick', () => {
   it('keeps the banner while visible, rotates once the page hides after a click', async () => {
     const host = await supportUkraineBlock({ charities: twoCharities })
     const before = bannerName(host)
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as MockElement
     link.click()
     assert.equal(bannerName(host), before, 'nothing swaps in front of the visitor')
@@ -1531,7 +1558,7 @@ describe('refreshOnClick', () => {
   it('rotates on window blur after a click', async () => {
     const host = await supportUkraineBlock({ charities: twoCharities })
     const before = bannerName(host)
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as MockElement
     link.click()
     fireWindowEvent()
@@ -1541,7 +1568,7 @@ describe('refreshOnClick', () => {
   it('keeps the charity when refreshOnClick is false', async () => {
     const host = await supportUkraineBlock({ charities: twoCharities, refreshOnClick: false })
     const before = bannerName(host)
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as MockElement
     link.click()
     fireWindowEvent()
@@ -1553,7 +1580,7 @@ describe('refreshOnClick', () => {
   it('rotates after refreshOnClickDelay when focus never leaves', async () => {
     const host = await supportUkraineBlock({ charities: twoCharities, refreshOnClickDelay: 150 })
     const before = bannerName(host)
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as MockElement
     link.click()
     assert.equal(bannerName(host), before, 'nothing swaps before the delay elapses')
@@ -1562,8 +1589,10 @@ describe('refreshOnClick', () => {
   })
 
   it('does not throw with a single charity', async () => {
-    const host = await supportUkraineBlock({ charities: [twoCharities[0]!] })
-    const banner = host.shadowRoot!.banner!
+    const single = twoCharities[0]
+    assert.ok(single)
+    const host = await supportUkraineBlock({ charities: [single] })
+    const banner = bannerOf(host)
     const link = banner.firstChild as MockElement
     link.click()
     fireWindowEvent()
@@ -1572,7 +1601,7 @@ describe('refreshOnClick', () => {
 
   it('destroy cancels a pending click rotation', async () => {
     const host = await supportUkraineBlock({ charities: twoCharities })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as MockElement
     link.click()
     host.destroy()
@@ -1647,10 +1676,11 @@ describe('showRefreshAnimation', () => {
       showRefreshButton: true,
       dontRepeat: false
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const refresh = banner.children.find(
       child => child.className === 'support-ukraine-block__refresh'
-    )!
+    )
+    assert.ok(refresh, 'refresh button found')
     refresh.click()
     assert.ok(!banner.className.includes('--refreshing'), 'should not have refreshing class')
   })
@@ -1661,10 +1691,11 @@ describe('showRefreshAnimation', () => {
       showRefreshAnimation: false,
       dontRepeat: false
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const refresh = banner.children.find(
       child => child.className === 'support-ukraine-block__refresh'
-    )!
+    )
+    assert.ok(refresh, 'refresh button found')
     refresh.click()
     assert.ok(!banner.className.includes('--refreshing'), 'should not have refreshing class')
   })
@@ -1683,12 +1714,13 @@ describe('showRefreshAnimation', () => {
       dontRepeat: false,
       charities: manyCharities
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as unknown as { href: string }
     const before = link.href
     const refresh = banner.children.find(
       child => child.className === 'support-ukraine-block__refresh'
-    )!
+    )
+    assert.ok(refresh, 'refresh button found')
 
     refresh.click()
     assert.ok(banner.className.includes('--refreshing'), 'refreshing class added immediately')
@@ -1717,7 +1749,7 @@ describe('UTM parameters', () => {
 
   it('adds UTM parameters by default', async () => {
     const host = await supportUkraineBlock({ dontRepeat: false, tags: ['animals'] })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as unknown as { href: string }
 
     assert.ok(link.href.includes('utm_source=example.com'), 'should include utm_source')
@@ -1730,7 +1762,7 @@ describe('UTM parameters', () => {
       dontRepeat: false,
       tags: ['animals']
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as unknown as { href: string }
 
     assert.ok(!link.href.includes('utm_source'), 'should not include utm_source')
@@ -1743,7 +1775,7 @@ describe('UTM parameters', () => {
       dontRepeat: false,
       tags: ['animals']
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as unknown as { href: string }
 
     assert.ok(link.href.includes('utm_source=custom-domain.com'), 'should use custom utm_source')
@@ -1755,7 +1787,7 @@ describe('UTM parameters', () => {
       dontRepeat: false,
       tags: ['animals']
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as unknown as { href: string }
 
     assert.ok(link.href.includes('utm_medium=custom-medium'), 'should use custom utm_medium')
@@ -1767,7 +1799,7 @@ describe('UTM parameters', () => {
     globalThis.navigator = { doNotTrack: '1' }
 
     const host = await supportUkraineBlock({ dontRepeat: false, tags: ['animals'] })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as unknown as { href: string }
 
     assert.ok(!link.href.includes('utm_source'), 'should not add UTM when DNT is enabled')
@@ -1785,7 +1817,7 @@ describe('UTM parameters', () => {
     globalThis.window = { doNotTrack: 'yes', location: { hostname: 'test.com' } }
 
     const host = await supportUkraineBlock({ dontRepeat: false, tags: ['animals'] })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as unknown as { href: string }
 
     assert.ok(!link.href.includes('utm_source'), 'should not add UTM when window.doNotTrack is yes')
@@ -1802,7 +1834,7 @@ describe('UTM parameters', () => {
     globalThis.navigator = { doNotTrack: 'no', msDoNotTrack: '1' }
 
     const host = await supportUkraineBlock({ dontRepeat: false, tags: ['animals'] })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as unknown as { href: string }
 
     assert.ok(!link.href.includes('utm_source'), 'should not add UTM when msDoNotTrack is 1')
@@ -1813,10 +1845,11 @@ describe('UTM parameters', () => {
 
   it('applies UTM to more link as well', async () => {
     const host = await supportUkraineBlock({ dontRepeat: false, tags: ['animals'] })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const moreLink = banner.children.find(
       child => child.className === 'support-ukraine-block__more'
-    )! as unknown as { href: string }
+    )
+    assert.ok(moreLink, 'more link found')
 
     assert.ok(
       moreLink.href.includes('utm_source=example.com'),
@@ -1842,13 +1875,14 @@ describe('UTM parameters', () => {
       dontRepeat: false,
       charities: manyCharities
     })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     const link = banner.firstChild as unknown as { href: string }
     const firstHref = link.href
 
     const refresh = banner.children.find(
       child => child.className === 'support-ukraine-block__refresh'
-    )!
+    )
+    assert.ok(refresh, 'refresh button found')
     refresh.click()
 
     assert.ok(
@@ -1921,8 +1955,8 @@ describe('injectShadowStyles', () => {
     const host1 = await supportUkraineBlock({ dontRepeat: false })
     const host2 = await supportUkraineBlock({ dontRepeat: false })
 
-    const styles1 = host1.shadowRoot!.children.filter(child => child.tagName === 'STYLE')
-    const styles2 = host2.shadowRoot!.children.filter(child => child.tagName === 'STYLE')
+    const styles1 = shadowOf(host1).children.filter(child => child.tagName === 'STYLE')
+    const styles2 = shadowOf(host2).children.filter(child => child.tagName === 'STYLE')
     assert.equal(styles1.length, 1, 'first shadow root should have one style')
     assert.equal(styles2.length, 1, 'second shadow root should have one style')
   })
@@ -1968,9 +2002,11 @@ describe('per-locale entries', () => {
 
   for (const locale of Object.keys(localeLoaders)) {
     it(`${locale} entry mounts lang="${locale}" with its own messages`, async () => {
-      const { supportUkraineBlock: localizedBlock } = await entryLoaders[locale]!()
+      const loadEntry = entryLoaders[locale]
+      assert.ok(loadEntry, `entry loader for ${locale}`)
+      const { supportUkraineBlock: localizedBlock } = await loadEntry()
       const host = await localizedBlock({ dontRepeat: false })
-      const banner = host.shadowRoot!.banner!
+      const banner = bannerOf(host)
       assert.equal((banner as unknown as { lang: string }).lang, locale)
 
       const expected = await loadLocale(locale)
@@ -1998,9 +2034,11 @@ describe('per-locale entries', () => {
   }
 
   it('ignores the locale option — the bundle is already localized', async () => {
-    const { supportUkraineBlock: esBlock } = await entryLoaders.es!()
+    const loadEs = entryLoaders.es
+    assert.ok(loadEs, 'entry loader for es')
+    const { supportUkraineBlock: esBlock } = await loadEs()
     const host = await esBlock({ locale: 'fr', dontRepeat: false })
-    const banner = host.shadowRoot!.banner!
+    const banner = bannerOf(host)
     assert.equal((banner as unknown as { lang: string }).lang, 'es')
   })
 })
