@@ -59,7 +59,9 @@ export async function loadLocale(lang: string): Promise<LocaleMessages> {
   }
 
   try {
-    const loaded = await localeLoaders[code]!()
+    const load = localeLoaders[code]
+    if (!load) throw new Error(`[support-ukraine] Unknown locale "${code}"`)
+    const loaded = await load()
     cache.set(code, loaded.default)
     return loaded.default
   } catch {
