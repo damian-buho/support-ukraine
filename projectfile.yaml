@@ -19,12 +19,21 @@ identity:
 includes:
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/include.yaml
 keywords:
+  - activism
+  - charity
+  - core-web-vitals
+  - dark-mode
+  - donate
+  - donation
+  - fundraising
+  - humanitarian
+  - humanitarian-aid
+  - human-rights
+  - i18n
+  - javascript
+  - nonprofit
+  - standwithukraine
   - ukraine
-  - support
-  - banner
-  - ribbon
-  - anti-war
-  - solidarity
 kind: SoftwareSourceCode
 license:
   spdx: MIT
