@@ -16,6 +16,7 @@ identity:
     en: Drop-in browser library that adds a Stand-with-Ukraine support banner and ribbon to any website. Installable from npm and embeddable with a single script tag.
     es: Biblioteca de navegador lista para usar que añade un banner y un lazo de apoyo Stand-with-Ukraine a cualquier sitio web. Instalable desde npm e integrable con una sola etiqueta script.
     uk: Готова до використання бібліотека для браузера, яка додає банер і стрічку підтримки Stand-with-Ukraine на будь-який вебсайт. Встановлюється з npm і вбудовується однією теґою script.
+  visibility: private
 includes:
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/include.yaml
 keywords:
