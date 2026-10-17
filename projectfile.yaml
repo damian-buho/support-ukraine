@@ -16,6 +16,7 @@ identity:
     en: Drop-in browser library that adds a Stand-with-Ukraine support banner and ribbon to any website. Installable from npm and embeddable with a single script tag.
     es: Biblioteca de navegador lista para usar que añade un banner y un lazo de apoyo Stand-with-Ukraine a cualquier sitio web. Instalable desde npm e integrable con una sola etiqueta script.
     uk: Готова до використання бібліотека для браузера, яка додає банер і стрічку підтримки Stand-with-Ukraine на будь-який вебсайт. Встановлюється з npm і вбудовується однією теґою script.
+  modified: "2026-10-16"
   visibility: private
 includes:
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/include.yaml
@@ -39,7 +40,10 @@ kind: SoftwareSourceCode
 license:
   spdx: MIT
 links:
-  - label: support-ukraine on GitHub
+  - label:
+      en: Repository on GitHub
+      es: Repositorio en GitHub
+      uk: Репозиторій на GitHub
     preferred: true
     tags:
       - public
@@ -47,20 +51,40 @@ links:
       - badges-github
     type: source-code
     url: https://github.com/damian-buho/support-ukraine
-  - type: bugs
+  - label:
+      en: Issues on GitHub
+      es: Incidencias en GitHub
+      uk: Задачі на GitHub
+    tags:
+      - support
+    type: bugs
     url: https://github.com/damian-buho/support-ukraine/issues
   - type: package-registry
     url: https://www.npmjs.com/package/@damian-buho/support-ukraine
-  - label: support-ukraine on Codeberg
+  - label:
+      en: Repository on Codeberg
+      es: Repositorio en Codeberg
+      uk: Репозиторій на Codeberg
     tags:
       - public
       - badges
       - badges-gitea
     type: source-code
     url: https://codeberg.org/damian-buho/support-ukraine
-  - label: support-ukraine on kiota.ch
+  - label:
+      en: Repository on kiota.ch
+      es: Repositorio en kiota.ch
+      uk: Репозиторій на kiota.ch
     type: source-code
     url: https://kiota.ch/damian-buho/support-ukraine
+  - label:
+      en: Issues on Codeberg
+      es: Incidencias en Codeberg
+      uk: Задачі на Codeberg
+    tags:
+      - support
+    type: bugs
+    url: https://codeberg.org/damian-buho/support-ukraine/issues
 repositories:
   - branch: main
     role: origin
