@@ -2669,7 +2669,9 @@ describe('rotation exclusions', () => {
         dontRepeat: false
       })
       const link = bannerOf(host).firstChild as MockElement
-      assert.ok(link.href.startsWith('https://multi.example.org'), `unexpected href ${link.href}`)
+      const parsedUrl = new URL(link.href)
+      assert.strictEqual(parsedUrl.protocol, 'https:', `unexpected href ${link.href}`)
+      assert.strictEqual(parsedUrl.hostname, 'multi.example.org', `unexpected href ${link.href}`)
     })
   })
 })
