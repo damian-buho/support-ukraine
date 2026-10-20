@@ -43,6 +43,29 @@ const LOCALE_NAMES = {
 // RTL locales (must match src/locales/index.ts)
 const RTL_LOCALES = ['ar']
 
+// ── Page chrome ───────────────────────────────────────────────────────────
+// The banner locale strings carry the banner wording ("Support Ukraine with"
+// needs a charity after it), so the page keeps its own title and subtitle.
+
+const PAGE_COPY = {
+  en: { title: 'Support Ukraine', subtitle: 'All charities' },
+  es: { title: 'Apoya a Ucrania', subtitle: 'Todas las charities' },
+  fr: { title: "Soutenir l'Ukraine", subtitle: 'Toutes les charities' },
+  de: { title: 'Ukraine unterstützen', subtitle: 'Alle Organisationen' },
+  pt: { title: 'Apoie a Ucrânia', subtitle: 'Todas as organizações' },
+  it: { title: "Sostieni l'Ucraina", subtitle: 'Tutte le organizzazioni' },
+  pl: { title: 'Wesprzyj Ukrainę', subtitle: 'Wszystkie organizacje' },
+  nl: { title: 'Steun Oekraïne', subtitle: 'Alle organisaties' },
+  sv: { title: 'Stöd Ukraina', subtitle: 'Alla organisationer' },
+  uk: { title: 'Підтримай Україну', subtitle: 'Усі організації' },
+  ar: { title: 'ادعم أوكرانيا', subtitle: 'جميع الجهات' },
+  zh: { title: '支持乌克兰', subtitle: '所有慈善机构' },
+  hi: { title: 'यूक्रेन का समर्थन करें', subtitle: 'सभी धर्मार्थ संस्थाएँ' },
+  th: { title: 'สนับสนุนยูเครน', subtitle: 'องค์กรทั้งหมด' },
+  ja: { title: 'ウクライナを支援する', subtitle: 'すべての団体' },
+  ko: { title: '우크라이나를 지원합니다', subtitle: '모든 단체' }
+}
+
 // ── Read source data ───────────────────────────────────────────────────────
 
 function readYaml(relativePath) {
@@ -57,13 +80,25 @@ for (const code of Object.keys(LOCALE_NAMES)) {
   locales[code] = readYaml(`src/locales/${code}.yaml`)
 }
 
+// ── Validate the page inputs ───────────────────────────────────────────────
+// A missing key renders an empty string, so it fails here instead of the page.
+
+for (const [code, msgs] of Object.entries(locales)) {
+  if (!Object.hasOwn(PAGE_COPY, code)) throw new Error(`PAGE_COPY has no "${code}" entry`)
+  if (typeof msgs.donate !== 'string' || !msgs.donate) {
+    throw new Error(`src/locales/${code}.yaml has no "donate" string`)
+  }
+}
+
+for (const charity of charities) {
+  if (!charity.urls?.en) throw new Error(`Charity "${charity.id}" has no urls.en`)
+}
+
 // ── Build translations JSON (embedded in HTML) ─────────────────────────────
 
 const translations = {}
 for (const [code, msgs] of Object.entries(locales)) {
   translations[code] = {
-    supportUkraine: msgs.supportUkraine,
-    allCharities: msgs.allCharities,
     donate: msgs.donate,
     charities: {},
   }
@@ -85,6 +120,7 @@ const localeOptions = Object.entries(LOCALE_NAMES)
 
 const charitiesJson = JSON.stringify(charities)
 const translationsJson = JSON.stringify(translations)
+const pageCopyJson = JSON.stringify(PAGE_COPY)
 const rtlJson = JSON.stringify(RTL_LOCALES)
 
 const html = `<!--
@@ -255,6 +291,7 @@ ${localeOptions}
     // ── Embedded data ───────────────────────────────────────────────
     const CHARITIES = ${charitiesJson};
     const TRANSLATIONS = ${translationsJson};
+    const PAGE_COPY = ${pageCopyJson};
     const RTL_LOCALES = ${rtlJson};
 
     // ── DOM refs ────────────────────────────────────────────────────
@@ -280,13 +317,15 @@ ${localeOptions}
     // ── Render ──────────────────────────────────────────────────────
     function render(code) {
       const t = TRANSLATIONS[code] || TRANSLATIONS.en;
+      const copy = PAGE_COPY[code] || PAGE_COPY.en;
       const isRtl = RTL_LOCALES.includes(code);
 
       document.documentElement.lang = code;
       document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+      document.title = \`\${copy.title} — \${copy.subtitle}\`;
 
-      titleEl.textContent = \`\u{1F1FA}\u{1F1E6} \${t.supportUkraine}\`;
-      subtitleEl.textContent = t.allCharities;
+      titleEl.textContent = \`\u{1F1FA}\u{1F1E6} \${copy.title}\`;
+      subtitleEl.textContent = copy.subtitle;
 
       gridEl.innerHTML = '';
       for (const c of CHARITIES) {

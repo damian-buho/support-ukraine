@@ -32,6 +32,9 @@ check-size:
 pages:
     node scripts/build-pages.mjs
 
+pages-check:
+    node scripts/build-pages.mjs && git diff --exit-code -- pages/index.html
+
 lint:
     npm run lint
     reuse lint --lines
