@@ -8,6 +8,7 @@ import {
   type LocaleMessages,
   type SupportUkraineBlockOptions
 } from './types.js'
+import { baseLanguage } from './language.js'
 import rawCharities from './charities.yaml'
 import styles from './styles.scss'
 
@@ -74,13 +75,11 @@ function pickCharity(
   shouldPersist: boolean,
   lang: string,
   excludeId?: string,
-  excludeUrl?: string
+  excludedUrls: ReadonlySet<string> = new Set<string>()
 ): Charity {
   let pool = excludeId ? candidates.filter(c => c.id !== excludeId) : candidates
-  if (excludeUrl && pool.length > 1) {
-    const withoutUrl = pool.filter(c => charityUrlFor(c, lang) !== excludeUrl)
-    if (withoutUrl.length > 0) pool = withoutUrl
-  }
+  const withoutUrl = pool.filter(c => !excludedUrls.has(charityUrlFor(c, lang)))
+  if (withoutUrl.length > 0) pool = withoutUrl
   if (pool.length === 0) pool = candidates
 
   if (shouldAvoidRepeat) {
@@ -105,7 +104,8 @@ function pickCharity(
   return charity
 }
 
-function injectShadowStyles(shadowRoot: ShadowRoot): void {
+// @internal — exported so the test can prove the injection stays idempotent.
+export function injectShadowStyles(shadowRoot: ShadowRoot): void {
   const id = `${CSS_PREFIX}-styles`
   if (shadowRoot.querySelector(`#${id}`)) {
     return
@@ -132,13 +132,12 @@ Resolve the donation URL for a charity in the given banner language.
 Falls back to English.
 */
 export function charityUrlFor(charity: Charity, lang: string): string {
-  const base = (lang.split('-', 1)[0] ?? '').toLowerCase()
+  const base = baseLanguage(lang)
   return charity.urls[base] ?? charity.urls.en
 }
 
 export function isRTL(lang: string): boolean {
-  const base = (lang.split('-', 1)[0] ?? '').toLowerCase()
-  return base === 'ar'
+  return baseLanguage(lang) === 'ar'
 }
 
 export function isDoNotTrackEnabled(): boolean {
@@ -209,16 +208,13 @@ export function mountBanner(
   const baseCharities = charities ? charitiesSchema.parse(charities) : DEFAULT_CHARITIES
   const localizedCharities = mergeCharities(baseCharities, messages)
 
-  let candidates =
-    tags && tags.length > 0
-      ? localizedCharities.filter(charity => charity.tags.some(t => tags.includes(t)))
-      : localizedCharities
+  let candidates = tags
+    ? localizedCharities.filter(charity => charity.tags.some(t => tags.includes(t)))
+    : localizedCharities
 
-  if (exclude && exclude.length > 0) {
-    const excluded = new Set(exclude)
-    const kept = candidates.filter(charity => !excluded.has(charity.id))
-    if (kept.length > 0) candidates = kept
-  }
+  const excluded = new Set(exclude)
+  const kept = candidates.filter(charity => !excluded.has(charity.id))
+  if (kept.length > 0) candidates = kept
 
   if (candidates.length === 0) {
     candidates = localizedCharities
@@ -330,7 +326,7 @@ export function mountBanner(
       persistSeen,
       lang,
       currentCharity.id,
-      currentCharityUrl
+      new Set([currentCharityUrl])
     )
     if (showRefreshAnimation) {
       banner.classList.add(`${CSS_PREFIX}--refreshing`)
@@ -345,10 +341,8 @@ export function mountBanner(
 
   let clickRefreshTimer: ReturnType<typeof setTimeout> | undefined
   function cancelClickRefresh(): void {
-    if (clickRefreshTimer !== undefined) {
-      clearTimeout(clickRefreshTimer)
-      clickRefreshTimer = undefined
-    }
+    clearTimeout(clickRefreshTimer)
+    clickRefreshTimer = undefined
     document.removeEventListener('visibilitychange', handlePageHidden)
     globalThis.window?.removeEventListener?.('blur', handleWindowBlur)
   }
@@ -379,7 +373,6 @@ export function mountBanner(
     const refreshButton = document.createElement('button')
     refreshButton.className = `${CSS_PREFIX}__refresh`
     refreshButton.type = 'button'
-    refreshButton.textContent = ''
     refreshButton.style.fontSize = fontSize
     refreshButton.setAttribute('aria-label', messages.refresh)
     refreshButton.addEventListener('click', updateCharity)
@@ -425,9 +418,7 @@ export function mountBanner(
   const instance = host as HTMLElement & { destroy: () => void }
   instance.destroy = () => {
     cancelClickRefresh()
-    if (intervalId !== undefined) {
-      clearInterval(intervalId)
-    }
+    clearInterval(intervalId)
     host.remove()
   }
 

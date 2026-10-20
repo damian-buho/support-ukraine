@@ -23,8 +23,17 @@ test-verbose:
 coverage:
     npm run test:coverage
 
+mutation:
+    npm run mutation
+
 check-size:
     CI=true npm run check-size
+
+pages:
+    node scripts/build-pages.mjs
+
+pages-check:
+    node scripts/build-pages.mjs && git diff --exit-code -- pages/index.html
 
 lint:
     npm run lint

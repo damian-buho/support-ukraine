@@ -30,8 +30,16 @@ just format        # Prettier write
 just format-check  # Prettier check (CI)
 just test          # node --test 'dist/test/index.test.js'
 just audit         # npm run audit
+just pages         # regenerate pages/index.html from src/ (the charity listing)
 just pipeline      # format → lint → build → build-test → test  (full CI gate)
 ```
+
+## Adding a charity
+
+`.agents/skills/add-charity/SKILL.md` holds the process: research the charity,
+collect its localized donation URLs, add the entry to `src/charities.yaml`,
+localize the tagline in `src/locales/<code>.yaml`, pin the URLs with a test,
+regenerate `pages/index.html` and run `just pipeline`.
 
 ## TypeScript strictness
 
@@ -52,6 +60,7 @@ src/
 ├── index.ts          # Auto-detect build: supportUkraineBlock() via navigator.language + dynamic import
 ├── banner.ts         # Shared rendering: mountBanner(), DEFAULT_CHARITIES, mergeCharities(), isRTL()
 ├── types.ts          # Hand-written validators: charitySchema, charitiesSchema, SupportUkraineBlockOptions
+├── language.ts       # baseLanguage(): the base subtag of a BCP 47 tag
 ├── i18n.ts           # detectLocale(), loadLocale() (generic build only)
 ├── locales/
 │   ├── index.ts      # resolveLocale(), localeLoaders, RTL_LOCALES, SupportedLocale
@@ -126,9 +135,16 @@ mergeCharities()            → Charity[] (localized taglines)
 | `dontRepeat`  | `boolean`                           | `true`            | Avoid repeats; seen ids stay in session memory unless `persistSeen` is set                                        |
 | `persistSeen` | `boolean`                           | `false`           | Persist seen charity ids in `localStorage` across visits (needs visitor consent)                                  |
 | `isInConsole` | `boolean`                           | `true`            | Log selected charity to dev console                                                     |
+| `showRefreshButton` | `boolean`                     | `false`           | Render a refresh button that loads the next random charity                              |
+| `autoRefreshInterval` | `number`                  | `0`               | Auto-refresh interval in ms; `0` disables it                                             |
+| `showRefreshAnimation` | `boolean`                | `false`           | Fade the banner while the charity changes (respects `prefers-reduced-motion`)           |
 | `refreshOnClick` | `boolean`                          | `true`            | Show the next random charity after a click on the banner link                           |
 | `refreshOnClickDelay` | `number`                        | `2000`            | Fallback delay in ms before rotating after a click when the page never loses focus      |
 | `locale`      | `string`                            | _(auto-detected)_ | Override BCP 47 language tag                                                            |
+| `utmEnabled`  | `boolean`                           | `true`            | Append UTM parameters to the donation links                                             |
+| `utmSource`   | `string`                            | _(page hostname)_ | `utm_source` value                                                                      |
+| `utmMedium`   | `string`                            | `'support-ukraine-banner'` | `utm_medium` value                                                             |
+| `utmCampaign` | `string`                            | `''`               | `utm_campaign` value; omitted from the URL while empty                                 |
 
 ## Testing
 
@@ -139,7 +155,17 @@ or jest. Test files live in `tests/` and are compiled to `dist/test/` by tsup.
 just test          # single run
 just test-verbose  # spec reporter
 just coverage      # --experimental-test-coverage
+just mutation      # Stryker mutation testing, report in reports/mutation/
 ```
+
+Internal helpers exported for the test suite: `resetMemorySeen` (session-only
+seen ids), `resetLocaleCache` (memoized locale messages) and `injectShadowStyles`
+(shadow-root stylesheet injection).
+
+The mutation score must stay at 100% — `stryker.config.mjs` fails the run below
+it. A surviving mutant means either a missing test or a branch the code cannot
+reach; the second case is fixed by removing the dead branch, not by adding a
+test that cannot fail.
 
 ## ESLint plugins active
 
