@@ -29,6 +29,9 @@ mutation:
 check-size:
     CI=true npm run check-size
 
+pages:
+    node scripts/build-pages.mjs
+
 lint:
     npm run lint
     reuse lint --lines

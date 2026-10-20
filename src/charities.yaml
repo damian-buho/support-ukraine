@@ -162,3 +162,12 @@
   urls:
     en: https://nikopolchance.com
   tags: [animals]
+
+- id: dzygaspaw
+  name: Dzyga’s Paw
+  tagline: Lifesaving tech for Ukrainian defenders
+  urls:
+    en: https://dzygaspaw.com
+    uk: https://dzygaspaw.com/uk
+    de: https://dzygaspaw.com/de
+  tags: [military]

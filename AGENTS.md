@@ -30,8 +30,16 @@ just format        # Prettier write
 just format-check  # Prettier check (CI)
 just test          # node --test 'dist/test/index.test.js'
 just audit         # npm run audit
+just pages         # regenerate pages/index.html from src/ (the charity listing)
 just pipeline      # format → lint → build → build-test → test  (full CI gate)
 ```
+
+## Adding a charity
+
+`.agents/skills/add-charity/SKILL.md` holds the process: research the charity,
+collect its localized donation URLs, add the entry to `src/charities.yaml`,
+localize the tagline in `src/locales/<code>.yaml`, pin the URLs with a test,
+regenerate `pages/index.html` and run `just pipeline`.
 
 ## TypeScript strictness
 

@@ -438,6 +438,15 @@ describe('charityUrlFor', () => {
     assert.equal(charityUrlFor(charity, 'zh'), 'https://liferobots.com.ua/en')
   })
 
+  it('resolves the Dzyga’s Paw localized variants', () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'dzygaspaw')
+    assert.ok(charity)
+    assert.equal(charityUrlFor(charity, 'en'), 'https://dzygaspaw.com')
+    assert.equal(charityUrlFor(charity, 'de'), 'https://dzygaspaw.com/de')
+    assert.equal(charityUrlFor(charity, 'uk'), 'https://dzygaspaw.com/uk')
+    assert.equal(charityUrlFor(charity, 'es'), 'https://dzygaspaw.com')
+  })
+
   it('falls back to english when the language variant is missing', () => {
     const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')
     assert.ok(charity)
