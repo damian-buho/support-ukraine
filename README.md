@@ -292,6 +292,7 @@ src/
 ├── index.ts          # Auto-detect build (navigator.language + dynamic import)
 ├── banner.ts         # Shared banner rendering (mountBanner, DEFAULT_CHARITIES)
 ├── types.ts          # Charity, SupportUkraineBlockOptions, etc.
+├── language.ts       # baseLanguage(): the base subtag of a BCP 47 tag
 ├── i18n.ts           # Locale detection, loading, merging (generic build only)
 ├── locales/          # Per-locale translation files
 ├── charities.yaml    # Built-in charity database

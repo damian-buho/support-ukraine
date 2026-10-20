@@ -52,6 +52,7 @@ src/
 ├── index.ts          # Auto-detect build: supportUkraineBlock() via navigator.language + dynamic import
 ├── banner.ts         # Shared rendering: mountBanner(), DEFAULT_CHARITIES, mergeCharities(), isRTL()
 ├── types.ts          # Hand-written validators: charitySchema, charitiesSchema, SupportUkraineBlockOptions
+├── language.ts       # baseLanguage(): the base subtag of a BCP 47 tag
 ├── i18n.ts           # detectLocale(), loadLocale() (generic build only)
 ├── locales/
 │   ├── index.ts      # resolveLocale(), localeLoaders, RTL_LOCALES, SupportedLocale
@@ -152,6 +153,11 @@ just mutation      # Stryker mutation testing, report in reports/mutation/
 Internal helpers exported for the test suite: `resetMemorySeen` (session-only
 seen ids), `resetLocaleCache` (memoized locale messages) and `injectShadowStyles`
 (shadow-root stylesheet injection).
+
+The mutation score must stay at 100% — `stryker.config.mjs` fails the run below
+it. A surviving mutant means either a missing test or a branch the code cannot
+reach; the second case is fixed by removing the dead branch, not by adding a
+test that cannot fail.
 
 ## ESLint plugins active
 

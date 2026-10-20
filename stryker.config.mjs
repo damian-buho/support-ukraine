@@ -16,6 +16,7 @@ const config = {
     "Take a look at (missing 'homepage' URL in package.json) for information about the command plugin.",
   commandRunner: { command: 'npm test' },
   coverageAnalysis: 'off',
+  thresholds: { high: 100, low: 100 },
   buildCommand: 'npm run build'
 }
 export default config

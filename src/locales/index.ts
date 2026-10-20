@@ -2,12 +2,15 @@
 //
 // SPDX-License-Identifier: MIT
 
-import type { LocaleMessages } from '../types.js'
+import { baseLanguage } from '../language.js'
+
+// Loader that resolves the messages of one locale.
+export type LocaleLoader = () => Promise<{ default: unknown }>
 
 /**
 Map of BCP 47 base language → dynamic import loader.
 */
-export const localeLoaders: Record<string, () => Promise<{ default: LocaleMessages }>> = {
+export const localeLoaders = {
   en: () => import('./en.yaml'),
   es: () => import('./es.yaml'),
   fr: () => import('./fr.yaml'),
@@ -24,7 +27,7 @@ export const localeLoaders: Record<string, () => Promise<{ default: LocaleMessag
   th: () => import('./th.yaml'),
   ja: () => import('./ja.yaml'),
   ko: () => import('./ko.yaml')
-}
+} satisfies Record<string, LocaleLoader>
 
 /**
 All supported locale codes.
@@ -36,10 +39,15 @@ List of RTL locale codes.
 */
 export const RTL_LOCALES = ['ar'] as const
 
+// Loader registered for a locale code; `resolveLocale` only yields registered codes.
+export function loaderFor(code: SupportedLocale): LocaleLoader {
+  return localeLoaders[code]
+}
+
 /**
 Resolve a raw BCP 47 tag to a supported locale code, or 'en'.
 */
 export function resolveLocale(tag: string): SupportedLocale {
-  const base = (tag.split('-', 1)[0] ?? '').toLowerCase()
+  const base = baseLanguage(tag)
   return Object.hasOwn(localeLoaders, base) ? (base as SupportedLocale) : 'en'
 }

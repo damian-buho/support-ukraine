@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-import { describe, it, before, beforeEach, afterEach } from 'node:test'
+import { describe, it, before, after, beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
 import type { Charity, CharityTag } from '../src/types.js'
 import { charitySchema, charitiesSchema } from '../src/types.js'
@@ -1772,7 +1772,7 @@ describe('refreshOnClick', () => {
   })
 
   it('destroy cancels a pending click rotation', async () => {
-    const host = await supportUkraineBlock({ charities: twoCharities })
+    const host = await supportUkraineBlock({ charities: twoCharities, refreshOnClickDelay: 30 })
     const banner = bannerOf(host)
     const link = banner.firstChild as MockElement
     link.click()
@@ -1786,21 +1786,63 @@ describe('refreshOnClick', () => {
 
 // ── autoRefreshInterval ─────────────────────────────────────────────
 
+interface FakeIntervals {
+  started: Array<{ id: number; callback: () => void }>
+  cleared: number[]
+  restore: () => void
+}
+
+// Captures the auto-refresh intervals so the test drives them without a real timer.
+function stubIntervals(): FakeIntervals {
+  const started: FakeIntervals['started'] = []
+  const cleared: number[] = []
+  const globals = globalThis as unknown as Record<string, unknown>
+  const originalSetInterval = globals.setInterval
+  const originalClearInterval = globals.clearInterval
+  let nextId = 1
+  globals.setInterval = (callback: () => void) => {
+    const id = nextId++
+    started.push({ id, callback })
+    return id
+  }
+  globals.clearInterval = (id: number) => {
+    cleared.push(id)
+  }
+  return {
+    started,
+    cleared,
+    restore() {
+      globals.setInterval = originalSetInterval
+      globals.clearInterval = originalClearInterval
+    }
+  }
+}
+
 describe('autoRefreshInterval', () => {
+  let intervals: FakeIntervals
+
   before(() => {
     setupDom()
     setupStorage()
+    intervals = stubIntervals()
+  })
+
+  after(() => {
+    intervals.restore()
   })
 
   beforeEach(() => {
     storage.store.clear()
     head.children.length = 0
     body.children.length = 0
+    intervals.started.length = 0
+    intervals.cleared.length = 0
   })
 
   it('does not start timer when interval is 0 (default)', async () => {
     const host = await supportUkraineBlock({ dontRepeat: false })
     assert.ok(host.destroy, 'destroy method exists')
+    assert.equal(intervals.started.length, 0, 'no interval is started')
     host.destroy()
   })
 
@@ -1810,6 +1852,7 @@ describe('autoRefreshInterval', () => {
       dontRepeat: false
     })
     assert.ok(host.destroy, 'destroy method exists')
+    assert.equal(intervals.started.length, 1, 'one interval is started')
     host.destroy()
   })
 
@@ -1818,8 +1861,9 @@ describe('autoRefreshInterval', () => {
       autoRefreshInterval: 50,
       dontRepeat: false
     })
+    const intervalId = intervals.started[0]?.id
     host.destroy()
-    assert.ok(true, 'destroy did not throw')
+    assert.deepEqual(intervals.cleared, [intervalId], 'destroy clears the auto-refresh interval')
   })
 
   it('rotates the banner on the interval', async () => {
@@ -1828,18 +1872,23 @@ describe('autoRefreshInterval', () => {
     console.info = (...arguments_: unknown[]) => {
       calls.push(arguments_.map(String).join(' '))
     }
-    const host = await supportUkraineBlock({
-      charities: rotationCharities,
-      autoRefreshInterval: 30,
-      dontRepeat: false
+    await withRandom([0, 0], async () => {
+      const host = await supportUkraineBlock({
+        charities: rotationCharities,
+        autoRefreshInterval: 30,
+        dontRepeat: false
+      })
+      try {
+        const interval = intervals.started[0]
+        assert.ok(interval, 'the banner starts an interval')
+        interval.callback()
+        assert.ok(calls.length > 1, 'the banner must rotate on the interval')
+        assert.equal(bannerName(host), 'Rot B', 'the interval shows the next charity')
+      } finally {
+        console.info = originalInfo
+        host.destroy()
+      }
     })
-    try {
-      await new Promise(resolve => setTimeout(resolve, 150))
-      assert.ok(calls.length > 1, 'the banner must rotate on the interval')
-    } finally {
-      console.info = originalInfo
-      host.destroy()
-    }
   })
 
   it('destroy removes the host element from the DOM', async () => {
