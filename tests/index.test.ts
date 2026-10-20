@@ -5,15 +5,26 @@
 import { describe, it, before, beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
 import type { Charity, CharityTag } from '../src/types.js'
-import { charitiesSchema } from '../src/types.js'
+import { charitySchema, charitiesSchema } from '../src/types.js'
 import {
   supportUkraineBlock,
   DEFAULT_CHARITIES,
   charityUrlFor,
   randomItem,
-  resetMemorySeen
+  resetMemorySeen,
+  isDoNotTrackEnabled,
+  buildUtmUrl
 } from '../src/index.js'
-import { detectLocale, loadLocale, mergeCharities, isRTL, formatBannerText } from '../src/i18n.js'
+import {
+  detectLocale,
+  loadLocale,
+  mergeCharities,
+  isRTL,
+  formatBannerText,
+  resetLocaleCache,
+  preloadDefault
+} from '../src/i18n.js'
+import { injectShadowStyles } from '../src/banner.js'
 import { localeLoaders, resolveLocale } from '../src/locales/index.js'
 import styles from '../src/styles.scss'
 
@@ -192,6 +203,12 @@ describe('randomItem', () => {
     }
   })
 
+  it('indexes the array by the random value', async () => {
+    await withRandom([0.5], async () => {
+      assert.equal(randomItem(['a', 'b', 'c']), 'b')
+    })
+  })
+
   it('returns the single item when array has one element', () => {
     assert.equal(randomItem(['only']), 'only')
   })
@@ -290,6 +307,11 @@ describe('loadLocale', () => {
 
   it('falls back to English for unknown locale', async () => {
     const messages = await loadLocale('zz')
+    assert.equal(messages.supportUkraine, 'Support Ukraine with')
+  })
+
+  it('preloads the English locale', async () => {
+    const messages = await preloadDefault()
     assert.equal(messages.supportUkraine, 'Support Ukraine with')
   })
 })
@@ -475,10 +497,12 @@ describe('exclude', () => {
   it('never shows an excluded charity id', async () => {
     const excluded = DEFAULT_CHARITIES[0]
     assert.ok(excluded)
-    for (let index = 0; index < 5; index++) {
-      const host = await supportUkraineBlock({ exclude: [excluded.id], dontRepeat: false })
-      assert.notEqual(bannerName(host), excluded.name)
-    }
+    await withRandom([0, 0, 0, 0, 0], async () => {
+      for (let index = 0; index < 5; index++) {
+        const host = await supportUkraineBlock({ exclude: [excluded.id], dontRepeat: false })
+        assert.notEqual(bannerName(host), excluded.name)
+      }
+    })
   })
 
   it('combines with the tags filter', async () => {
@@ -502,6 +526,21 @@ describe('exclude', () => {
     const host = await supportUkraineBlock({ exclude: all, dontRepeat: false })
     assert.ok(bannerName(host).length > 0)
   })
+
+  it('keeps the tag filter when every tagged charity is excluded', async () => {
+    const military = DEFAULT_CHARITIES.filter(c => c.tags.includes('military'))
+    await withRandom([0], async () => {
+      const host = await supportUkraineBlock({
+        exclude: military.map(c => c.id),
+        tags: ['military'],
+        dontRepeat: false
+      })
+      assert.ok(
+        military.some(c => c.name === bannerName(host)),
+        'an exclusion that empties the list is ignored'
+      )
+    })
+  })
 })
 
 // ── dontRepeat ─────────────────────────────────────────────────────────
@@ -517,6 +556,11 @@ class MockElement {
   tagName = ''
   id = ''
   href = ''
+  lang = ''
+  target = ''
+  rel = ''
+  type = ''
+  shadowMode = ''
   style = { fontSize: '' }
   dataset: Record<string, string>
   classList = {
@@ -621,7 +665,8 @@ class MockElement {
     return this._children.find(child => child.className === className) ?? undefined
   }
 
-  attachShadow(_options: { mode: string }): MockShadowRoot {
+  attachShadow(options: { mode: string }): MockShadowRoot {
+    this.shadowMode = options.mode
     this._shadowRoot = new MockShadowRoot(this)
     return this._shadowRoot
   }
@@ -719,7 +764,11 @@ class MockShadowRoot {
     this._children.push(...items)
   }
 
-  querySelector(_selector: string) {
+  querySelector(selector: string) {
+    const idMatch = selector.match(/^#(.+)$/)
+    if (idMatch) {
+      return this._children.find(child => child.id === idMatch[1]) ?? undefined
+    }
     return
   }
 
@@ -751,6 +800,115 @@ function bannerOf(host: HTMLElement): MockElement {
   return banner
 }
 
+function refreshButtonOf(host: HTMLElement): MockElement {
+  const banner = bannerOf(host)
+  const button = banner.children.find(child => child.className === 'support-ukraine-block__refresh')
+  assert.ok(button, 'refresh button found')
+  return button
+}
+
+// Runs the body with a scripted Math.random so the picked charity is deterministic.
+async function withRandom<T>(values: number[], run: () => Promise<T> | T): Promise<T> {
+  const original = Math.random
+  let index = 0
+  Math.random = () => values[Math.min(index++, values.length - 1)] ?? 0
+  try {
+    return await run()
+  } finally {
+    Math.random = original
+  }
+}
+
+// Swaps a browser global for the duration of the callback and restores it afterwards.
+async function withGlobal<T>(
+  name: 'window' | 'navigator',
+  value: unknown,
+  run: () => Promise<T> | T
+): Promise<T> {
+  const target = globalThis as unknown as Record<string, unknown>
+  const saved = target[name]
+  target[name] = value
+  try {
+    return await run()
+  } finally {
+    target[name] = saved
+  }
+}
+
+// ── rotation fixtures ────────────────────────────────────────────────────
+
+const rotationCharities: Charity[] = [
+  {
+    id: 'rot-a',
+    name: 'Rot A',
+    tagline: 'Tagline A',
+    urls: { en: 'https://a.example.org' },
+    tags: ['humanitarian']
+  },
+  {
+    id: 'rot-b',
+    name: 'Rot B',
+    tagline: 'Tagline B',
+    urls: { en: 'https://b.example.org' },
+    tags: ['humanitarian']
+  },
+  {
+    id: 'rot-c',
+    name: 'Rot C',
+    tagline: 'Tagline C',
+    urls: { en: 'https://c.example.org' },
+    tags: ['humanitarian']
+  }
+]
+
+const sharedUrlCharities: Charity[] = [
+  {
+    id: 'shared-a',
+    name: 'Shared A',
+    tagline: 'Tagline A',
+    urls: { en: 'https://shared.example.org' },
+    tags: ['humanitarian']
+  },
+  {
+    id: 'shared-b',
+    name: 'Shared B',
+    tagline: 'Tagline B',
+    urls: { en: 'https://shared.example.org' },
+    tags: ['humanitarian']
+  },
+  {
+    id: 'shared-c',
+    name: 'Shared C',
+    tagline: 'Tagline C',
+    urls: { en: 'https://shared.example.org' },
+    tags: ['humanitarian']
+  }
+]
+
+const mixedUrlCharities: Charity[] = [
+  {
+    id: 'mix-a',
+    name: 'Mix A',
+    tagline: 'Tagline A',
+    urls: { en: 'https://mix.example.org' },
+    tags: ['humanitarian']
+  },
+  {
+    id: 'mix-b',
+    name: 'Mix B',
+    tagline: 'Tagline B',
+    urls: { en: 'https://mix.example.org' },
+    tags: ['humanitarian']
+  },
+  {
+    id: 'mix-c',
+    name: 'Mix C',
+    tagline: 'Tagline C',
+    urls: { en: 'https://other.example.org' },
+    tags: ['humanitarian']
+  }
+]
+
 const body = new MockBody()
 
 type FocusHandler = (...arguments_: unknown[]) => void
@@ -773,7 +931,10 @@ function removeListenerFrom(
   event: string,
   handler: FocusHandler
 ): void {
-  store.set((store.get(event) ?? []).filter(item => item !== handler))
+  store.set(
+    event,
+    (store.get(event) ?? []).filter(item => item !== handler)
+  )
 }
 
 function fireDocumentEvent(): void {
@@ -1315,6 +1476,17 @@ describe('replace mode', () => {
     assert.equal(body.children.length, 1)
     assert.notEqual(body.firstElementChild, div, 'div placeholder was replaced')
   })
+
+  it('prepends instead of replacing in shift mode', async () => {
+    const placeholder = new MockElement()
+    placeholder.tagName = 'HEADER'
+    placeholder.className = 'support-ukraine-block'
+    body.children.push(placeholder)
+
+    const host = await supportUkraineBlock({ dontRepeat: false })
+    assert.equal(body.children.length, 2, 'the placeholder stays and the banner is prepended')
+    assert.equal(body.firstElementChild, host)
+  })
 })
 
 // ── accessibility (landmarks) ────────────────────────────────────────────
@@ -1650,6 +1822,26 @@ describe('autoRefreshInterval', () => {
     assert.ok(true, 'destroy did not throw')
   })
 
+  it('rotates the banner on the interval', async () => {
+    const calls: string[] = []
+    const originalInfo = console.info
+    console.info = (...arguments_: unknown[]) => {
+      calls.push(arguments_.map(String).join(' '))
+    }
+    const host = await supportUkraineBlock({
+      charities: rotationCharities,
+      autoRefreshInterval: 30,
+      dontRepeat: false
+    })
+    try {
+      await new Promise(resolve => setTimeout(resolve, 150))
+      assert.ok(calls.length > 1, 'the banner must rotate on the interval')
+    } finally {
+      console.info = originalInfo
+      host.destroy()
+    }
+  })
+
   it('destroy removes the host element from the DOM', async () => {
     const host = await supportUkraineBlock({ dontRepeat: false })
     assert.equal(body.children.length, 1)
@@ -1951,14 +2143,19 @@ describe('injectShadowStyles', () => {
     head.children.length = 0
   })
 
-  it('appends style element only once across multiple calls', async () => {
-    const host1 = await supportUkraineBlock({ dontRepeat: false })
-    const host2 = await supportUkraineBlock({ dontRepeat: false })
+  it('injects the stylesheet once per shadow root', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false })
+    const root = shadowOf(host)
+    const injected = root.children.filter(child => child.tagName === 'STYLE')
+    assert.equal(injected.length, 1, 'the shadow root holds one style')
+    assert.equal(injected[0]?.id, 'support-ukraine-block-styles')
 
-    const styles1 = shadowOf(host1).children.filter(child => child.tagName === 'STYLE')
-    const styles2 = shadowOf(host2).children.filter(child => child.tagName === 'STYLE')
-    assert.equal(styles1.length, 1, 'first shadow root should have one style')
-    assert.equal(styles2.length, 1, 'second shadow root should have one style')
+    injectShadowStyles(root as unknown as ShadowRoot)
+    assert.equal(
+      root.children.filter(child => child.tagName === 'STYLE').length,
+      1,
+      'the stylesheet must not be injected twice'
+    )
   })
 })
 
@@ -2040,5 +2237,775 @@ describe('per-locale entries', () => {
     const host = await esBlock({ locale: 'fr', dontRepeat: false })
     const banner = bannerOf(host)
     assert.equal((banner as unknown as { lang: string }).lang, 'es')
+  })
+})
+
+// ── charity validation ────────────────────────────────────────────────────
+
+describe('charity validation', () => {
+  const valid = {
+    id: 'valid-id',
+    name: 'Valid Charity',
+    tagline: 'A valid tagline',
+    urls: { en: 'https://valid.example.org' },
+    tags: ['military']
+  }
+
+  it('parses a single charity', () => {
+    const parsed = charitySchema.parse(valid)
+    assert.equal(parsed.id, 'valid-id')
+    assert.equal(parsed.urls.en, 'https://valid.example.org')
+    assert.deepEqual(parsed.tags, ['military'])
+  })
+
+  it('rejects a null charity', () => {
+    // eslint-disable-next-line unicorn/no-null
+    assert.throws(() => charitiesSchema.parse([null]), /Charity must be an object/)
+  })
+
+  it('rejects a string charity', () => {
+    assert.throws(() => charitiesSchema.parse(['nope']), /Charity must be an object/)
+  })
+
+  it('requires a string id', () => {
+    assert.throws(() => charitiesSchema.parse([{ ...valid, id: 42 }]), /id must be a string/)
+  })
+
+  it('requires a non-empty id', () => {
+    assert.throws(() => charitiesSchema.parse([{ ...valid, id: '' }]), /id must not be empty/)
+  })
+
+  it('requires a string name', () => {
+    assert.throws(() => charitiesSchema.parse([{ ...valid, name: 7 }]), /name must be a string/)
+  })
+
+  it('requires a non-empty name', () => {
+    assert.throws(() => charitiesSchema.parse([{ ...valid, name: '' }]), /name must not be empty/)
+  })
+
+  it('requires a string tagline', () => {
+    assert.throws(
+      () => charitiesSchema.parse([{ ...valid, tagline: 7 }]),
+      /tagline must be a string/
+    )
+  })
+
+  it('requires a non-empty tagline', () => {
+    assert.throws(
+      () => charitiesSchema.parse([{ ...valid, tagline: '' }]),
+      /tagline must not be empty/
+    )
+  })
+
+  it('requires tags to be an array', () => {
+    assert.throws(
+      () => charitiesSchema.parse([{ ...valid, tags: 'military' }]),
+      /tags must be an array/
+    )
+  })
+
+  it('requires at least one tag', () => {
+    assert.throws(() => charitiesSchema.parse([{ ...valid, tags: [] }]), /tags must not be empty/)
+  })
+
+  it('requires a urls object', () => {
+    // eslint-disable-next-line unicorn/no-null
+    assert.throws(() => charitiesSchema.parse([{ ...valid, urls: null }]), /urls must be an object/)
+  })
+
+  it('requires a non-empty urls object', () => {
+    assert.throws(() => charitiesSchema.parse([{ ...valid, urls: {} }]), /urls must not be empty/)
+  })
+
+  it('names the offending url key', () => {
+    const urls = { en: 'https://valid.example.org', de: 'nope' }
+    assert.throws(() => charitiesSchema.parse([{ ...valid, urls }]), /urls\.de must be a valid URL/)
+  })
+
+  it('requires the url values to be strings', () => {
+    const urls = { en: 42 }
+    assert.throws(() => charitiesSchema.parse([{ ...valid, urls }]), /urls\.en must be a string/)
+  })
+
+  it('lists the valid tags when a tag is unknown', () => {
+    assert.throws(
+      () => charitiesSchema.parse([{ ...valid, tags: ['invalid'] }]),
+      /Invalid tag: invalid\. Must be one of: military, humanitarian, animals/
+    )
+  })
+
+  it('requires an array of charities', () => {
+    assert.throws(() => charitiesSchema.parse({}), /Charities must be an array/)
+  })
+})
+
+// ── banner structure ──────────────────────────────────────────────────────
+
+describe('banner structure', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  it('mounts a div host with an open shadow root', async () => {
+    const host = (await supportUkraineBlock({ dontRepeat: false })) as unknown as MockElement
+    assert.equal(host.tagName, 'DIV')
+    assert.equal(host.shadowMode, 'open')
+  })
+
+  it('renders the banner section with its mode class', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false })
+    const banner = bannerOf(host)
+    assert.equal(banner.className, 'support-ukraine-block support-ukraine-block--shift')
+  })
+
+  it('renders the donation link', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false })
+    const link = bannerOf(host).firstChild as MockElement
+    assert.equal(link.tagName, 'A')
+    assert.equal(link.className, 'support-ukraine-block__link')
+    assert.equal(link.target, '_blank')
+    assert.equal(link.rel, 'noopener noreferrer')
+    assert.equal(link.style.fontSize, '87.5%')
+  })
+
+  it('renders the flag, the prefix and the info block inside the link', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false, locale: 'en' })
+    const link = bannerOf(host).firstChild as MockElement
+    const [flag, prefix, info] = link.children
+    assert.equal(flag?.tagName, 'SPAN')
+    assert.equal(flag?.className, 'support-ukraine-block__flag')
+    assert.equal(flag?.textContent, '🇺🇦 ')
+    assert.equal(prefix?.tagName, 'SPAN')
+    assert.equal(prefix?.className, 'support-ukraine-block__prefix')
+    assert.equal(prefix?.textContent, 'Support Ukraine with ')
+    assert.equal(info?.tagName, 'SPAN')
+    assert.equal(info?.className, 'support-ukraine-block__info')
+  })
+
+  it('renders the charity name, the colon and the tagline', async () => {
+    const charity = DEFAULT_CHARITIES[0]
+    assert.ok(charity)
+    const host = await supportUkraineBlock({
+      charities: [charity],
+      locale: 'en',
+      dontRepeat: false
+    })
+    const info = (bannerOf(host).firstChild as MockElement).lastChild as MockElement
+    const [name, colon, tagline] = info.children
+    assert.equal(name?.tagName, 'SPAN')
+    assert.equal(name?.className, 'support-ukraine-block__name')
+    assert.equal(name?.textContent, charity.name)
+    assert.equal(colon?.tagName, 'SPAN')
+    assert.equal(colon?.className, 'support-ukraine-block__colon')
+    assert.equal(colon?.textContent, ': ')
+    assert.equal(tagline?.tagName, 'SPAN')
+    assert.equal(tagline?.className, 'support-ukraine-block__tagline')
+    assert.equal(tagline?.textContent, charity.tagline)
+  })
+
+  it('renders the more link with its text and ellipsis', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false, locale: 'en' })
+    const banner = bannerOf(host)
+    const more = banner.children.find(child => child.className === 'support-ukraine-block__more')
+    assert.ok(more)
+    assert.equal(more.tagName, 'A')
+    assert.equal(more.target, '_blank')
+    assert.equal(more.rel, 'noopener noreferrer')
+    const [text, ellipsis] = more.children
+    assert.equal(text?.tagName, 'SPAN')
+    assert.equal(text?.className, 'support-ukraine-block__more-text')
+    assert.equal(text?.textContent, 'more…')
+    assert.equal(ellipsis?.tagName, 'SPAN')
+    assert.equal(ellipsis?.className, 'support-ukraine-block__more-ellipsis')
+    assert.equal(ellipsis?.textContent, '…')
+  })
+
+  it('appends a visually hidden new-tab hint for both links', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false })
+    const banner = bannerOf(host)
+    const hints = banner.children.filter(
+      child => child.className === 'support-ukraine-block__visually-hidden'
+    )
+    assert.equal(hints.length, 2)
+    for (const hint of hints) {
+      assert.equal(hint.tagName, 'SPAN')
+      assert.match(hint.id, /^support-ukraine-block-(link|more)-new-tab-\d+$/)
+    }
+    const link = banner.firstChild as MockElement
+    const linkHint = hints.find(hint => hint.id.includes('link-new-tab'))
+    assert.ok(linkHint)
+    assert.equal(link.getAttribute('aria-describedby'), linkHint.id)
+  })
+
+  it('marks the host as processed', async () => {
+    const host = await supportUkraineBlock({ dontRepeat: false })
+    assert.equal(host.dataset.supportUkraine, '')
+    assert.ok(host.className.includes('support-ukraine-block--processed'))
+  })
+
+  it('renders the refresh button as a real button', async () => {
+    const host = await supportUkraineBlock({ showRefreshButton: true, dontRepeat: false })
+    const banner = bannerOf(host)
+    const refresh = banner.children.find(
+      child => child.className === 'support-ukraine-block__refresh'
+    )
+    assert.ok(refresh)
+    assert.equal(refresh.tagName, 'BUTTON')
+    assert.equal(refresh.type, 'button')
+    const glyph = refresh.firstChild as MockElement
+    assert.equal(glyph.tagName, 'SPAN')
+    assert.equal(glyph.getAttribute('aria-hidden'), 'true')
+  })
+})
+
+// ── rotation policy ───────────────────────────────────────────────────────
+
+describe('rotation policy', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    resetMemorySeen()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  it('keeps the same charity when dontRepeat is false', async () => {
+    await withRandom([0, 0], async () => {
+      const first = await supportUkraineBlock({ charities: rotationCharities, dontRepeat: false })
+      const second = await supportUkraineBlock({ charities: rotationCharities, dontRepeat: false })
+      assert.equal(bannerName(first), 'Rot A')
+      assert.equal(bannerName(second), 'Rot A')
+    })
+  })
+
+  it('avoids repeats by default', async () => {
+    await withRandom([0, 0], async () => {
+      const first = await supportUkraineBlock({ charities: rotationCharities })
+      const second = await supportUkraineBlock({ charities: rotationCharities })
+      assert.equal(bannerName(first), 'Rot A')
+      assert.equal(bannerName(second), 'Rot B')
+    })
+  })
+
+  it('clears the seen list once every charity has been shown', async () => {
+    await withRandom([0, 0.4, 0.8, 0, 0.2], async () => {
+      for (let index = 0; index < 4; index++) {
+        await supportUkraineBlock({ charities: rotationCharities })
+      }
+      const fifth = await supportUkraineBlock({ charities: rotationCharities })
+      assert.equal(bannerName(fifth), 'Rot B')
+    })
+  })
+
+  it('forgets the seen charities when the session is reset', async () => {
+    await withRandom([0, 0], async () => {
+      const first = await supportUkraineBlock({ charities: rotationCharities })
+      assert.equal(bannerName(first), 'Rot A')
+      resetMemorySeen()
+      const second = await supportUkraineBlock({ charities: rotationCharities })
+      assert.equal(bannerName(second), 'Rot A')
+    })
+  })
+
+  it('does not persist the seen list when dontRepeat is false', async () => {
+    await supportUkraineBlock({
+      charities: rotationCharities,
+      dontRepeat: false,
+      persistSeen: true
+    })
+    assert.equal(storage.store.size, 0, 'a disabled repeat guard must not write to localStorage')
+  })
+
+  it('degrades to an empty seen list when localStorage is unavailable', async () => {
+    const savedGetItem = localStorage.getItem
+    localStorage.getItem = () => {
+      throw new Error('storage denied')
+    }
+    try {
+      await withRandom([0], async () => {
+        const host = await supportUkraineBlock({
+          charities: rotationCharities,
+          persistSeen: true
+        })
+        assert.equal(bannerName(host), 'Rot A')
+      })
+    } finally {
+      localStorage.getItem = savedGetItem
+    }
+  })
+})
+
+// ── rotation excludes the current charity ─────────────────────────────────
+
+describe('rotation exclusions', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    resetMemorySeen()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  it('excludes the current charity id', async () => {
+    await withRandom([0, 0], async () => {
+      const host = await supportUkraineBlock({
+        charities: sharedUrlCharities,
+        dontRepeat: false,
+        showRefreshButton: true
+      })
+      assert.equal(bannerName(host), 'Shared A')
+      refreshButtonOf(host).click()
+      assert.equal(bannerName(host), 'Shared B')
+    })
+  })
+
+  it('excludes charities sharing the current donation url', async () => {
+    await withRandom([0, 0], async () => {
+      const host = await supportUkraineBlock({
+        charities: mixedUrlCharities,
+        dontRepeat: false,
+        showRefreshButton: true
+      })
+      assert.equal(bannerName(host), 'Mix A')
+      refreshButtonOf(host).click()
+      assert.equal(bannerName(host), 'Mix C')
+    })
+  })
+
+  it('keeps a charity that carries one of the requested tags', async () => {
+    const tagged: Charity[] = [
+      {
+        id: 'single-tag',
+        name: 'Single Tag',
+        tagline: 'One tag',
+        urls: { en: 'https://single.example.org' },
+        tags: ['animals']
+      },
+      {
+        id: 'multi-tag',
+        name: 'Multi Tag',
+        tagline: 'Two tags',
+        urls: { en: 'https://multi.example.org' },
+        tags: ['military', 'humanitarian']
+      }
+    ]
+    await withRandom([0], async () => {
+      const host = await supportUkraineBlock({
+        charities: tagged,
+        tags: ['military'],
+        dontRepeat: false
+      })
+      const link = bannerOf(host).firstChild as MockElement
+      assert.ok(link.href.startsWith('https://multi.example.org'), `unexpected href ${link.href}`)
+    })
+  })
+})
+
+// ── refreshOnClick scheduling ─────────────────────────────────────────────
+
+describe('refreshOnClick scheduling', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+    setupWindow()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    resetMemorySeen()
+    documentListeners.clear()
+    setupWindow()
+    setDocumentHidden(false)
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  afterEach(() => {
+    body.children.length = 0
+  })
+
+  it('does not rotate while the page stays visible', async () => {
+    await withRandom([0, 0], async () => {
+      const host = await supportUkraineBlock({
+        charities: rotationCharities,
+        refreshOnClickDelay: 30
+      })
+      const link = bannerOf(host).firstChild as MockElement
+      link.click()
+      fireDocumentEvent()
+      assert.equal(bannerName(host), 'Rot A', 'a visible page must not rotate the banner')
+    })
+  })
+
+  it('does not rotate when refreshOnClick is disabled', async () => {
+    await withRandom([0, 0], async () => {
+      const host = await supportUkraineBlock({
+        charities: rotationCharities,
+        refreshOnClick: false,
+        refreshOnClickDelay: 30
+      })
+      const link = bannerOf(host).firstChild as MockElement
+      link.click()
+      await new Promise(resolve => setTimeout(resolve, 80))
+      assert.equal(bannerName(host), 'Rot A', 'the click must not schedule a rotation')
+    })
+  })
+
+  it('rotates once when the page hides after a click', async () => {
+    await withRandom([0, 0, 0], async () => {
+      const host = await supportUkraineBlock({
+        charities: rotationCharities,
+        refreshOnClickDelay: 30
+      })
+      const link = bannerOf(host).firstChild as MockElement
+      link.click()
+      setDocumentHidden(true)
+      fireDocumentEvent()
+      assert.equal(bannerName(host), 'Rot B')
+      await new Promise(resolve => setTimeout(resolve, 80))
+      assert.equal(bannerName(host), 'Rot B', 'the pending timer must be cancelled')
+    })
+  })
+
+  it('stops listening for the page visibility after the rotation', async () => {
+    await withRandom([0, 0, 0, 0], async () => {
+      const host = await supportUkraineBlock({
+        charities: rotationCharities,
+        refreshOnClickDelay: 30
+      })
+      const link = bannerOf(host).firstChild as MockElement
+      link.click()
+      setDocumentHidden(true)
+      fireDocumentEvent()
+      const afterHide = bannerName(host)
+      assert.equal(afterHide, 'Rot B')
+      setDocumentHidden(false)
+      setDocumentHidden(true)
+      fireDocumentEvent()
+      assert.equal(bannerName(host), afterHide, 'the visibility listener must be removed')
+    })
+  })
+
+  it('stops listening for the window blur after the rotation', async () => {
+    await withRandom([0, 0, 0, 0], async () => {
+      const host = await supportUkraineBlock({
+        charities: rotationCharities,
+        refreshOnClickDelay: 30
+      })
+      const link = bannerOf(host).firstChild as MockElement
+      link.click()
+      fireWindowEvent()
+      const afterBlur = bannerName(host)
+      assert.equal(afterBlur, 'Rot B')
+      fireWindowEvent()
+      assert.equal(bannerName(host), afterBlur, 'the blur listener must be removed')
+    })
+  })
+
+  it('stops listening after the delayed rotation', async () => {
+    await withRandom([0, 0, 0, 0], async () => {
+      const host = await supportUkraineBlock({
+        charities: rotationCharities,
+        refreshOnClickDelay: 30
+      })
+      const link = bannerOf(host).firstChild as MockElement
+      link.click()
+      await new Promise(resolve => setTimeout(resolve, 80))
+      const afterDelay = bannerName(host)
+      assert.equal(afterDelay, 'Rot B', 'the delayed rotation happens')
+      setDocumentHidden(true)
+      fireDocumentEvent()
+      assert.equal(bannerName(host), afterDelay, 'the listener must be gone after the rotation')
+    })
+  })
+
+  it('does not rotate twice after a window blur', async () => {
+    await withRandom([0, 0, 0, 0], async () => {
+      const host = await supportUkraineBlock({
+        charities: rotationCharities,
+        refreshOnClickDelay: 30
+      })
+      const link = bannerOf(host).firstChild as MockElement
+      link.click()
+      fireWindowEvent()
+      const afterBlur = bannerName(host)
+      await new Promise(resolve => setTimeout(resolve, 80))
+      assert.equal(bannerName(host), afterBlur, 'the pending timer must be cancelled')
+    })
+  })
+
+  it('cancels the pending rotation when the banner is destroyed', async () => {
+    await withRandom([0, 0, 0, 0], async () => {
+      const host = await supportUkraineBlock({
+        charities: rotationCharities,
+        refreshOnClickDelay: 30
+      })
+      const link = bannerOf(host).firstChild as MockElement
+      link.click()
+      link.click()
+      const before = bannerName(host)
+      host.destroy()
+      await new Promise(resolve => setTimeout(resolve, 80))
+      assert.equal(bannerName(host), before, 'no rotation may happen after destroy')
+    })
+  })
+})
+
+// ── window fallbacks ──────────────────────────────────────────────────────
+
+describe('window fallbacks', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    resetMemorySeen()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  it('mounts and clicks without a window object', async () => {
+    await withGlobal('window', undefined, async () => {
+      await withRandom([0], async () => {
+        const host = await supportUkraineBlock({
+          charities: rotationCharities,
+          dontRepeat: false,
+          refreshOnClickDelay: 30
+        })
+        const link = bannerOf(host).firstChild as MockElement
+        link.click()
+        assert.equal(bannerName(host), 'Rot A')
+      })
+    })
+  })
+
+  it('mounts and clicks without window event methods', async () => {
+    await withGlobal('window', {}, async () => {
+      await withRandom([0], async () => {
+        const host = await supportUkraineBlock({
+          charities: rotationCharities,
+          dontRepeat: false,
+          refreshOnClickDelay: 30
+        })
+        const link = bannerOf(host).firstChild as MockElement
+        link.click()
+        assert.equal(bannerName(host), 'Rot A')
+      })
+    })
+  })
+
+  it('destroys without window event methods', async () => {
+    await withGlobal('window', {}, async () => {
+      const host = await supportUkraineBlock({
+        charities: rotationCharities,
+        dontRepeat: false,
+        refreshOnClickDelay: 30
+      })
+      const link = bannerOf(host).firstChild as MockElement
+      link.click()
+      host.destroy()
+      assert.ok(true, 'destroy did not throw')
+    })
+  })
+
+  it('destroys without a window object', async () => {
+    await withGlobal('window', undefined, async () => {
+      const host = await supportUkraineBlock({
+        charities: rotationCharities,
+        dontRepeat: false,
+        refreshOnClickDelay: 30
+      })
+      const link = bannerOf(host).firstChild as MockElement
+      link.click()
+      host.destroy()
+      assert.ok(true, 'destroy did not throw')
+    })
+  })
+})
+
+// ── Do-Not-Track detection ────────────────────────────────────────────────
+
+describe('Do-Not-Track detection', () => {
+  it('reports no DNT when navigator is unavailable', () => {
+    withGlobal('navigator', undefined, () => {
+      assert.equal(isDoNotTrackEnabled(), false)
+    })
+  })
+
+  it('accepts the "yes" navigator value', () => {
+    withGlobal('navigator', { doNotTrack: 'yes' }, () => {
+      assert.equal(isDoNotTrackEnabled(), true)
+    })
+  })
+
+  it('accepts the "1" window value', () => {
+    withGlobal('window', { doNotTrack: '1', location: { hostname: 'example.com' } }, () => {
+      assert.equal(isDoNotTrackEnabled(), true)
+    })
+  })
+})
+
+// ── buildUtmUrl ───────────────────────────────────────────────────────────
+
+describe('buildUtmUrl', () => {
+  before(() => {
+    setupDom()
+    setupStorage()
+    setupWindow()
+  })
+
+  it('adds the configured campaign', () => {
+    const url = buildUtmUrl('https://example.org/donate', { utmCampaign: 'spring' })
+    assert.ok(url.includes('utm_campaign=spring'), `unexpected url ${url}`)
+  })
+
+  it('omits the campaign by default', () => {
+    const url = buildUtmUrl('https://example.org/donate', {})
+    assert.ok(!url.includes('utm_campaign'), `unexpected url ${url}`)
+  })
+
+  it('keeps the base url when it cannot be parsed', () => {
+    assert.equal(buildUtmUrl('not-a-url', {}), 'not-a-url')
+  })
+
+  it('keeps the base url when the page has no hostname', () => {
+    withGlobal('window', { location: undefined }, () => {
+      assert.equal(buildUtmUrl('https://example.org/donate', {}), 'https://example.org/donate')
+    })
+  })
+})
+
+// ── console output ────────────────────────────────────────────────────────
+
+describe('console output', () => {
+  let originalInfo: typeof console.info
+  let calls: string[]
+
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    resetMemorySeen()
+    head.children.length = 0
+    body.children.length = 0
+    calls = []
+    originalInfo = console.info
+    console.info = (...arguments_: unknown[]) => {
+      calls.push(arguments_.map(String).join(' '))
+    }
+  })
+
+  afterEach(() => {
+    console.info = originalInfo
+  })
+
+  it('logs the selected charity on mount', async () => {
+    const charity = rotationCharities[0]
+    assert.ok(charity)
+    await supportUkraineBlock({ charities: [charity], dontRepeat: false })
+    assert.ok(
+      calls.some(call => call.includes('[support-ukraine] banner')),
+      'the banner prefix is logged'
+    )
+    assert.ok(
+      calls.some(call => call.includes('Rot A: Tagline A')),
+      'the charity is logged'
+    )
+  })
+
+  it('logs the next charity when the banner rotates', async () => {
+    await withRandom([0, 0], async () => {
+      const host = await supportUkraineBlock({
+        charities: rotationCharities,
+        dontRepeat: false,
+        showRefreshButton: true
+      })
+      assert.equal(bannerName(host), 'Rot A')
+      calls.length = 0
+      refreshButtonOf(host).click()
+      assert.equal(calls.length, 1, 'the rotation logs exactly one line')
+      assert.ok(calls[0]?.includes('[support-ukraine] banner'))
+      assert.ok(calls[0]?.includes('Rot B: Tagline B'))
+    })
+  })
+
+  it('does not log the rotation when isInConsole is false', async () => {
+    const host = await supportUkraineBlock({
+      charities: rotationCharities,
+      dontRepeat: false,
+      showRefreshButton: true,
+      isInConsole: false
+    })
+    calls.length = 0
+    refreshButtonOf(host).click()
+    assert.equal(calls.length, 0, 'no rotation log when the console output is off')
+  })
+})
+
+// ── locale cache ──────────────────────────────────────────────────────────
+
+describe('locale cache', () => {
+  it('loads every locale once', async () => {
+    resetLocaleCache()
+    const savedLoader = localeLoaders.es
+    let calls = 0
+    localeLoaders.es = () => {
+      calls += 1
+      return savedLoader()
+    }
+    try {
+      const first = await loadLocale('es')
+      const second = await loadLocale('es')
+      assert.equal(calls, 1, 'the loader must run once per locale')
+      assert.equal(first, second, 'the cached messages must be reused')
+    } finally {
+      localeLoaders.es = savedLoader
+      resetLocaleCache()
+    }
+  })
+
+  it('falls back to English when a locale loader fails', async () => {
+    resetLocaleCache()
+    const savedLoader = localeLoaders.es
+    localeLoaders.es = () => Promise.reject(new Error('loader failed'))
+    try {
+      const messages = await loadLocale('es')
+      assert.equal(messages.supportUkraine, 'Support Ukraine with')
+    } finally {
+      localeLoaders.es = savedLoader
+      resetLocaleCache()
+    }
+  })
+
+  it('fails when the English locale cannot be loaded', async () => {
+    resetLocaleCache()
+    const savedLoader = localeLoaders.en
+    localeLoaders.en = () => Promise.reject(new Error('loader failed'))
+    try {
+      await assert.rejects(loadLocale('en'), /Failed to load locale "en"/)
+    } finally {
+      localeLoaders.en = savedLoader
+      resetLocaleCache()
+    }
   })
 })

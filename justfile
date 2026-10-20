@@ -23,6 +23,9 @@ test-verbose:
 coverage:
     npm run test:coverage
 
+mutation:
+    npm run mutation
+
 check-size:
     CI=true npm run check-size
 

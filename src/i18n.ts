@@ -13,6 +13,11 @@ Cached loaded locale messages per language code.
 */
 const cache = new Map<string, LocaleMessages>()
 
+// @internal — test helper resetting the memoized locale messages.
+export function resetLocaleCache(): void {
+  cache.clear()
+}
+
 /**
 Detect the user's preferred locale from browser APIs.
 

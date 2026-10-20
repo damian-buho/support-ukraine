@@ -105,7 +105,8 @@ function pickCharity(
   return charity
 }
 
-function injectShadowStyles(shadowRoot: ShadowRoot): void {
+// @internal — exported so the test can prove the injection stays idempotent.
+export function injectShadowStyles(shadowRoot: ShadowRoot): void {
   const id = `${CSS_PREFIX}-styles`
   if (shadowRoot.querySelector(`#${id}`)) {
     return

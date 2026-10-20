@@ -10,3 +10,6 @@ tsconfig.tsbuildinfo
 
 # stryker temp files
 .stryker-tmp
+
+# stryker report
+reports/

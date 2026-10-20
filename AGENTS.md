@@ -126,9 +126,16 @@ mergeCharities()            → Charity[] (localized taglines)
 | `dontRepeat`  | `boolean`                           | `true`            | Avoid repeats; seen ids stay in session memory unless `persistSeen` is set                                        |
 | `persistSeen` | `boolean`                           | `false`           | Persist seen charity ids in `localStorage` across visits (needs visitor consent)                                  |
 | `isInConsole` | `boolean`                           | `true`            | Log selected charity to dev console                                                     |
+| `showRefreshButton` | `boolean`                     | `false`           | Render a refresh button that loads the next random charity                              |
+| `autoRefreshInterval` | `number`                  | `0`               | Auto-refresh interval in ms; `0` disables it                                             |
+| `showRefreshAnimation` | `boolean`                | `false`           | Fade the banner while the charity changes (respects `prefers-reduced-motion`)           |
 | `refreshOnClick` | `boolean`                          | `true`            | Show the next random charity after a click on the banner link                           |
 | `refreshOnClickDelay` | `number`                        | `2000`            | Fallback delay in ms before rotating after a click when the page never loses focus      |
 | `locale`      | `string`                            | _(auto-detected)_ | Override BCP 47 language tag                                                            |
+| `utmEnabled`  | `boolean`                           | `true`            | Append UTM parameters to the donation links                                             |
+| `utmSource`   | `string`                            | _(page hostname)_ | `utm_source` value                                                                      |
+| `utmMedium`   | `string`                            | `'support-ukraine-banner'` | `utm_medium` value                                                             |
+| `utmCampaign` | `string`                            | `''`               | `utm_campaign` value; omitted from the URL while empty                                 |
 
 ## Testing
 
@@ -139,7 +146,12 @@ or jest. Test files live in `tests/` and are compiled to `dist/test/` by tsup.
 just test          # single run
 just test-verbose  # spec reporter
 just coverage      # --experimental-test-coverage
+just mutation      # Stryker mutation testing, report in reports/mutation/
 ```
+
+Internal helpers exported for the test suite: `resetMemorySeen` (session-only
+seen ids), `resetLocaleCache` (memoized locale messages) and `injectShadowStyles`
+(shadow-root stylesheet injection).
 
 ## ESLint plugins active
 
