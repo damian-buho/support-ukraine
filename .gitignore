@@ -7,3 +7,6 @@ dist/
 coverage/
 pages/dev.html
 tsconfig.tsbuildinfo
+
+# stryker temp files
+.stryker-tmp

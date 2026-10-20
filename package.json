@@ -124,6 +124,7 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@size-limit/preset-small-lib": "14.2.0",
+    "@stryker-mutator/core": "^10.0.0",
     "@types/eslint": "9.6.1",
     "@types/node": "26.6.5",
     "esbuild": "0.28.2",
