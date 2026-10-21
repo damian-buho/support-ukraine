@@ -147,7 +147,8 @@
   },
   "overrides": {
     "esbuild": "0.28.2",
-    "globals": "$globals"
+    "globals": "$globals",
+    "qs": "6.16.1"
   },
   "size-limit": [
     {
