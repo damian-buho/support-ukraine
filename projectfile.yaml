@@ -18,8 +18,8 @@ identity:
     uk: Готова до використання бібліотека для браузера, яка додає банер і стрічку підтримки Stand-with-Ukraine на будь-який вебсайт. Встановлюється з npm і вбудовується однією теґою script.
   modified: "2026-10-16"
   visibility: private
-  version: 2.1.3
-  released: "2026-10-19"
+  version: 2.2.1
+  released: "2026-10-21"
 includes:
   - https://kiota.ch/damian-buho/metadata/raw/branch/main/include.yaml
 keywords:
