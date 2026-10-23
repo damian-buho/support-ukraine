@@ -3,28 +3,23 @@
 # SPDX-License-Identifier: MIT
 
 name: Pages
-# Builds and deploys the localized charity listing to GitHub Pages.
-# Triggers on release tags — rebuilds pages from source YAML data and deploys.
+# Builds the charity listing from source YAML and deploys it to GitHub Pages on main pushes.
 
 on:
-  workflow_run:
-    workflows: [Release]
-    types: [completed]
+  push:
+    branches: [main]
 
 permissions:
   contents: read
 
 concurrency:
-  group: pages-${{ github.event.workflow_run.head_sha }}
+  group: pages-${{ github.sha }}
   cancel-in-progress: false
 
 jobs:
   build:
     name: Build pages
     runs-on: ubuntu-26.04
-    if: |
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'main'
     steps:
       - uses: actions/checkout@v6
         with:
