@@ -138,7 +138,7 @@
     "eslint-plugin-unicorn": "78.0.0",
     "globals": "17.13.0",
     "prettier": "3.9.10",
-    "sass": "1.106.0",
+    "sass": "1.106.1",
     "size-limit": "14.3.0",
     "tsup": "9.0.0",
     "typescript": "6.0.3",
