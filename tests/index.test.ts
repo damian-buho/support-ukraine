@@ -664,8 +664,8 @@ class MockElement {
 
   querySelector(selector: string) {
     // data-support-ukraine attribute selector for replace mode
-    const attributeMatch = selector.includes('[data-support-ukraine]')
-    if (attributeMatch) {
+    const isAttributeMatch = selector.includes('[data-support-ukraine]')
+    if (isAttributeMatch) {
       return this._children.find(child => child._attrs.has('data-support-ukraine')) ?? undefined
     }
     const classMatch = selector.match(/^\.([\w-]+)$/)
@@ -719,8 +719,8 @@ class MockBody {
     if (idMatch) {
       return head.children.find(child => child.id === idMatch[1]) ?? undefined
     }
-    const attributeMatch = selector.includes('[data-support-ukraine]')
-    if (attributeMatch) {
+    const isAttributeMatch = selector.includes('[data-support-ukraine]')
+    if (isAttributeMatch) {
       return (
         this._children.find(child =>
           (child as unknown as { _attrs: Map<string, string> })._attrs.has('data-support-ukraine')
