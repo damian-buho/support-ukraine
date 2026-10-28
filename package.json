@@ -127,7 +127,7 @@
     "@size-limit/preset-small-lib": "14.3.0",
     "@stryker-mutator/core": "10.1.1",
     "@types/eslint": "9.6.1",
-    "@types/node": "26.6.5",
+    "@types/node": "26.6.6",
     "esbuild": "0.28.2",
     "eslint": "10.13.0",
     "eslint-config-prettier": "10.1.8",
