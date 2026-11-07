@@ -64,6 +64,7 @@ const locales = [
   'ro',
   'sk',
   'sl',
+  'sq',
   'sr',
   'sv',
   'th',

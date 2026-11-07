@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "Mbështesni Ukrainën -"
+regionLabel: "Baneri i mbështetjes për Ukrainën"
+more: "më shumë…"
+donate: "Dhuro"
+refresh: "Shfaq organizatën tjetër"
+opensInNewTab: "(hapet në skedë të re)"
+charities:
+  united24:
+    tagline: "Platforma zyrtare e grumbullimit të fondeve e Ukrainës"
+  come-back-alive:
+    tagline: "Mbështetje për Forcat e Armatosura të Ukrainës që nga viti 2014"
+  razom-for-ukraine:
+    tagline: "Përgjigje emergjente dhe ndihmë humanitare"
+  ukrainian-red-cross:
+    tagline: "Ndihmë humanitare në zonat e konfliktit"
+  nova-ukraine:
+    tagline: "Ndihmë humanitare dhe avokim"
+  voices-of-children:
+    tagline: "Mbështetje psikologjike për fëmijët e prekur nga lufta"
+  prytula-foundation:
+    tagline: "Teknologji dhe pajisje mbrojtëse për Ukrainën"
+  world-central-kitchen:
+    tagline: "Ushqim i freskët për njerëzit në zonat e konfliktit"
+  cats-of-kyiv:
+    tagline: "Strehë për mace që shpëton macet në Kiev dhe u gjen shtëpi të reja"
+  uanimals:
+    tagline: "Organizatë për shpëtimin e kafshëve dhe mbrojtjen e të drejtave të tyre në Ukrainë"
+  hospitallers:
+    tagline: "Paramedikë vullnetarë ukrainas që ofrojnë ndihmë të parë dhe evakuim"
+  sternenko-fund:
+    tagline: "Furnizim me drona FPV për forcat mbrojtëse ukrainase"
+  life-robots-ukraine:
+    tagline: "Robotë për çminimin e Ukrainës"
+  sirius-shelter:
+    tagline: "Streha më e madhe e kafshëve për qen dhe mace në Ukrainë"
+  dignitas:
+    tagline: "Teknologji që shpëton jetë për mbrojtësit ukrainas"
+  leleka:
+    tagline: "Teknologji dhe mbështetje për mbrojtësit dhe veteranët ukrainas"
+  superhumans:
+    tagline: "Pajisje mjekësore taktike për mjekët në vijën e parë të Ukrainës"
+  nikopol-chance:
+    tagline: "Protezë, kirurgji dhe rehabilitim për të mbijetuarit e luftës"
+  dzygaspaw:
+    tagline: "Strehë për qen që shpëton qentë endacakë në Nikopolin e vijës së parë dhe u gjen shtëpi të reja"
+  donorua:
+    tagline: "Koordinon transfuzionet vullnetare të gjakut në Ukrainë"
+  army-sos:
+    tagline: "Ushqim dhe mbështetje për trupat ukrainase"
+  soloma-cats:
+    tagline: "Mjekësi taktike dhe çminim"
+  united-help-ukraine:
+    tagline: "Rehabilitim për luftëtarët e plagosur dhe mbështetje për të zhvendosurit"
+  sprava-hromad:
+    tagline: "Automjete të blinduara, kamionë dhe sisteme UAV për njësitet në vijën e parë"
