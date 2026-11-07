@@ -367,6 +367,15 @@ describe('mergeCharities', () => {
     assert.notEqual(united24.tagline, first.tagline)
   })
 
+  it('has a tagline for every charity in every locale', async () => {
+    for (const code of Object.keys(localeLoaders)) {
+      const { charities } = await loadLocale(resolveLocale(code))
+      for (const { id } of DEFAULT_CHARITIES) {
+        assert.ok(charities[id]?.tagline, `${code} lacks a tagline for ${id}`)
+      }
+    }
+  })
+
   it('keeps English tagline when charity id is missing from locale', async () => {
     const messages = {
       supportUkraine: 'Test',
