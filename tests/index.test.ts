@@ -273,6 +273,7 @@ describe('resolveLocale', () => {
     assert.equal(resolveLocale('ko'), 'ko')
     assert.equal(resolveLocale('id'), 'id')
     assert.equal(resolveLocale('vi'), 'vi')
+    assert.equal(resolveLocale('tr'), 'tr')
   })
 
   it('falls back to "en" for unsupported locales', () => {
@@ -2337,6 +2338,7 @@ const entryLoaders: Record<
   pt: () => import('../src/entries/pt.js'),
   sv: () => import('../src/entries/sv.js'),
   th: () => import('../src/entries/th.js'),
+  tr: () => import('../src/entries/tr.js'),
   uk: () => import('../src/entries/uk.js'),
   vi: () => import('../src/entries/vi.js'),
   zh: () => import('../src/entries/zh.js')

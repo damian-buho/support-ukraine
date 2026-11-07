@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "Ukrayna’ya destek olun -"
+regionLabel: "Ukrayna’ya destek bannerı"
+more: "daha fazla…"
+donate: "Bağış yap"
+refresh: "Sonraki kuruluşu göster"
+opensInNewTab: "(yeni sekmede açılır)"
+charities:
+  united24:
+    tagline: "Ukrayna’nın resmî bağış toplama platformu"
+  come-back-alive:
+    tagline: "2014’ten beri Ukrayna Silahlı Kuvvetlerine destek"
+  razom-for-ukraine:
+    tagline: "Acil müdahale ve insani yardım"
+  ukrainian-red-cross:
+    tagline: "Çatışma bölgelerinde insani yardım"
+  nova-ukraine:
+    tagline: "İnsani yardım ve savunuculuk"
+  voices-of-children:
+    tagline: "Savaştan etkilenen çocuklar için psikolojik destek"
+  prytula-foundation:
+    tagline: "Ukrayna için savunma teknolojisi ve ekipmanı"
+  world-central-kitchen:
+    tagline: "Çatışma bölgelerindeki insanlara taze yemek"
+  cats-of-kyiv:
+    tagline: "Kyiv’de kedileri kurtaran ve yeni yuvalara kavuşturan kedi barınağı"
+  uanimals:
+    tagline: "Ukrayna’da hayvan kurtarma ve hak savunuculuğu kuruluşu"
+  hospitallers:
+    tagline: "İlk yardım ve tahliye sağlayan Ukraynalı gönüllü sağlık görevlileri"
+  sternenko-fund:
+    tagline: "Ukrayna savunma güçleri için FPV dron tedariki"
+  life-robots-ukraine:
+    tagline: "Ukrayna’nın mayından arındırılması için robotlar"
+  sirius-shelter:
+    tagline: "Ukrayna’nın köpekler ve kediler için en büyük hayvan barınağı"
+  dignitas:
+    tagline: "Ukraynalı savunucular için hayat kurtaran teknoloji"
+  leleka:
+    tagline: "Ukraynalı savunucular ve gaziler için teknoloji ve destek"
+  superhumans:
+    tagline: "Ukrayna’nın cephe hattındaki sağlık görevlileri için taktik tıbbi malzemeler"
+  nikopol-chance:
+    tagline: "Savaştan sağ kurtulanlar için protez, cerrahi ve rehabilitasyon"
+  dzygaspaw:
+    tagline: "Cephe hattındaki Nikopol’da sokak köpeklerini kurtaran ve yuva bulan köpek barınağı"
+  donorua:
+    tagline: "Ukrayna’da gönüllü kan nakillerini koordine eder"
+  army-sos:
+    tagline: "Ukrayna askerleri için yiyecek ve destek"
+  soloma-cats:
+    tagline: "Taktik tıp ve mayın temizleme"
+  united-help-ukraine:
+    tagline: "Yaralı savaşçılar için rehabilitasyon ve yerinden edilmiş kişilere destek"
+  sprava-hromad:
+    tagline: "Cephe hattındaki birlikler için zırhlı araçlar, kamyonlar ve İHA sistemleri"
