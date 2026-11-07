@@ -516,6 +516,14 @@ describe('charityUrlFor', () => {
     assert.equal(charityUrlFor(charity, 'de'), 'https://kittysoloma.org/en')
   })
 
+  it('resolves United Help Ukraine to its single english page', () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'united-help-ukraine')
+    assert.ok(charity)
+    assert.equal(charity.is501c3, true)
+    assert.equal(charityUrlFor(charity, 'en'), 'https://unitedhelpukraine.org/')
+    assert.equal(charityUrlFor(charity, 'uk'), 'https://unitedhelpukraine.org/')
+  })
+
   it('falls back to english when the language variant is missing', () => {
     const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')
     assert.ok(charity)
