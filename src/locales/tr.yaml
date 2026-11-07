@@ -37,15 +37,15 @@ charities:
     tagline: "Ukrayna’nın mayından arındırılması için robotlar"
   sirius-shelter:
     tagline: "Ukrayna’nın köpekler ve kediler için en büyük hayvan barınağı"
-  dignitas:
-    tagline: "Ukraynalı savunucular için hayat kurtaran teknoloji"
-  leleka:
-    tagline: "Ukraynalı savunucular ve gaziler için teknoloji ve destek"
-  superhumans:
-    tagline: "Ukrayna’nın cephe hattındaki sağlık görevlileri için taktik tıbbi malzemeler"
-  nikopol-chance:
-    tagline: "Savaştan sağ kurtulanlar için protez, cerrahi ve rehabilitasyon"
   dzygaspaw:
+    tagline: "Ukraynalı savunucular için hayat kurtaran teknoloji"
+  dignitas:
+    tagline: "Ukraynalı savunucular ve gaziler için teknoloji ve destek"
+  leleka:
+    tagline: "Ukrayna’nın cephe hattındaki sağlık görevlileri için taktik tıbbi malzemeler"
+  superhumans:
+    tagline: "Savaştan sağ kurtulanlar için protez, cerrahi ve rehabilitasyon"
+  nikopol-chance:
     tagline: "Cephe hattındaki Nikopol’da sokak köpeklerini kurtaran ve yuva bulan köpek barınağı"
   donorua:
     tagline: "Ukrayna’da gönüllü kan nakillerini koordine eder"
