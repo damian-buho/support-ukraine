@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-supportUkraine: "Támogasd Ukrajnát -"
+supportUkraine: "Támogasd Ukrajnát –"
 regionLabel: "Ukrajnát támogató banner"
 more: "továbbiak…"
 donate: "Adományozás"
@@ -26,7 +26,7 @@ charities:
   world-central-kitchen:
     tagline: "Friss ételek a konfliktusövezetekben élőknek"
   cats-of-kyiv:
-    tagline: "Macskamenhely, amely Kijevben macskákat ment és új otthonra találtat nekik"
+    tagline: "Macskamenhely, amely Kijevben macskákat ment és új otthont keres nekik"
   uanimals:
     tagline: "Állatmentő és érdekvédelmi szervezet Ukrajnában"
   hospitallers:

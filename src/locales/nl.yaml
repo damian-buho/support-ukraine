@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 supportUkraine: Steun Oekraïne met
-regionLabel: Steun Oekraïne-banner
+regionLabel: Banner ter ondersteuning van Oekraïne
 more: meer…
 donate: Doneer
 refresh: Toon volgende organisatie
@@ -26,9 +26,9 @@ charities:
   world-central-kitchen:
     tagline: Verse maaltijden voor mensen in conflictgebieden
   cats-of-kyiv:
-    tagline: Kattenshelter die katten redt en herplaats in Kyiv
+    tagline: Kattenopvang die katten in Kyiv redt en herplaatst
   uanimals:
-    tagline: Dierenredding en belangenorganisatie in Oekraïne
+    tagline: Organisatie voor dierenredding en dierenrechten in Oekraïne
   hospitallers:
     tagline: Oekraïense vrijwillige paramedici voor eerste hulp en evacuatie
   sternenko-fund:

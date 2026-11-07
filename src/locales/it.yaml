@@ -2,15 +2,15 @@
 #
 # SPDX-License-Identifier: MIT
 
-supportUkraine: Sostieni l'Ucraina con
-regionLabel: Banner di sostegno all'Ucraina
+supportUkraine: Sostieni l’Ucraina con
+regionLabel: Banner di sostegno all’Ucraina
 more: di più…
 donate: Dona
 refresh: Mostra organizzazione successiva
 opensInNewTab: (si apre in una nuova scheda)
 charities:
   united24:
-    tagline: Piattaforma ufficiale di raccolta fondi dell'Ucraina
+    tagline: Piattaforma ufficiale di raccolta fondi dell’Ucraina
   come-back-alive:
     tagline: A sostegno delle forze armate ucraine dal 2014
   razom-for-ukraine:
@@ -22,21 +22,21 @@ charities:
   voices-of-children:
     tagline: Supporto psicologico per i bambini colpiti dalla guerra
   prytula-foundation:
-    tagline: Tecnologie di difesa e attrezzature per l'Ucraina
+    tagline: Tecnologie di difesa e attrezzature per l’Ucraina
   world-central-kitchen:
     tagline: Pasti freschi per le persone nelle zone di conflitto
   cats-of-kyiv:
-    tagline: Rifugio che salva e adotta gatti a Kyiv
+    tagline: Rifugio che salva gatti a Kyiv e li dà in adozione
   uanimals:
     tagline: Organizzazione di salvataggio animali e tutela dei diritti in Ucraina
   hospitallers:
-    tagline: Paramedici volontari ucraini che prestano primo soccorso e evacuazione
+    tagline: Paramedici volontari ucraini che prestano primo soccorso ed evacuazione
   sternenko-fund:
     tagline: Fornitura di droni FPV per le forze di difesa ucraine
   life-robots-ukraine:
-    tagline: Robot per lo sminamento dell'Ucraina
+    tagline: Robot per lo sminamento dell’Ucraina
   sirius-shelter:
-    tagline: Il più grande rifugio animale dell'Ucraina per cani e gatti
+    tagline: Il più grande rifugio animale dell’Ucraina per cani e gatti
   dignitas:
     tagline: Tecnologia e sostegno per i difensori e i veterani ucraini
   leleka:

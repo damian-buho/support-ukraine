@@ -2,8 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 
-supportUkraine: "Ukrayna’ya destek olun -"
-regionLabel: "Ukrayna’ya destek bannerı"
+supportUkraine: "Ukrayna’ya destek olun –"
+regionLabel: "Ukrayna’ya destek afişi"
 more: "daha fazla…"
 donate: "Bağış yap"
 refresh: "Sonraki kuruluşu göster"
@@ -12,7 +12,7 @@ charities:
   united24:
     tagline: "Ukrayna’nın resmî bağış toplama platformu"
   come-back-alive:
-    tagline: "2014’ten beri Ukrayna Silahlı Kuvvetlerine destek"
+    tagline: "2014’ten beri Ukrayna Silahlı Kuvvetleri’ne destek"
   razom-for-ukraine:
     tagline: "Acil müdahale ve insani yardım"
   ukrainian-red-cross:
@@ -46,7 +46,7 @@ charities:
   superhumans:
     tagline: "Savaştan sağ kurtulanlar için protez, cerrahi ve rehabilitasyon"
   nikopol-chance:
-    tagline: "Cephe hattındaki Nikopol’da sokak köpeklerini kurtaran ve yuva bulan köpek barınağı"
+    tagline: "Cephe hattındaki Nikopol’da sokak köpeklerini kurtarıp onlara yuva bulan köpek barınağı"
   donorua:
     tagline: "Ukrayna’da gönüllü kan nakillerini koordine eder"
   army-sos:

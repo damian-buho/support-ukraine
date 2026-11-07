@@ -2,15 +2,15 @@
 #
 # SPDX-License-Identifier: MIT
 
-supportUkraine: "ウクライナを支援する -"
+supportUkraine: "ウクライナを支援する –"
 regionLabel: "ウクライナ支援バナー"
-more: "もっと…"
+more: "もっと見る…"
 donate: "寄付する"
 refresh: "次の団体を表示"
 opensInNewTab: "（新しいタブで開く）"
 charities:
   united24:
-    tagline: "ウクライナの公式 fundraising プラットフォーム"
+    tagline: "ウクライナの公式募金プラットフォーム"
   come-back-alive:
     tagline: "2014年からウクライナ軍を支援"
   razom-for-ukraine:
@@ -34,7 +34,7 @@ charities:
   sternenko-fund:
     tagline: "ウクライナ防衛部隊へのFPVドローン供給"
   life-robots-ukraine:
-    tagline: "ウクライナの機雷除去を支えるロボット"
+    tagline: "ウクライナの地雷除去を支えるロボット"
   sirius-shelter:
     tagline: "犬と猫のためのウクライナ最大の動物保護施設"
   dignitas:

@@ -2,19 +2,19 @@
 #
 # SPDX-License-Identifier: MIT
 
-supportUkraine: Soutenir l'Ukraine avec
-regionLabel: Bannière de soutien à l'Ukraine
+supportUkraine: Soutenir l’Ukraine avec
+regionLabel: Bannière de soutien à l’Ukraine
 more: plus…
 donate: Faire un don
-refresh: Afficher la charity suivante
-opensInNewTab: (s\u0201ouvre dans un nouvel onglet)
+refresh: Afficher l’organisation suivante
+opensInNewTab: (s’ouvre dans un nouvel onglet)
 charities:
   united24:
-    tagline: Plateforme officielle de collecte de fonds de l'Ukraine
+    tagline: Plateforme officielle de collecte de fonds de l’Ukraine
   come-back-alive:
     tagline: Soutenir les forces armées ukrainiennes depuis 2014
   razom-for-ukraine:
-    tagline: Intervention d'urgence et aide humanitaire
+    tagline: Intervention d’urgence et aide humanitaire
   ukrainian-red-cross:
     tagline: Assistance humanitaire en zones de conflit
   nova-ukraine:
@@ -22,7 +22,7 @@ charities:
   voices-of-children:
     tagline: Soutien psychologique pour les enfants victimes de la guerre
   prytula-foundation:
-    tagline: Technologies de défense et équipements pour l'Ukraine
+    tagline: Technologies de défense et équipements pour l’Ukraine
   world-central-kitchen:
     tagline: Repas frais pour les personnes en zones de conflit
   cats-of-kyiv:
@@ -30,13 +30,13 @@ charities:
   uanimals:
     tagline: Organisation de sauvetage animal et de défense des droits en Ukraine
   hospitallers:
-    tagline: Paramédics bénévoles ukrainiens assurant les premiers secours et l'évacuation
+    tagline: Secouristes bénévoles ukrainiens assurant les premiers secours et l’évacuation
   sternenko-fund:
     tagline: Fourniture de drones FPV pour les forces de défense ukrainiennes
   life-robots-ukraine:
-    tagline: Des robots pour le déminage de l'Ukraine
+    tagline: Des robots pour le déminage de l’Ukraine
   sirius-shelter:
-    tagline: Le plus grand refuge animal d'Ukraine pour les chiens et les chats
+    tagline: Le plus grand refuge animal d’Ukraine pour les chiens et les chats
   dignitas:
     tagline: Technologie et soutien pour les défenseurs et les vétérans ukrainiens
   leleka:
