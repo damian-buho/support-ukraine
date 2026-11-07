@@ -23,6 +23,7 @@ export const localeLoaders = {
   da: () => import('./da.yaml'),
   nb: () => import('./nb.yaml'),
   fi: () => import('./fi.yaml'),
+  is: () => import('./is.yaml'),
   et: () => import('./et.yaml'),
   lv: () => import('./lv.yaml'),
   lt: () => import('./lt.yaml'),
@@ -74,10 +75,16 @@ export function loaderFor(code: SupportedLocale): LocaleLoader {
   return localeLoaders[code]
 }
 
+// Base tags served by a sibling catalog: generic and Nynorsk Norwegian read Bokmål.
+const LOCALE_ALIASES: Record<string, SupportedLocale> = { no: 'nb', nn: 'nb' }
+
 /**
 Resolve a raw BCP 47 tag to a supported locale code, or 'en'.
 */
 export function resolveLocale(tag: string): SupportedLocale {
   const base = baseLanguage(tag)
+  if (Object.hasOwn(LOCALE_ALIASES, base)) {
+    return LOCALE_ALIASES[base] as SupportedLocale
+  }
   return Object.hasOwn(localeLoaders, base) ? (base as SupportedLocale) : 'en'
 }

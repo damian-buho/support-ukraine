@@ -94,6 +94,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/id.js"
     },
+    "./is": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/is.js"
+    },
     "./it": {
       "types": "./dist/index.d.ts",
       "import": "./dist/it.js"
