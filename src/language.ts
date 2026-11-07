@@ -7,3 +7,8 @@ export function baseLanguage(tag: string): string {
   const dash = tag.indexOf('-')
   return (dash === -1 ? tag : tag.slice(0, dash)).toLowerCase()
 }
+
+/**
+List of RTL locale codes.
+*/
+export const RTL_LOCALES = ['ar'] as const

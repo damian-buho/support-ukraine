@@ -34,10 +34,7 @@ All supported locale codes.
 */
 export type SupportedLocale = keyof typeof localeLoaders
 
-/**
-List of RTL locale codes.
-*/
-export const RTL_LOCALES = ['ar'] as const
+export { RTL_LOCALES } from '../language.js'
 
 // Loader registered for a locale code; `resolveLocale` only yields registered codes.
 export function loaderFor(code: SupportedLocale): LocaleLoader {
