@@ -59,6 +59,7 @@ const locales = [
   'pt',
   'ro',
   'sk',
+  'sl',
   'sv',
   'th',
   'tr',
