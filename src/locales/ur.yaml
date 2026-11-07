@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "یوکرین کی حمایت کریں -"
+regionLabel: "یوکرین کی حمایت کا بینر"
+more: "مزید…"
+donate: "عطیہ دیں"
+refresh: "اگلی تنظیم دکھائیں"
+opensInNewTab: "(نئے ٹیب میں کھلتا ہے)"
+charities:
+  united24:
+    tagline: "یوکرین کا سرکاری فنڈ جمع کرنے کا پلیٹ فارم"
+  come-back-alive:
+    tagline: "2014 سے یوکرینی مسلح افواج کی معاونت"
+  razom-for-ukraine:
+    tagline: "ہنگامی ردِعمل اور انسانی امداد"
+  ukrainian-red-cross:
+    tagline: "تنازعے کے علاقوں میں انسانی امداد"
+  nova-ukraine:
+    tagline: "انسانی امداد اور وکالت"
+  voices-of-children:
+    tagline: "جنگ سے متاثرہ بچوں کے لیے نفسیاتی معاونت"
+  prytula-foundation:
+    tagline: "یوکرین کے لیے دفاعی ٹیکنالوجی اور سازوسامان"
+  world-central-kitchen:
+    tagline: "تنازعے کے علاقوں کے لوگوں کے لیے تازہ کھانا"
+  cats-of-kyiv:
+    tagline: "بلیوں کو بچانے اور کیف میں انہیں نئے گھر دلانے والی بلیوں کی پناہ گاہ"
+  uanimals:
+    tagline: "یوکرین میں جانوروں کو بچانے اور ان کے حقوق کی وکالت کرنے والی تنظیم"
+  hospitallers:
+    tagline: "ابتدائی طبی امداد اور انخلا فراہم کرنے والے یوکرینی رضاکار پیرامیڈکس"
+  sternenko-fund:
+    tagline: "یوکرین کی دفاعی افواج کے لیے ایف پی وی ڈرون کی فراہمی"
+  life-robots-ukraine:
+    tagline: "یوکرین کی بارودی سرنگوں کی صفائی کے لیے روبوٹس"
+  sirius-shelter:
+    tagline: "کتوں اور بلیوں کے لیے یوکرین کی سب سے بڑی پناہ گاہ"
+  dignitas:
+    tagline: "یوکرینی محافظوں کے لیے جان بچانے والی ٹیکنالوجی"
+  leleka:
+    tagline: "یوکرینی محافظوں اور سابق فوجیوں کے لیے ٹیکنالوجی اور معاونت"
+  superhumans:
+    tagline: "یوکرین کے اگلے محاذ کے طبی عملے کے لیے ٹیکٹیکل طبی سامان"
+  nikopol-chance:
+    tagline: "جنگ سے بچ نکلنے والوں کے لیے مصنوعی اعضا، سرجری اور بحالی"
+  dzygaspaw:
+    tagline: "اگلے محاذ کے نیکوپول میں آوارہ کتوں کو بچانے اور نئے گھر دلانے والی کتوں کی پناہ گاہ"
+  donorua:
+    tagline: "یوکرین میں رضاکارانہ خون کے عطیات کو مربوط کرتا ہے"
+  army-sos:
+    tagline: "یوکرینی فوجیوں کے لیے خوراک اور معاونت"
+  soloma-cats:
+    tagline: "ٹیکٹیکل طب اور بارودی سرنگوں کی صفائی"
+  united-help-ukraine:
+    tagline: "زخمی جنگجوؤں کی بحالی اور بے گھر افراد کی معاونت"
+  sprava-hromad:
+    tagline: "اگلے محاذ کی یونٹوں کے لیے بکتر بند گاڑیاں، ٹرک اور یو اے وی نظام"

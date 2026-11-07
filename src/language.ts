@@ -11,4 +11,4 @@ export function baseLanguage(tag: string): string {
 /**
 List of RTL locale codes.
 */
-export const RTL_LOCALES = ['ar', 'he'] as const
+export const RTL_LOCALES = ['ar', 'he', 'ur'] as const
