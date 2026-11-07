@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-supportUkraine: "Mbështesni Ukrainën -"
+supportUkraine: "Mbështesni Ukrainën –"
 regionLabel: "Baneri i mbështetjes për Ukrainën"
 more: "më shumë…"
 donate: "Dhuro"
@@ -44,7 +44,7 @@ charities:
   leleka:
     tagline: "Pajisje mjekësore taktike për mjekët në vijën e parë të Ukrainës"
   superhumans:
-    tagline: "Protezë, kirurgji dhe rehabilitim për të mbijetuarit e luftës"
+    tagline: "Proteza, kirurgji dhe rehabilitim për të mbijetuarit e luftës"
   nikopol-chance:
     tagline: "Strehë për qen që shpëton qentë endacakë në Nikopolin e vijës së parë dhe u gjen shtëpi të reja"
   donorua:

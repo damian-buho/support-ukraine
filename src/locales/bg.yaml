@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-supportUkraine: "Подкрепете Украйна -"
+supportUkraine: "Подкрепете Украйна –"
 regionLabel: "Банер в подкрепа на Украйна"
 more: "още…"
 donate: "Дарете"
@@ -30,7 +30,7 @@ charities:
   uanimals:
     tagline: "Организация за спасяване на животни и защита на правата им в Украйна"
   hospitallers:
-    tagline: "Украински доброволци парамедици, които оказват първа помощ и евакуация"
+    tagline: "Украински доброволци парамедици, които оказват първа помощ и извършват евакуация"
   sternenko-fund:
     tagline: "Доставка на FPV дронове за украинските отбранителни сили"
   life-robots-ukraine:

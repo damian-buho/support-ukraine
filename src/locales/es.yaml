@@ -6,7 +6,7 @@ supportUkraine: Apoya a Ucrania con
 regionLabel: Banner de apoyo a Ucrania
 more: más…
 donate: Donar
-refresh: Mostrar siguiente charity
+refresh: Mostrar la siguiente organización
 opensInNewTab: (se abre en una nueva pestaña)
 charities:
   united24:
@@ -26,7 +26,7 @@ charities:
   world-central-kitchen:
     tagline: Comidas frescas para personas en zonas de conflicto
   cats-of-kyiv:
-    tagline: Refugio que rescata y reubicia gatos en Kyiv
+    tagline: Refugio que rescata gatos en Kyiv y los da en adopción
   uanimals:
     tagline: Organización de rescate animal y defensa de derechos en Ucrania
   hospitallers:

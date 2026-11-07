@@ -67,11 +67,11 @@ const RTL_LOCALES = ['ar', 'he', 'ur']
 
 const PAGE_COPY = {
   en: { title: 'Support Ukraine', subtitle: 'All charities' },
-  es: { title: 'Apoya a Ucrania', subtitle: 'Todas las charities' },
-  fr: { title: "Soutenir l'Ukraine", subtitle: 'Toutes les charities' },
+  es: { title: 'Apoya a Ucrania', subtitle: 'Todas las organizaciones' },
+  fr: { title: 'Soutenir l’Ukraine', subtitle: 'Toutes les organisations' },
   de: { title: 'Ukraine unterstützen', subtitle: 'Alle Organisationen' },
   pt: { title: 'Apoie a Ucrânia', subtitle: 'Todas as organizações' },
-  it: { title: "Sostieni l'Ucraina", subtitle: 'Tutte le organizzazioni' },
+  it: { title: 'Sostieni l’Ucraina', subtitle: 'Tutte le organizzazioni' },
   pl: { title: 'Wesprzyj Ukrainę', subtitle: 'Wszystkie organizacje' },
   nl: { title: 'Steun Oekraïne', subtitle: 'Alle organisaties' },
   sv: { title: 'Stöd Ukraina', subtitle: 'Alla organisationer' },
