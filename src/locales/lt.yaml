@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "Paremk Ukrainą –"
+regionLabel: Paramos Ukrainai reklamjuostė
+more: daugiau…
+donate: Paaukoti
+refresh: Rodyti kitą organizaciją
+opensInNewTab: (atidaroma naujame skirtuke)
+charities:
+  united24:
+    tagline: Oficiali Ukrainos lėšų rinkimo platforma
+  come-back-alive:
+    tagline: Remia Ukrainos ginkluotąsias pajėgas nuo 2014 m.
+  razom-for-ukraine:
+    tagline: Skubus reagavimas ir humanitarinė pagalba
+  ukrainian-red-cross:
+    tagline: Humanitarinė pagalba konfliktų zonose
+  nova-ukraine:
+    tagline: Humanitarinė pagalba ir interesų gynimas
+  voices-of-children:
+    tagline: Psichologinė pagalba karo paliestiems vaikams
+  prytula-foundation:
+    tagline: Gynybos technologijos ir įranga Ukrainai
+  world-central-kitchen:
+    tagline: Šviežias maistas žmonėms konfliktų zonose
+  cats-of-kyiv:
+    tagline: Kačių prieglauda, gelbstinti kates Kyjive ir ieškanti joms namų
+  uanimals:
+    tagline: Gyvūnų gelbėjimo ir teisių gynimo organizacija Ukrainoje
+  hospitallers:
+    tagline: Ukrainos savanoriai paramedikai, teikiantys pirmąją pagalbą ir evakuojantys
+  sternenko-fund:
+    tagline: FPV dronai Ukrainos gynybos pajėgoms
+  life-robots-ukraine:
+    tagline: Robotai Ukrainos išminavimui
+  sirius-shelter:
+    tagline: Didžiausia Ukrainos gyvūnų prieglauda šunims ir katėms
+  dzygaspaw:
+    tagline: Gyvybes gelbstinčios technologijos Ukrainos gynėjams
+  dignitas:
+    tagline: Technologijos ir parama Ukrainos gynėjams bei veteranams
+  leleka:
+    tagline: Taktinės medicinos priemonės Ukrainos fronto medikams
+  superhumans:
+    tagline: Protezai, chirurgija ir reabilitacija karą išgyvenusiems
+  nikopol-chance:
+    tagline: Šunų prieglauda, gelbstinti benamius šunis fronto mieste Nikopolyje ir ieškanti jiems namų
+  donorua:
+    tagline: Koordinuoja savanorišką kraujo donorystę Ukrainoje
+  army-sos:
+    tagline: Maistas ir parama Ukrainos kariams
+  soloma-cats:
+    tagline: Taktinė medicina ir išminavimas
+  united-help-ukraine:
+    tagline: Sužeistų karių reabilitacija ir parama perkeltiesiems asmenims
+  sprava-hromad:
+    tagline: Šarvuočiai, sunkvežimiai ir dronų sistemos fronto padaliniams

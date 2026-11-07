@@ -289,6 +289,26 @@ describe('resolveLocale', () => {
     assert.equal(resolveLocale('mk'), 'mk')
     assert.equal(resolveLocale('sq'), 'sq')
     assert.equal(resolveLocale('el'), 'el')
+    assert.equal(resolveLocale('fi'), 'fi')
+    assert.equal(resolveLocale('fi-FI'), 'fi')
+    assert.equal(resolveLocale('da'), 'da')
+    assert.equal(resolveLocale('da-DK'), 'da')
+    assert.equal(resolveLocale('nb'), 'nb')
+    assert.equal(resolveLocale('nb-NO'), 'nb')
+    assert.equal(resolveLocale('et'), 'et')
+    assert.equal(resolveLocale('lv'), 'lv')
+    assert.equal(resolveLocale('lt'), 'lt')
+    assert.equal(resolveLocale('be'), 'be')
+    assert.equal(resolveLocale('ka'), 'ka')
+    assert.equal(resolveLocale('hy'), 'hy')
+    assert.equal(resolveLocale('az'), 'az')
+    assert.equal(resolveLocale('az-Latn-AZ'), 'az')
+    assert.equal(resolveLocale('kk'), 'kk')
+    assert.equal(resolveLocale('ky'), 'ky')
+    assert.equal(resolveLocale('uz'), 'uz')
+    assert.equal(resolveLocale('uz-Latn-UZ'), 'uz')
+    assert.equal(resolveLocale('tg'), 'tg')
+    assert.equal(resolveLocale('tk'), 'tk')
   })
 
   it('falls back to "en" for unsupported locales', () => {
@@ -2343,24 +2363,36 @@ const entryLoaders: Record<
   () => Promise<{ supportUkraineBlock: typeof supportUkraineBlock }>
 > = {
   ar: () => import('../src/entries/ar.js'),
+  az: () => import('../src/entries/az.js'),
+  be: () => import('../src/entries/be.js'),
   bg: () => import('../src/entries/bg.js'),
   bn: () => import('../src/entries/bn.js'),
   bs: () => import('../src/entries/bs.js'),
   cs: () => import('../src/entries/cs.js'),
+  da: () => import('../src/entries/da.js'),
   de: () => import('../src/entries/de.js'),
   el: () => import('../src/entries/el.js'),
   en: () => import('../src/entries/en.js'),
   es: () => import('../src/entries/es.js'),
+  et: () => import('../src/entries/et.js'),
+  fi: () => import('../src/entries/fi.js'),
   fr: () => import('../src/entries/fr.js'),
   he: () => import('../src/entries/he.js'),
   hi: () => import('../src/entries/hi.js'),
   hr: () => import('../src/entries/hr.js'),
   hu: () => import('../src/entries/hu.js'),
+  hy: () => import('../src/entries/hy.js'),
   id: () => import('../src/entries/id.js'),
   it: () => import('../src/entries/it.js'),
   ja: () => import('../src/entries/ja.js'),
+  ka: () => import('../src/entries/ka.js'),
+  kk: () => import('../src/entries/kk.js'),
   ko: () => import('../src/entries/ko.js'),
+  ky: () => import('../src/entries/ky.js'),
+  lt: () => import('../src/entries/lt.js'),
+  lv: () => import('../src/entries/lv.js'),
   mk: () => import('../src/entries/mk.js'),
+  nb: () => import('../src/entries/nb.js'),
   nl: () => import('../src/entries/nl.js'),
   pl: () => import('../src/entries/pl.js'),
   pt: () => import('../src/entries/pt.js'),
@@ -2370,10 +2402,13 @@ const entryLoaders: Record<
   sq: () => import('../src/entries/sq.js'),
   sr: () => import('../src/entries/sr.js'),
   sv: () => import('../src/entries/sv.js'),
+  tg: () => import('../src/entries/tg.js'),
   th: () => import('../src/entries/th.js'),
+  tk: () => import('../src/entries/tk.js'),
   tr: () => import('../src/entries/tr.js'),
   uk: () => import('../src/entries/uk.js'),
   ur: () => import('../src/entries/ur.js'),
+  uz: () => import('../src/entries/uz.js'),
   vi: () => import('../src/entries/vi.js'),
   zh: () => import('../src/entries/zh.js')
 }

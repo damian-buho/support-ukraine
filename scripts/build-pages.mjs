@@ -56,6 +56,21 @@ const LOCALE_NAMES = {
   mk: 'Македонски',
   sq: 'Shqip',
   el: 'Ελληνικά',
+  fi: 'Suomi',
+  da: 'Dansk',
+  nb: 'Norsk bokmål',
+  et: 'Eesti',
+  lv: 'Latviešu',
+  lt: 'Lietuvių',
+  be: 'Беларуская',
+  ka: 'ქართული',
+  hy: 'Հայերեն',
+  az: 'Azərbaycanca',
+  kk: 'Қазақ тілі',
+  ky: 'Кыргызча',
+  uz: 'Oʻzbekcha',
+  tg: 'Тоҷикӣ',
+  tk: 'Türkmençe'
 }
 
 // RTL locales (must match src/locales/index.ts)
@@ -99,7 +114,22 @@ const PAGE_COPY = {
   bg: { title: 'Подкрепете Украйна', subtitle: 'Всички организации' },
   mk: { title: 'Поддржете ја Украина', subtitle: 'Сите организации' },
   sq: { title: 'Mbështesni Ukrainën', subtitle: 'Të gjitha organizatat' },
-  el: { title: 'Στηρίξτε την Ουκρανία', subtitle: 'Όλοι οι οργανισμοί' }
+  el: { title: 'Στηρίξτε την Ουκρανία', subtitle: 'Όλοι οι οργανισμοί' },
+  fi: { title: 'Tue Ukrainaa', subtitle: 'Kaikki järjestöt' },
+  da: { title: 'Støt Ukraine', subtitle: 'Alle organisationer' },
+  nb: { title: 'Støtt Ukraina', subtitle: 'Alle organisasjoner' },
+  et: { title: 'Toeta Ukrainat', subtitle: 'Kõik organisatsioonid' },
+  lv: { title: 'Atbalsti Ukrainu', subtitle: 'Visas organizācijas' },
+  lt: { title: 'Paremk Ukrainą', subtitle: 'Visos organizacijos' },
+  be: { title: 'Падтрымай Украіну', subtitle: 'Усе арганізацыі' },
+  ka: { title: 'დაუჭირეთ მხარი უკრაინას', subtitle: 'ყველა ორგანიზაცია' },
+  hy: { title: 'Աջակցեք Ուկրաինային', subtitle: 'Բոլոր կազմակերպությունները' },
+  az: { title: 'Ukraynaya dəstək olun', subtitle: 'Bütün təşkilatlar' },
+  kk: { title: 'Украинаны қолдаңыз', subtitle: 'Барлық ұйымдар' },
+  ky: { title: 'Украинаны колдоңуз', subtitle: 'Бардык уюмдар' },
+  uz: { title: 'Ukrainani qoʻllab-quvvatlang', subtitle: 'Barcha tashkilotlar' },
+  tg: { title: 'Украинаро дастгирӣ кунед', subtitle: 'Ҳамаи ташкилотҳо' },
+  tk: { title: 'Ukraina goldaw beriň', subtitle: 'Ähli guramalar' }
 }
 
 // ── Read source data ───────────────────────────────────────────────────────

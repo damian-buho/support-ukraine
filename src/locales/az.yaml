@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "Ukraynaya dəstək olun –"
+regionLabel: Ukraynaya dəstək banneri
+more: daha çox…
+donate: İanə et
+refresh: Növbəti təşkilatı göstər
+opensInNewTab: (yeni tabda açılır)
+charities:
+  united24:
+    tagline: Ukraynanın rəsmi ianə toplama platforması
+  come-back-alive:
+    tagline: 2014-cü ildən Ukrayna Silahlı Qüvvələrinə dəstək
+  razom-for-ukraine:
+    tagline: Fövqəladə hallara reaksiya və humanitar yardım
+  ukrainian-red-cross:
+    tagline: Münaqişə bölgələrində humanitar yardım
+  nova-ukraine:
+    tagline: Humanitar yardım və maraqların müdafiəsi
+  voices-of-children:
+    tagline: Müharibədən zərər çəkmiş uşaqlara psixoloji dəstək
+  prytula-foundation:
+    tagline: Ukrayna üçün müdafiə texnologiyaları və təchizat
+  world-central-kitchen:
+    tagline: Münaqişə bölgələrindəki insanlar üçün təzə yemək
+  cats-of-kyiv:
+    tagline: Kiyevdə pişikləri xilas edib onlara yeni ev tapan sığınacaq
+  uanimals:
+    tagline: Ukraynada heyvanların xilası və hüquqları uğrunda təşkilat
+  hospitallers:
+    tagline: İlk yardım göstərən və təxliyə həyata keçirən ukraynalı könüllü tibb işçiləri
+  sternenko-fund:
+    tagline: Ukrayna müdafiə qüvvələri üçün FPV dronları
+  life-robots-ukraine:
+    tagline: Ukraynanın minalardan təmizlənməsi üçün robotlar
+  sirius-shelter:
+    tagline: Ukraynanın itlər və pişiklər üçün ən böyük sığınacağı
+  dzygaspaw:
+    tagline: Ukraynalı müdafiəçilər üçün həyat xilas edən texnologiyalar
+  dignitas:
+    tagline: Ukraynalı müdafiəçilər və veteranlar üçün texnologiya və dəstək
+  leleka:
+    tagline: Ukraynanın cəbhə tibb işçiləri üçün taktiki tibbi ləvazimat
+  superhumans:
+    tagline: Müharibədən sağ çıxanlar üçün protezləmə, cərrahiyyə və reabilitasiya
+  nikopol-chance:
+    tagline: Cəbhəyanı Nikopolda sahibsiz itləri xilas edib onlara ev tapan sığınacaq
+  donorua:
+    tagline: Ukraynada könüllü qan donorluğunu əlaqələndirir
+  army-sos:
+    tagline: Ukrayna əsgərləri üçün qida və dəstək
+  soloma-cats:
+    tagline: Taktiki tibb və minatəmizləmə
+  united-help-ukraine:
+    tagline: Yaralı döyüşçülərin reabilitasiyası və məcburi köçkünlərə dəstək
+  sprava-hromad:
+    tagline: Cəbhə bölmələri üçün zirehli texnika, yük maşınları və PUA sistemləri

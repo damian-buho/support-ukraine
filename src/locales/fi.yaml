@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "Tue Ukrainaa –"
+regionLabel: Ukrainan tukemisen banneri
+more: lisää…
+donate: Lahjoita
+refresh: Näytä seuraava järjestö
+opensInNewTab: (avautuu uuteen välilehteen)
+charities:
+  united24:
+    tagline: Ukrainan virallinen varainkeruualusta
+  come-back-alive:
+    tagline: Ukrainan asevoimien tukena vuodesta 2014
+  razom-for-ukraine:
+    tagline: Hätäapua ja humanitaarista apua
+  ukrainian-red-cross:
+    tagline: Humanitaarista apua konfliktialueilla
+  nova-ukraine:
+    tagline: Humanitaarista apua ja vaikuttamistyötä
+  voices-of-children:
+    tagline: Psykologista tukea sodasta kärsiville lapsille
+  prytula-foundation:
+    tagline: Puolustusteknologiaa ja varusteita Ukrainalle
+  world-central-kitchen:
+    tagline: Tuoreita aterioita konfliktialueiden ihmisille
+  cats-of-kyiv:
+    tagline: Kissatalo, joka pelastaa ja kodittaa kissoja Kiovassa
+  uanimals:
+    tagline: Eläinten pelastus- ja oikeusjärjestö Ukrainassa
+  hospitallers:
+    tagline: Ukrainalaiset vapaaehtoiset ensihoitajat antavat ensiapua ja evakuoivat
+  sternenko-fund:
+    tagline: FPV-drooneja Ukrainan puolustusvoimille
+  life-robots-ukraine:
+    tagline: Robotteja Ukrainan miinanraivaukseen
+  sirius-shelter:
+    tagline: Ukrainan suurin eläinsuoja koirille ja kissoille
+  dzygaspaw:
+    tagline: Hengenpelastavaa teknologiaa ukrainalaisille puolustajille
+  dignitas:
+    tagline: Teknologiaa ja tukea ukrainalaisille puolustajille ja veteraaneille
+  leleka:
+    tagline: Taktisia lääkintätarvikkeita Ukrainan etulinjan lääkintämiehille
+  superhumans:
+    tagline: Proteeseja, leikkauksia ja kuntoutusta sodasta selvinneille
+  nikopol-chance:
+    tagline: Koiratarha, joka pelastaa ja kodittaa kulkukoiria etulinjan Nikopolissa
+  donorua:
+    tagline: Koordinoi vapaaehtoista verenluovutusta Ukrainassa
+  army-sos:
+    tagline: Ruokaa ja tukea ukrainalaisille joukoille
+  soloma-cats:
+    tagline: Taktista ensihoitoa ja miinanraivausta
+  united-help-ukraine:
+    tagline: Haavoittuneiden sotilaiden kuntoutusta ja tukea kotiseudultaan paenneille
+  sprava-hromad:
+    tagline: Panssariajoneuvoja, kuorma-autoja ja droonijärjestelmiä etulinjan yksiköille
