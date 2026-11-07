@@ -295,6 +295,12 @@ describe('resolveLocale', () => {
     assert.equal(resolveLocale('da-DK'), 'da')
     assert.equal(resolveLocale('nb'), 'nb')
     assert.equal(resolveLocale('nb-NO'), 'nb')
+    assert.equal(resolveLocale('no'), 'nb')
+    assert.equal(resolveLocale('no-NO'), 'nb')
+    assert.equal(resolveLocale('nn'), 'nb')
+    assert.equal(resolveLocale('nn-NO'), 'nb')
+    assert.equal(resolveLocale('is'), 'is')
+    assert.equal(resolveLocale('is-IS'), 'is')
     assert.equal(resolveLocale('et'), 'et')
     assert.equal(resolveLocale('lv'), 'lv')
     assert.equal(resolveLocale('lt'), 'lt')
@@ -2383,6 +2389,7 @@ const entryLoaders: Record<
   hu: () => import('../src/entries/hu.js'),
   hy: () => import('../src/entries/hy.js'),
   id: () => import('../src/entries/id.js'),
+  is: () => import('../src/entries/is.js'),
   it: () => import('../src/entries/it.js'),
   ja: () => import('../src/entries/ja.js'),
   ka: () => import('../src/entries/ka.js'),

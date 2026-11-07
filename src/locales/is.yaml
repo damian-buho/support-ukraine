@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "Styddu Úkraínu –"
+regionLabel: Borði til stuðnings Úkraínu
+more: meira…
+donate: Styrkja
+refresh: Sýna næstu samtök
+opensInNewTab: (opnast í nýjum flipa)
+charities:
+  united24:
+    tagline: Opinber söfnunarvettvangur Úkraínu
+  come-back-alive:
+    tagline: Styður úkraínska herinn frá árinu 2014
+  razom-for-ukraine:
+    tagline: Neyðarviðbrögð og mannúðaraðstoð
+  ukrainian-red-cross:
+    tagline: Mannúðaraðstoð á átakasvæðum
+  nova-ukraine:
+    tagline: Mannúðaraðstoð og hagsmunagæsla
+  voices-of-children:
+    tagline: Sálrænn stuðningur við börn sem stríðið hefur bitnað á
+  prytula-foundation:
+    tagline: Varnartækni og búnaður fyrir Úkraínu
+  world-central-kitchen:
+    tagline: Ferskar máltíðir fyrir fólk á átakasvæðum
+  cats-of-kyiv:
+    tagline: Kattaathvarf sem bjargar köttum í Kyiv og finnur þeim ný heimili
+  uanimals:
+    tagline: Samtök um dýrabjörgun og dýravernd í Úkraínu
+  hospitallers:
+    tagline: Úkraínskir sjálfboðaliðar í sjúkraflutningum sem veita fyrstu hjálp og flytja særða á brott
+  sternenko-fund:
+    tagline: FPV-drónar fyrir varnarsveitir Úkraínu
+  life-robots-ukraine:
+    tagline: Vélmenni til jarðsprengjuhreinsunar í Úkraínu
+  sirius-shelter:
+    tagline: Stærsta dýraathvarf Úkraínu fyrir hunda og ketti
+  dzygaspaw:
+    tagline: Lífsbjargandi tækni fyrir úkraínska varnarliða
+  dignitas:
+    tagline: Tækni og stuðningur við úkraínska varnarliða og uppgjafahermenn
+  leleka:
+    tagline: Bráðalækningabúnaður fyrir sjúkraliða Úkraínu í fremstu víglínu
+  superhumans:
+    tagline: Gervilimir, skurðaðgerðir og endurhæfing fyrir þá sem lifðu stríðið af
+  nikopol-chance:
+    tagline: Hundaathvarf sem bjargar flækingshundum í framlínuborginni Nikopol og finnur þeim heimili
+  donorua:
+    tagline: Samræmir sjálfboðna blóðgjöf í Úkraínu
+  army-sos:
+    tagline: Matur og stuðningur við úkraínska hermenn
+  soloma-cats:
+    tagline: Bráðalækningar á vígvelli og jarðsprengjuhreinsun
+  united-help-ukraine:
+    tagline: Endurhæfing særðra hermanna og stuðningur við flóttafólk innanlands
+  sprava-hromad:
+    tagline: Brynvarin ökutæki, flutningabílar og drónakerfi fyrir framlínusveitir

@@ -82,14 +82,15 @@ import { supportUkraineBlock } from '@damian-buho/support-ukraine/es'
 await supportUkraineBlock()
 ```
 
-Available localized entry points: `ar`, `az`, `be`, `bg`, `bn`, `bs`, `cs`, `da`, `de`, `el`, `en`, `es`, `et`, `fi`, `fr`, `he`, `hi`, `hr`, `hu`, `hy`, `id`, `it`, `ja`, `ka`, `kk`, `ko`, `ky`, `lt`, `lv`, `mk`, `nb`, `nl`, `pl`, `pt`, `ro`, `sk`, `sl`, `sq`, `sr`, `sv`, `tg`, `th`, `tk`, `tr`, `uk`, `ur`, `uz`, `vi`, `zh`. The `locale` option is ignored in these builds — they are already localized.
+Available localized entry points: `ar`, `az`, `be`, `bg`, `bn`, `bs`, `cs`, `da`, `de`, `el`, `en`, `es`, `et`, `fi`, `fr`, `he`, `hi`, `hr`, `hu`, `hy`, `id`, `is`, `it`, `ja`, `ka`, `kk`, `ko`, `ky`, `lt`, `lv`, `mk`, `nb`, `nl`, `pl`, `pt`, `ro`, `sk`, `sl`, `sq`, `sr`, `sv`, `tg`, `th`, `tk`, `tr`, `uk`, `ur`, `uz`, `vi`, `zh`. The `locale` option is ignored in these builds — they are already localized.
 
 If you still want to read `navigator.language` yourself and avoid the library’s chained fetch, detect the base
 language tag and load the matching bundle:
 
 ```html
 <script type="module">
-  const base = navigator.language.split('-')[0]
+  const tag = navigator.language.split('-')[0].toLowerCase()
+  const base = { no: 'nb', nn: 'nb' }[tag] ?? tag
   const supported = [
     'ar',
     'az',
@@ -112,6 +113,7 @@ language tag and load the matching bundle:
     'hu',
     'hy',
     'id',
+    'is',
     'it',
     'ja',
     'ka',
@@ -345,6 +347,7 @@ The banner is translated to the visitor's language automatically. The following 
 | Hebrew           | `he` | Yes                |
 | Hindi            | `hi` |                    |
 | Hungarian        | `hu` |                    |
+| Icelandic        | `is` |                    |
 | Indonesian       | `id` |                    |
 | Italian          | `it` |                    |
 | Japanese         | `ja` |                    |
@@ -354,7 +357,7 @@ The banner is translated to the visitor's language automatically. The following 
 | Latvian          | `lv` |                    |
 | Lithuanian       | `lt` |                    |
 | Macedonian       | `mk` |                    |
-| Norwegian Bokmål | `nb` |                    |
+| Norwegian Bokmål | `nb` | (also `no`, `nn`)  |
 | Polish           | `pl` |                    |
 | Portuguese       | `pt` |                    |
 | Romanian         | `ro` |                    |
