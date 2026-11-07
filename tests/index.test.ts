@@ -279,6 +279,7 @@ describe('resolveLocale', () => {
     assert.equal(resolveLocale('sk'), 'sk')
     assert.equal(resolveLocale('hu'), 'hu')
     assert.equal(resolveLocale('ro'), 'ro')
+    assert.equal(resolveLocale('he'), 'he')
   })
 
   it('falls back to "en" for unsupported locales', () => {
@@ -409,6 +410,8 @@ describe('isRTL', () => {
   it('returns true for Arabic', () => {
     assert.equal(isRTL('ar'), true)
     assert.equal(isRTL('ar-SA'), true)
+    assert.equal(isRTL('he'), true)
+    assert.equal(isRTL('he-X'), true)
   })
 
   it('returns false for LTR locales', () => {
@@ -2335,6 +2338,7 @@ const entryLoaders: Record<
   en: () => import('../src/entries/en.js'),
   es: () => import('../src/entries/es.js'),
   fr: () => import('../src/entries/fr.js'),
+  he: () => import('../src/entries/he.js'),
   hi: () => import('../src/entries/hi.js'),
   hu: () => import('../src/entries/hu.js'),
   id: () => import('../src/entries/id.js'),
@@ -2386,7 +2390,7 @@ describe('per-locale entries', () => {
       const direction = (banner as unknown as { getAttribute: (n: string) => string }).getAttribute(
         'dir'
       )
-      if (locale === 'ar') {
+      if (['ar', 'he', 'ur'].includes(locale)) {
         assert.equal(direction, 'rtl')
       } else {
         assert.notEqual(direction, 'rtl')
