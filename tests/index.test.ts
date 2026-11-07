@@ -282,6 +282,7 @@ describe('resolveLocale', () => {
     assert.equal(resolveLocale('he'), 'he')
     assert.equal(resolveLocale('ur'), 'ur')
     assert.equal(resolveLocale('sl'), 'sl')
+    assert.equal(resolveLocale('hr'), 'hr')
   })
 
   it('falls back to "en" for unsupported locales', () => {
@@ -2344,6 +2345,7 @@ const entryLoaders: Record<
   fr: () => import('../src/entries/fr.js'),
   he: () => import('../src/entries/he.js'),
   hi: () => import('../src/entries/hi.js'),
+  hr: () => import('../src/entries/hr.js'),
   hu: () => import('../src/entries/hu.js'),
   id: () => import('../src/entries/id.js'),
   it: () => import('../src/entries/it.js'),
