@@ -67,7 +67,7 @@ src/
 │   ├── en.yaml       # English strings
 │   ├── es.yaml       # Spanish
 │   ├── ar.yaml       # Arabic (RTL)
-│   └── ...           # 17 locales total
+│   └── ...           # 18 locales total
 ├── entries/          # Per-locale entry points (ar.ts, en.ts …) — static locale import, no dynamic fetch
 ├── charities.yaml    # Built-in charity database (validated by charitiesSchema)
 ├── styles.scss       # Banner CSS (compiled to string by esbuild plugin)
