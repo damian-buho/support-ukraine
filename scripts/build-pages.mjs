@@ -55,6 +55,7 @@ const LOCALE_NAMES = {
   bg: 'Български',
   mk: 'Македонски',
   sq: 'Shqip',
+  el: 'Ελληνικά',
 }
 
 // RTL locales (must match src/locales/index.ts)
@@ -97,7 +98,8 @@ const PAGE_COPY = {
   sr: { title: 'Подржите Украјину', subtitle: 'Све организације' },
   bg: { title: 'Подкрепете Украйна', subtitle: 'Всички организации' },
   mk: { title: 'Поддржете ја Украина', subtitle: 'Сите организации' },
-  sq: { title: 'Mbështesni Ukrainën', subtitle: 'Të gjitha organizatat' }
+  sq: { title: 'Mbështesni Ukrainën', subtitle: 'Të gjitha organizatat' },
+  el: { title: 'Στηρίξτε την Ουκρανία', subtitle: 'Όλοι οι οργανισμοί' }
 }
 
 // ── Read source data ───────────────────────────────────────────────────────

@@ -71,6 +71,13 @@ const config = tseslint.config(
     rules: {
       'n/no-missing-import': 'off'
     }
+  },
+  {
+    // `el` is Greek's ISO 639-1 code, not an abbreviation of "element"
+    files: ['src/entries/el.ts'],
+    rules: {
+      'unicorn/name-replacements': ['error', { checkFilenames: false }]
+    }
   }
 )
 
