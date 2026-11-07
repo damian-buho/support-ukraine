@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "Podporte Ukrajinu -"
+regionLabel: "Banner na podporu Ukrajiny"
+more: "viac…"
+donate: "Prispieť"
+refresh: "Zobraziť ďalšiu organizáciu"
+opensInNewTab: "(otvorí sa na novej karte)"
+charities:
+  united24:
+    tagline: "Oficiálna zbierková platforma Ukrajiny"
+  come-back-alive:
+    tagline: "Podpora ukrajinských ozbrojených síl od roku 2014"
+  razom-for-ukraine:
+    tagline: "Núdzová pomoc a humanitárna podpora"
+  ukrainian-red-cross:
+    tagline: "Humanitárna pomoc v konfliktných oblastiach"
+  nova-ukraine:
+    tagline: "Humanitárna pomoc a advokácia"
+  voices-of-children:
+    tagline: "Psychologická podpora pre deti zasiahnuté vojnou"
+  prytula-foundation:
+    tagline: "Obranné technológie a vybavenie pre Ukrajinu"
+  world-central-kitchen:
+    tagline: "Čerstvé jedlá pre ľudí v konfliktných oblastiach"
+  cats-of-kyiv:
+    tagline: "Útulok pre mačky, ktorý zachraňuje mačky v Kyjeve a hľadá im nové domovy"
+  uanimals:
+    tagline: "Organizácia na záchranu zvierat a ochranu ich práv na Ukrajine"
+  hospitallers:
+    tagline: "Ukrajinskí dobrovoľní zdravotníci poskytujúci prvú pomoc a evakuáciu"
+  sternenko-fund:
+    tagline: "Dodávky FPV dronov pre ukrajinské obranné sily"
+  life-robots-ukraine:
+    tagline: "Roboty na odmínovanie Ukrajiny"
+  sirius-shelter:
+    tagline: "Najväčší útulok pre psov a mačky na Ukrajine"
+  dignitas:
+    tagline: "Technológie zachraňujúce životy pre ukrajinských obrancov"
+  leleka:
+    tagline: "Technológie a podpora pre ukrajinských obrancov a veteránov"
+  superhumans:
+    tagline: "Taktický zdravotnícky materiál pre zdravotníkov na fronte"
+  nikopol-chance:
+    tagline: "Protetika, chirurgia a rehabilitácia pre ľudí, ktorí prežili vojnu"
+  dzygaspaw:
+    tagline: "Útulok pre psov, ktorý zachraňuje túlavé psy v prifrontovom Nikopole a hľadá im domov"
+  donorua:
+    tagline: "Koordinuje dobrovoľné krvné transfúzie na Ukrajine"
+  army-sos:
+    tagline: "Jedlo a podpora pre ukrajinských vojakov"
+  soloma-cats:
+    tagline: "Taktická medicína a odmínovanie"
+  united-help-ukraine:
+    tagline: "Rehabilitácia pre zranených bojovníkov a podpora vysídlených osôb"
+  sprava-hromad:
+    tagline: "Obrnené vozidlá, nákladné autá a systémy UAV pre jednotky na fronte"

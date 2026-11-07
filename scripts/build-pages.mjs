@@ -43,6 +43,7 @@ const LOCALE_NAMES = {
   tr: 'Türkçe',
   bn: 'বাংলা',
   cs: 'Čeština',
+  sk: 'Slovenčina',
 }
 
 // RTL locales (must match src/locales/index.ts)
@@ -73,7 +74,8 @@ const PAGE_COPY = {
   vi: { title: 'Ủng hộ Ukraine', subtitle: 'Tất cả tổ chức' },
   tr: { title: 'Ukrayna’ya destek ol', subtitle: 'Tüm kuruluşlar' },
   bn: { title: 'ইউক্রেনকে সমর্থন করুন', subtitle: 'সব সংস্থা' },
-  cs: { title: 'Podpořte Ukrajinu', subtitle: 'Všechny organizace' }
+  cs: { title: 'Podpořte Ukrajinu', subtitle: 'Všechny organizace' },
+  sk: { title: 'Podporte Ukrajinu', subtitle: 'Všetky organizácie' }
 }
 
 // ── Read source data ───────────────────────────────────────────────────────
