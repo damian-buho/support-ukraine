@@ -198,6 +198,31 @@ await supportUkraineBlock({
 })
 ```
 
+### 501(c)(3) badge
+
+A charity registered as a US 501(c)(3) public charity carries `is501c3: true` — the banner then renders a small
+inverted `501(c)(3)` badge after the charity's tagline (spaced 1rem apart), so US donors can tell the donation is
+tax-deductible:
+
+```ts
+await supportUkraineBlock({
+  charities: [
+    {
+      id: 'nova-ukraine',
+      name: 'Nova Ukraine',
+      tagline: '…',
+      urls: { en: 'https://novaukraine.org' },
+      tags: ['humanitarian'],
+      is501c3: true
+    }
+  ]
+})
+```
+
+Set the flag only when the entity the donation links receive is itself a 501(c)(3) — verify the status on the
+charity's own donate or FAQ page. Entries without a US registration (`is501c3` omitted) show no badge. The same
+badge appears on the [charity listing page](https://damian-buho.github.io/support-ukraine/).
+
 ### Replace mode (no layout shift)
 
 Use `replace` mode to swap a same-class placeholder element (any tag) so the banner takes its place without shifting

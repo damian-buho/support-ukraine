@@ -246,6 +246,11 @@ SPDX-License-Identifier: MIT
       font-weight: 500;
     }
 
+    .tag--inverse {
+      background: #0057b7;
+      color: #fff;
+    }
+
     [dir="rtl"] .card__link { flex-direction: row-reverse; }
     [dir="rtl"] .header { direction: rtl; }
 
@@ -267,6 +272,7 @@ SPDX-License-Identifier: MIT
       .card:hover { border-color: #0057b7; }
       .card__tagline { color: #aaa; }
       .tag { background: #1a3a5c; color: #6db3f8; }
+      .tag--inverse { background: #6db3f8; color: #1a3a5c; }
       .footer { border-color: #444; color: #aaa; }
     }
   </style>
@@ -335,7 +341,7 @@ ${localeOptions}
         const card = document.createElement('article');
         card.className = 'card';
         card.innerHTML = \`
-          <h2 class="card__name">\${c.name}</h2>
+          <h2 class="card__name">\${c.name}\${c.is501c3 ? ' <span class="tag tag--inverse">501(c)(3)</span>' : ''}</h2>
           <p class="card__tagline">\${localized.tagline}</p>
           <div class="card__tags">
             \${c.tags.map(tag => \`<span class="tag">\${tag}</span>\`).join('')}
