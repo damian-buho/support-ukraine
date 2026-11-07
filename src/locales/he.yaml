@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "תמכו באוקראינה -"
+regionLabel: "באנר תמיכה באוקראינה"
+more: "עוד…"
+donate: "תרמו"
+refresh: "הצגת הארגון הבא"
+opensInNewTab: "(נפתח בלשונית חדשה)"
+charities:
+  united24:
+    tagline: "פלטפורמת גיוס התרומות הרשמית של אוקראינה"
+  come-back-alive:
+    tagline: "תמיכה בכוחות המזוינים של אוקראינה מאז 2014"
+  razom-for-ukraine:
+    tagline: "תגובת חירום וסיוע הומניטרי"
+  ukrainian-red-cross:
+    tagline: "סיוע הומניטרי באזורי סכסוך"
+  nova-ukraine:
+    tagline: "סיוע הומניטרי והסברה"
+  voices-of-children:
+    tagline: "תמיכה פסיכולוגית בילדים שנפגעו מהמלחמה"
+  prytula-foundation:
+    tagline: "טכנולוגיית הגנה וציוד עבור אוקראינה"
+  world-central-kitchen:
+    tagline: "ארוחות טריות לאנשים באזורי סכסוך"
+  cats-of-kyiv:
+    tagline: "מקלט חתולים שמציל חתולים בקייב ומוצא להם בתים חדשים"
+  uanimals:
+    tagline: "ארגון להצלת בעלי חיים ולהגנה על זכויותיהם באוקראינה"
+  hospitallers:
+    tagline: "חובשים מתנדבים אוקראינים המעניקים עזרה ראשונה ופינוי"
+  sternenko-fund:
+    tagline: "אספקת רחפני FPV לכוחות ההגנה של אוקראינה"
+  life-robots-ukraine:
+    tagline: "רובוטים לפינוי מוקשים באוקראינה"
+  sirius-shelter:
+    tagline: "מקלט בעלי החיים הגדול ביותר באוקראינה לכלבים ולחתולים"
+  dignitas:
+    tagline: "טכנולוגיה מצילת חיים למגיני אוקראינה"
+  leleka:
+    tagline: "טכנולוגיה ותמיכה למגיני אוקראינה ולוחמים משוחררים"
+  superhumans:
+    tagline: "ציוד רפואי טקטי לצוותים הרפואיים בקו החזית של אוקראינה"
+  nikopol-chance:
+    tagline: "תותבות, ניתוחים ושיקום לניצולי המלחמה"
+  dzygaspaw:
+    tagline: "מקלט כלבים שמציל כלבי רחוב בניקופול שבקו החזית ומוצא להם בתים חדשים"
+  donorua:
+    tagline: "מתאם תרומות דם התנדבותיות באוקראינה"
+  army-sos:
+    tagline: "מזון ותמיכה לחיילים האוקראינים"
+  soloma-cats:
+    tagline: "רפואה טקטית ופינוי מוקשים"
+  united-help-ukraine:
+    tagline: "שיקום ללוחמים פצועים ותמיכה באנשים עקורים"
+  sprava-hromad:
+    tagline: "רכבים משוריינים, משאיות ומערכות כטב״ם ליחידות בקו החזית"

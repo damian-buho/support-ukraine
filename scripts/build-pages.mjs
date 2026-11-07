@@ -46,10 +46,11 @@ const LOCALE_NAMES = {
   sk: 'Slovenčina',
   hu: 'Magyar',
   ro: 'Română',
+  he: 'עברית',
 }
 
 // RTL locales (must match src/locales/index.ts)
-const RTL_LOCALES = ['ar']
+const RTL_LOCALES = ['ar', 'he']
 
 // ── Page chrome ───────────────────────────────────────────────────────────
 // The banner locale strings carry the banner wording ("Support Ukraine with"
@@ -79,7 +80,8 @@ const PAGE_COPY = {
   cs: { title: 'Podpořte Ukrajinu', subtitle: 'Všechny organizace' },
   sk: { title: 'Podporte Ukrajinu', subtitle: 'Všetky organizácie' },
   hu: { title: 'Támogasd Ukrajnát', subtitle: 'Minden szervezet' },
-  ro: { title: 'Sprijină Ucraina', subtitle: 'Toate organizațiile' }
+  ro: { title: 'Sprijină Ucraina', subtitle: 'Toate organizațiile' },
+  he: { title: 'תמכו באוקראינה', subtitle: 'כל הארגונים' }
 }
 
 // ── Read source data ───────────────────────────────────────────────────────
