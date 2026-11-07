@@ -82,7 +82,7 @@ import { supportUkraineBlock } from '@damian-buho/support-ukraine/es'
 await supportUkraineBlock()
 ```
 
-Available localized entry points: `ar`, `bn`, `cs`, `de`, `en`, `es`, `fr`, `he`, `hi`, `hu`, `id`, `it`, `ja`, `ko`, `nl`, `pl`, `pt`, `ro`, `sk`, `sl`, `sv`, `th`, `tr`, `uk`, `ur`, `vi`, `zh`. The `locale` option is ignored in these builds — they are already localized.
+Available localized entry points: `ar`, `bn`, `cs`, `de`, `en`, `es`, `fr`, `he`, `hi`, `hr`, `hu`, `id`, `it`, `ja`, `ko`, `nl`, `pl`, `pt`, `ro`, `sk`, `sl`, `sv`, `th`, `tr`, `uk`, `ur`, `vi`, `zh`. The `locale` option is ignored in these builds — they are already localized.
 
 If you still want to read `navigator.language` yourself and avoid the library’s chained fetch, detect the base
 language tag and load the matching bundle:
@@ -100,6 +100,7 @@ language tag and load the matching bundle:
     'fr',
     'he',
     'hi',
+    'hr',
     'hu',
     'id',
     'it',
@@ -303,6 +304,7 @@ The banner is translated to the visitor's language automatically. The following 
 | Arabic     | `ar` | Yes                |
 | Bengali    | `bn` |                    |
 | Chinese    | `zh` |                    |
+| Croatian   | `hr` |                    |
 | Czech      | `cs` |                    |
 | Dutch      | `nl` |                    |
 | English    | `en` | (default fallback) |
