@@ -508,6 +508,14 @@ describe('charityUrlFor', () => {
     assert.equal(charityUrlFor(charity, 'es'), 'https://armysos.com.ua/en')
   })
 
+  it('resolves the Soloma Cats localized variants', () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'soloma-cats')
+    assert.ok(charity)
+    assert.equal(charityUrlFor(charity, 'en'), 'https://kittysoloma.org/en')
+    assert.equal(charityUrlFor(charity, 'uk'), 'https://kittysoloma.org/')
+    assert.equal(charityUrlFor(charity, 'de'), 'https://kittysoloma.org/en')
+  })
+
   it('falls back to english when the language variant is missing', () => {
     const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')
     assert.ok(charity)

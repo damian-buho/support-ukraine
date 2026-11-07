@@ -192,3 +192,11 @@
     de: https://armysos.com.ua/de/
     uk: https://armysos.com.ua/uk/
   tags: [military]
+
+- id: soloma-cats
+  name: Soloma Cats
+  tagline: Tactical medicine and demining
+  urls:
+    en: https://kittysoloma.org/en
+    uk: https://kittysoloma.org/
+  tags: [military]
