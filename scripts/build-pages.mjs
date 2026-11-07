@@ -45,6 +45,7 @@ const LOCALE_NAMES = {
   cs: 'Čeština',
   sk: 'Slovenčina',
   hu: 'Magyar',
+  ro: 'Română',
 }
 
 // RTL locales (must match src/locales/index.ts)
@@ -77,7 +78,8 @@ const PAGE_COPY = {
   bn: { title: 'ইউক্রেনকে সমর্থন করুন', subtitle: 'সব সংস্থা' },
   cs: { title: 'Podpořte Ukrajinu', subtitle: 'Všechny organizace' },
   sk: { title: 'Podporte Ukrajinu', subtitle: 'Všetky organizácie' },
-  hu: { title: 'Támogasd Ukrajnát', subtitle: 'Minden szervezet' }
+  hu: { title: 'Támogasd Ukrajnát', subtitle: 'Minden szervezet' },
+  ro: { title: 'Sprijină Ucraina', subtitle: 'Toate organizațiile' }
 }
 
 // ── Read source data ───────────────────────────────────────────────────────
