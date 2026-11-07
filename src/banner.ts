@@ -8,7 +8,7 @@ import {
   type LocaleMessages,
   type SupportUkraineBlockOptions
 } from './types.js'
-import { baseLanguage } from './language.js'
+import { baseLanguage, RTL_LOCALES } from './language.js'
 import rawCharities from './charities.yaml'
 import styles from './styles.scss'
 
@@ -137,7 +137,7 @@ export function charityUrlFor(charity: Charity, lang: string): string {
 }
 
 export function isRTL(lang: string): boolean {
-  return baseLanguage(lang) === 'ar'
+  return (RTL_LOCALES as readonly string[]).includes(baseLanguage(lang))
 }
 
 export function isDoNotTrackEnabled(): boolean {
