@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "Ủng hộ Ukraine cùng với"
+regionLabel: "Biểu ngữ ủng hộ Ukraine"
+more: "xem thêm…"
+donate: "Quyên góp"
+refresh: "Hiển thị tổ chức tiếp theo"
+opensInNewTab: "(mở trong tab mới)"
+charities:
+  united24:
+    tagline: "Nền tảng gây quỹ chính thức của Ukraine"
+  come-back-alive:
+    tagline: "Hỗ trợ Lực lượng Vũ trang Ukraine từ năm 2014"
+  razom-for-ukraine:
+    tagline: "Ứng phó khẩn cấp và viện trợ nhân đạo"
+  ukrainian-red-cross:
+    tagline: "Hỗ trợ nhân đạo tại các vùng xung đột"
+  nova-ukraine:
+    tagline: "Viện trợ nhân đạo và vận động chính sách"
+  voices-of-children:
+    tagline: "Hỗ trợ tâm lý cho trẻ em bị ảnh hưởng bởi chiến tranh"
+  prytula-foundation:
+    tagline: "Công nghệ và trang thiết bị quốc phòng cho Ukraine"
+  world-central-kitchen:
+    tagline: "Bữa ăn tươi cho người dân ở các vùng xung đột"
+  cats-of-kyiv:
+    tagline: "Mái ấm cứu hộ và tìm gia đình mới cho mèo ở Kyiv"
+  uanimals:
+    tagline: "Tổ chức cứu hộ và bảo vệ quyền động vật tại Ukraine"
+  hospitallers:
+    tagline: "Nhân viên y tế tình nguyện Ukraine sơ cứu và sơ tán thương binh"
+  sternenko-fund:
+    tagline: "Cung cấp drone FPV cho lực lượng phòng vệ Ukraine"
+  life-robots-ukraine:
+    tagline: "Robot rà phá mìn cho Ukraine"
+  sirius-shelter:
+    tagline: "Trạm cứu hộ chó mèo lớn nhất Ukraine"
+  dignitas:
+    tagline: "Công nghệ cứu sinh cho những người bảo vệ Ukraine"
+  leleka:
+    tagline: "Công nghệ và hỗ trợ cho các chiến sĩ và cựu chiến binh Ukraine"
+  superhumans:
+    tagline: "Vật tư y tế chiến thuật cho nhân viên y tế tuyến đầu của Ukraine"
+  nikopol-chance:
+    tagline: "Chân tay giả, phẫu thuật và phục hồi chức năng cho những người sống sót sau chiến tranh"
+  dzygaspaw:
+    tagline: "Mái ấm cứu hộ và tìm gia đình mới cho chó hoang ở Nikopol, nơi tuyến đầu"
+  donorua:
+    tagline: "Điều phối hoạt động truyền máu tình nguyện tại Ukraine"
+  army-sos:
+    tagline: "Lương thực và hỗ trợ cho các binh sĩ Ukraine"
+  soloma-cats:
+    tagline: "Y học chiến thuật và rà phá mìn"
+  united-help-ukraine:
+    tagline: "Phục hồi chức năng cho chiến binh bị thương và hỗ trợ người dân phải di dời"
+  sprava-hromad:
+    tagline: "Xe bọc thép, xe tải và hệ thống UAV cho các đơn vị tuyến đầu"

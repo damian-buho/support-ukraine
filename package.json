@@ -74,6 +74,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/uk.js"
     },
+    "./vi": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/vi.js"
+    },
     "./zh": {
       "types": "./dist/index.d.ts",
       "import": "./dist/zh.js"
@@ -159,7 +163,7 @@
   "size-limit": [
     {
       "path": "./dist/index.js",
-      "limit": "23 kB"
+      "limit": "24 kB"
     }
   ]
 }
