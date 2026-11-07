@@ -208,3 +208,14 @@
   urls:
     en: https://unitedhelpukraine.org/
   tags: [humanitarian]
+
+- id: sprava-hromad
+  name: Sprava Hromad
+  tagline: Armored vehicles, trucks and UAV systems for frontline units
+  urls:
+    en: https://spgr.org.ua/en/
+    uk: https://spgr.org.ua/ua/
+    de: https://spgr.org.ua/de/
+    fr: https://spgr.org.ua/fr/
+    pl: https://spgr.org.ua/pl/
+  tags: [military]

@@ -524,6 +524,17 @@ describe('charityUrlFor', () => {
     assert.equal(charityUrlFor(charity, 'uk'), 'https://unitedhelpukraine.org/')
   })
 
+  it('resolves the Sprava Hromad localized variants', () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'sprava-hromad')
+    assert.ok(charity)
+    assert.equal(charityUrlFor(charity, 'en'), 'https://spgr.org.ua/en/')
+    assert.equal(charityUrlFor(charity, 'uk'), 'https://spgr.org.ua/ua/')
+    assert.equal(charityUrlFor(charity, 'de'), 'https://spgr.org.ua/de/')
+    assert.equal(charityUrlFor(charity, 'fr'), 'https://spgr.org.ua/fr/')
+    assert.equal(charityUrlFor(charity, 'pl'), 'https://spgr.org.ua/pl/')
+    assert.equal(charityUrlFor(charity, 'es'), 'https://spgr.org.ua/en/')
+  })
+
   it('falls back to english when the language variant is missing', () => {
     const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')
     assert.ok(charity)
