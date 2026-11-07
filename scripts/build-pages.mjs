@@ -52,6 +52,7 @@ const LOCALE_NAMES = {
   hr: 'Hrvatski',
   bs: 'Bosanski',
   sr: 'Српски',
+  bg: 'Български',
 }
 
 // RTL locales (must match src/locales/index.ts)
@@ -91,7 +92,8 @@ const PAGE_COPY = {
   sl: { title: 'Podprite Ukrajino', subtitle: 'Vse organizacije' },
   hr: { title: 'Podržite Ukrajinu', subtitle: 'Sve organizacije' },
   bs: { title: 'Podržite Ukrajinu', subtitle: 'Sve organizacije' },
-  sr: { title: 'Подржите Украјину', subtitle: 'Све организације' }
+  sr: { title: 'Подржите Украјину', subtitle: 'Све организације' },
+  bg: { title: 'Подкрепете Украйна', subtitle: 'Всички организации' }
 }
 
 // ── Read source data ───────────────────────────────────────────────────────
