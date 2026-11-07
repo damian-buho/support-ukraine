@@ -37,15 +37,15 @@ charities:
     tagline: "Roboti za razminiranje Ukrajine"
   sirius-shelter:
     tagline: "Največje zavetišče za pse in mačke v Ukrajini"
-  dignitas:
-    tagline: "Tehnologija, ki rešuje življenja, za ukrajinske branilce"
-  leleka:
-    tagline: "Tehnologija in podpora za ukrajinske branilce in veterane"
-  superhumans:
-    tagline: "Taktična medicinska oprema za zdravstvene delavce na fronti v Ukrajini"
-  nikopol-chance:
-    tagline: "Proteze, kirurgija in rehabilitacija za preživele v vojni"
   dzygaspaw:
+    tagline: "Tehnologija, ki rešuje življenja, za ukrajinske branilce"
+  dignitas:
+    tagline: "Tehnologija in podpora za ukrajinske branilce in veterane"
+  leleka:
+    tagline: "Taktična medicinska oprema za zdravstvene delavce na fronti v Ukrajini"
+  superhumans:
+    tagline: "Proteze, kirurgija in rehabilitacija za preživele v vojni"
+  nikopol-chance:
     tagline: "Zavetišče za pse, ki rešuje potepuške pse v Nikopolu ob fronti in jim išče nove domove"
   donorua:
     tagline: "Usklajuje prostovoljne transfuzije krvi v Ukrajini"
