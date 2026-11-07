@@ -38,6 +38,7 @@ const LOCALE_NAMES = {
   th: 'ไทย',
   ja: '日本語',
   ko: '한국어',
+  id: 'Bahasa Indonesia',
 }
 
 // RTL locales (must match src/locales/index.ts)
@@ -63,7 +64,8 @@ const PAGE_COPY = {
   hi: { title: 'यूक्रेन का समर्थन करें', subtitle: 'सभी धर्मार्थ संस्थाएँ' },
   th: { title: 'สนับสนุนยูเครน', subtitle: 'องค์กรทั้งหมด' },
   ja: { title: 'ウクライナを支援する', subtitle: 'すべての団体' },
-  ko: { title: '우크라이나를 지원합니다', subtitle: '모든 단체' }
+  ko: { title: '우크라이나를 지원합니다', subtitle: '모든 단체' },
+  id: { title: 'Dukung Ukraina', subtitle: 'Semua lembaga' }
 }
 
 // ── Read source data ───────────────────────────────────────────────────────
