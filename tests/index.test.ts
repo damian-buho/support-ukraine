@@ -280,6 +280,7 @@ describe('resolveLocale', () => {
     assert.equal(resolveLocale('hu'), 'hu')
     assert.equal(resolveLocale('ro'), 'ro')
     assert.equal(resolveLocale('he'), 'he')
+    assert.equal(resolveLocale('ur'), 'ur')
   })
 
   it('falls back to "en" for unsupported locales', () => {
@@ -412,6 +413,8 @@ describe('isRTL', () => {
     assert.equal(isRTL('ar-SA'), true)
     assert.equal(isRTL('he'), true)
     assert.equal(isRTL('he-X'), true)
+    assert.equal(isRTL('ur'), true)
+    assert.equal(isRTL('ur-X'), true)
   })
 
   it('returns false for LTR locales', () => {
@@ -2354,6 +2357,7 @@ const entryLoaders: Record<
   th: () => import('../src/entries/th.js'),
   tr: () => import('../src/entries/tr.js'),
   uk: () => import('../src/entries/uk.js'),
+  ur: () => import('../src/entries/ur.js'),
   vi: () => import('../src/entries/vi.js'),
   zh: () => import('../src/entries/zh.js')
 }

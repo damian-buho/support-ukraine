@@ -63,6 +63,7 @@ const locales = [
   'th',
   'tr',
   'uk',
+  'ur',
   'vi',
   'zh'
 ] as const
