@@ -183,3 +183,12 @@
     en: https://www.donor.ua/en
     uk: https://www.donor.ua
   tags: [humanitarian]
+
+- id: army-sos
+  name: Army SOS
+  tagline: Food and support for Ukrainian troops
+  urls:
+    en: https://armysos.com.ua/en
+    de: https://armysos.com.ua/de/
+    uk: https://armysos.com.ua/uk/
+  tags: [military]

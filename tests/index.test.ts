@@ -499,6 +499,15 @@ describe('charityUrlFor', () => {
     assert.equal(charityUrlFor(charity, 'de'), 'https://www.donor.ua/en')
   })
 
+  it('resolves the Army SOS localized variants', () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'army-sos')
+    assert.ok(charity)
+    assert.equal(charityUrlFor(charity, 'en'), 'https://armysos.com.ua/en')
+    assert.equal(charityUrlFor(charity, 'de'), 'https://armysos.com.ua/de/')
+    assert.equal(charityUrlFor(charity, 'uk'), 'https://armysos.com.ua/uk/')
+    assert.equal(charityUrlFor(charity, 'es'), 'https://armysos.com.ua/en')
+  })
+
   it('falls back to english when the language variant is missing', () => {
     const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')
     assert.ok(charity)
