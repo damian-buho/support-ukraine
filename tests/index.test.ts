@@ -285,6 +285,7 @@ describe('resolveLocale', () => {
     assert.equal(resolveLocale('hr'), 'hr')
     assert.equal(resolveLocale('bs'), 'bs')
     assert.equal(resolveLocale('sr'), 'sr')
+    assert.equal(resolveLocale('bg'), 'bg')
   })
 
   it('falls back to "en" for unsupported locales', () => {
@@ -2339,6 +2340,7 @@ const entryLoaders: Record<
   () => Promise<{ supportUkraineBlock: typeof supportUkraineBlock }>
 > = {
   ar: () => import('../src/entries/ar.js'),
+  bg: () => import('../src/entries/bg.js'),
   bn: () => import('../src/entries/bn.js'),
   bs: () => import('../src/entries/bs.js'),
   cs: () => import('../src/entries/cs.js'),

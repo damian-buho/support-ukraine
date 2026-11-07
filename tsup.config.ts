@@ -41,6 +41,7 @@ const isTestBuild = process.env.TEST_BUILD === '1'
 
 const locales = [
   'ar',
+  'bg',
   'bn',
   'bs',
   'cs',
