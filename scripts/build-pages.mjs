@@ -50,6 +50,7 @@ const LOCALE_NAMES = {
   ur: 'اردو',
   sl: 'Slovenščina',
   hr: 'Hrvatski',
+  bs: 'Bosanski',
 }
 
 // RTL locales (must match src/locales/index.ts)
@@ -87,7 +88,8 @@ const PAGE_COPY = {
   he: { title: 'תמכו באוקראינה', subtitle: 'כל הארגונים' },
   ur: { title: 'یوکرین کی حمایت کریں', subtitle: 'تمام تنظیمیں' },
   sl: { title: 'Podprite Ukrajino', subtitle: 'Vse organizacije' },
-  hr: { title: 'Podržite Ukrajinu', subtitle: 'Sve organizacije' }
+  hr: { title: 'Podržite Ukrajinu', subtitle: 'Sve organizacije' },
+  bs: { title: 'Podržite Ukrajinu', subtitle: 'Sve organizacije' }
 }
 
 // ── Read source data ───────────────────────────────────────────────────────
