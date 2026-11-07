@@ -98,6 +98,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/sl.js"
     },
+    "./sr": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/sr.js"
+    },
     "./sv": {
       "types": "./dist/index.d.ts",
       "import": "./dist/sv.js"
@@ -207,7 +211,7 @@
   "size-limit": [
     {
       "path": "./dist/index.js",
-      "limit": "35 kB"
+      "limit": "36 kB"
     }
   ]
 }

@@ -39,7 +39,8 @@ export const localeLoaders = {
   ur: () => import('./ur.yaml'),
   sl: () => import('./sl.yaml'),
   hr: () => import('./hr.yaml'),
-  bs: () => import('./bs.yaml')
+  bs: () => import('./bs.yaml'),
+  sr: () => import('./sr.yaml')
 } satisfies Record<string, LocaleLoader>
 
 /**
