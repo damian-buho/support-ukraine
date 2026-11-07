@@ -200,3 +200,11 @@
     en: https://kittysoloma.org/en
     uk: https://kittysoloma.org/
   tags: [military]
+
+- id: united-help-ukraine
+  name: United Help Ukraine
+  tagline: Rehabilitation for wounded warriors and support for displaced persons
+  is501c3: true
+  urls:
+    en: https://unitedhelpukraine.org/
+  tags: [humanitarian]
