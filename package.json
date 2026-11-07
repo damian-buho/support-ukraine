@@ -78,6 +78,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/ko.js"
     },
+    "./mk": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/mk.js"
+    },
     "./nl": {
       "types": "./dist/index.d.ts",
       "import": "./dist/nl.js"
@@ -215,7 +219,7 @@
   "size-limit": [
     {
       "path": "./dist/index.js",
-      "limit": "37 kB"
+      "limit": "38 kB"
     }
   ]
 }

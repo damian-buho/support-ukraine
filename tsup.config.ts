@@ -57,6 +57,7 @@ const locales = [
   'it',
   'ja',
   'ko',
+  'mk',
   'nl',
   'pl',
   'pt',
