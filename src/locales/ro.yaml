@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "Sprijină Ucraina -"
+regionLabel: "Banner de sprijin pentru Ucraina"
+more: "mai mult…"
+donate: "Donează"
+refresh: "Afișează următoarea organizație"
+opensInNewTab: "(se deschide într-o filă nouă)"
+charities:
+  united24:
+    tagline: "Platforma oficială de strângere de fonduri a Ucrainei"
+  come-back-alive:
+    tagline: "Sprijin pentru Forțele Armate ale Ucrainei din 2014"
+  razom-for-ukraine:
+    tagline: "Intervenție de urgență și ajutor umanitar"
+  ukrainian-red-cross:
+    tagline: "Asistență umanitară în zonele de conflict"
+  nova-ukraine:
+    tagline: "Ajutor umanitar și advocacy"
+  voices-of-children:
+    tagline: "Sprijin psihologic pentru copiii afectați de război"
+  prytula-foundation:
+    tagline: "Tehnologie și echipamente de apărare pentru Ucraina"
+  world-central-kitchen:
+    tagline: "Mese proaspete pentru oamenii din zonele de conflict"
+  cats-of-kyiv:
+    tagline: "Adăpost pentru pisici care salvează pisici în Kiev și le găsește noi familii"
+  uanimals:
+    tagline: "Organizație de salvare a animalelor și de apărare a drepturilor lor în Ucraina"
+  hospitallers:
+    tagline: "Paramedici voluntari ucraineni care oferă prim ajutor și evacuare"
+  sternenko-fund:
+    tagline: "Livrare de drone FPV pentru forțele de apărare ale Ucrainei"
+  life-robots-ukraine:
+    tagline: "Roboți pentru deminarea Ucrainei"
+  sirius-shelter:
+    tagline: "Cel mai mare adăpost pentru câini și pisici din Ucraina"
+  dignitas:
+    tagline: "Tehnologie care salvează vieți pentru apărătorii ucraineni"
+  leleka:
+    tagline: "Tehnologie și sprijin pentru apărătorii și veteranii ucraineni"
+  superhumans:
+    tagline: "Echipamente medicale tactice pentru medicii de pe linia întâi din Ucraina"
+  nikopol-chance:
+    tagline: "Proteze, chirurgie și reabilitare pentru supraviețuitorii războiului"
+  dzygaspaw:
+    tagline: "Adăpost pentru câini care salvează câinii fără stăpân din Nikopol, aflat pe linia frontului, și le găsește noi familii"
+  donorua:
+    tagline: "Coordonează transfuziile de sânge voluntare din Ucraina"
+  army-sos:
+    tagline: "Hrană și sprijin pentru soldații ucraineni"
+  soloma-cats:
+    tagline: "Medicină tactică și deminare"
+  united-help-ukraine:
+    tagline: "Reabilitare pentru luptătorii răniți și sprijin pentru persoanele strămutate"
+  sprava-hromad:
+    tagline: "Vehicule blindate, camioane și sisteme UAV pentru unitățile de pe linia frontului"
