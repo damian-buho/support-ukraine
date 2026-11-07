@@ -277,7 +277,12 @@ export function mountBanner(
   tagline.className = `${CSS_PREFIX}__tagline`
   tagline.textContent = charity.tagline
 
-  info.append(name, colon, tagline)
+  const badge = document.createElement('span')
+  badge.className = `${CSS_PREFIX}__badge`
+  badge.textContent = '501(c)(3)'
+  badge.hidden = !charity.is501c3
+
+  info.append(name, colon, tagline, badge)
 
   link.append(flag, prefix, info)
   banner.append(link)
@@ -313,6 +318,7 @@ export function mountBanner(
     currentCharityUrl = charityUrlFor(next, lang)
     link.href = buildUtmUrl(currentCharityUrl, options)
     name.textContent = next.name
+    badge.hidden = !next.is501c3
     tagline.textContent = next.tagline
     if (isInConsole) {
       console.info('[support-ukraine] banner', `${next.name}: ${next.tagline}`, currentCharityUrl)

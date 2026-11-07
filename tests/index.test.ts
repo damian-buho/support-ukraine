@@ -188,6 +188,41 @@ describe('charitiesSchema', () => {
   })
 })
 
+// ── is501c3 field ───────────────────────────────────────────────────────
+
+describe('is501c3', () => {
+  const base = {
+    id: 't',
+    name: 'T',
+    tagline: 'T',
+    urls: { en: 'https://x.com' },
+    tags: ['military']
+  }
+
+  it('preserves is501c3: true', () => {
+    const [parsed] = charitiesSchema.parse([{ ...base, is501c3: true }])
+    assert.ok(parsed)
+    assert.equal(parsed.is501c3, true)
+  })
+
+  it('preserves is501c3: false', () => {
+    const [parsed] = charitiesSchema.parse([{ ...base, is501c3: false }])
+    assert.ok(parsed)
+    assert.equal(parsed.is501c3, false)
+  })
+
+  it('leaves is501c3 undefined when the field is omitted', () => {
+    const [parsed] = charitiesSchema.parse([base])
+    assert.ok(parsed)
+    assert.equal(parsed.is501c3, undefined)
+  })
+
+  it('rejects a non-boolean is501c3', () => {
+    const bad = [{ ...base, is501c3: 'yes' }]
+    assert.throws(() => charitiesSchema.parse(bad), /is501c3 must be a boolean/)
+  })
+})
+
 // ── randomItem ──────────────────────────────────────────────────────────
 
 describe('randomItem', () => {
@@ -814,6 +849,13 @@ function refreshButtonOf(host: HTMLElement): MockElement {
   const button = banner.children.find(child => child.className === 'support-ukraine-block__refresh')
   assert.ok(button, 'refresh button found')
   return button
+}
+
+function badgeOf(host: HTMLElement): MockElement {
+  const info = (bannerOf(host).firstChild as MockElement).lastChild as MockElement
+  const badge = info.children.find(child => child.className === 'support-ukraine-block__badge')
+  assert.ok(badge, 'banner renders the 501(c)(3) badge element')
+  return badge
 }
 
 // Runs the body with a scripted Math.random so the picked charity is deterministic.
@@ -2456,7 +2498,7 @@ describe('banner structure', () => {
       dontRepeat: false
     })
     const info = (bannerOf(host).firstChild as MockElement).lastChild as MockElement
-    const [name, colon, tagline] = info.children
+    const [name, colon, tagline, badge] = info.children
     assert.equal(name?.tagName, 'SPAN')
     assert.equal(name?.className, 'support-ukraine-block__name')
     assert.equal(name?.textContent, charity.name)
@@ -2466,6 +2508,10 @@ describe('banner structure', () => {
     assert.equal(tagline?.tagName, 'SPAN')
     assert.equal(tagline?.className, 'support-ukraine-block__tagline')
     assert.equal(tagline?.textContent, charity.tagline)
+    assert.equal(badge?.tagName, 'SPAN')
+    assert.equal(badge?.className, 'support-ukraine-block__badge')
+    assert.equal(badge?.textContent, '501(c)(3)')
+    assert.equal(badge?.hidden, true)
   })
 
   it('renders the more link with its text and ellipsis', async () => {
@@ -2520,6 +2566,98 @@ describe('banner structure', () => {
     const glyph = refresh.firstChild as MockElement
     assert.equal(glyph.tagName, 'SPAN')
     assert.equal(glyph.getAttribute('aria-hidden'), 'true')
+  })
+})
+
+// ── 501(c)(3) badge ──────────────────────────────────────────────────────
+
+describe('is501c3 badge', () => {
+  const c501: Charity = {
+    id: 'fifty-x',
+    name: 'Fifty X',
+    tagline: 'Tagline X',
+    urls: { en: 'https://fifty-x.example.org' },
+    tags: ['humanitarian'],
+    is501c3: true
+  }
+  const plain: Charity = {
+    id: 'plain-y',
+    name: 'Plain Y',
+    tagline: 'Tagline Y',
+    urls: { en: 'https://plain-y.example.org' },
+    tags: ['humanitarian']
+  }
+
+  before(() => {
+    setupDom()
+    setupStorage()
+  })
+
+  beforeEach(() => {
+    storage.store.clear()
+    resetMemorySeen()
+    head.children.length = 0
+    body.children.length = 0
+  })
+
+  afterEach(() => {
+    body.children.length = 0
+  })
+
+  it('shows the badge after the tagline when is501c3 is true', async () => {
+    await withRandom([0], async () => {
+      const host = await supportUkraineBlock({
+        charities: [c501, plain],
+        locale: 'en',
+        dontRepeat: false
+      })
+      assert.equal(bannerName(host), 'Fifty X')
+      const info = (bannerOf(host).firstChild as MockElement).lastChild as MockElement
+      assert.equal(info.children.at(-2)?.className, 'support-ukraine-block__tagline')
+      const badge = info.children.at(-1)
+      assert.equal(badge?.className, 'support-ukraine-block__badge')
+      assert.equal(badge?.hidden, false)
+    })
+  })
+
+  it('hides the badge when is501c3 is not set', async () => {
+    await withRandom([0], async () => {
+      const host = await supportUkraineBlock({
+        charities: [plain, c501],
+        locale: 'en',
+        dontRepeat: false
+      })
+      assert.equal(bannerName(host), 'Plain Y')
+      assert.equal(badgeOf(host).hidden, true)
+    })
+  })
+
+  it('spaces the badge 1rem from the tagline', () => {
+    const css = styles.replaceAll(/\s+/g, '')
+    assert.match(
+      css,
+      /__badge{background:#fff;[^{}]*?margin-inline-start:1rem;/,
+      'badge must clear the tagline by 1rem'
+    )
+  })
+
+  it('toggles the badge when the banner rotates', async () => {
+    await withRandom([0, 0, 0, 0], async () => {
+      const host = await supportUkraineBlock({
+        charities: [c501, plain],
+        showRefreshButton: true,
+        dontRepeat: false,
+        locale: 'en'
+      })
+      assert.equal(bannerName(host), 'Fifty X')
+      assert.equal(badgeOf(host).hidden, false)
+      refreshButtonOf(host).click()
+      assert.equal(bannerName(host), 'Plain Y')
+      assert.equal(badgeOf(host).hidden, true)
+      refreshButtonOf(host).click()
+      assert.equal(bannerName(host), 'Fifty X')
+      assert.equal(badgeOf(host).hidden, false)
+    })
   })
 })
 

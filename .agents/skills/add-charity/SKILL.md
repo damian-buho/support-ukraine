@@ -35,7 +35,10 @@ site to support.
 ```
 
 The schema (`src/types.ts`) rejects a missing `urls.en`, an empty `urls` map, a
-non-URL value, an empty `tags` array and a tag outside the three valid ones.
+non-URL value, an empty `tags` array, a tag outside the three valid ones and an
+`is501c3` that is not a boolean. `is501c3: true` renders the `501(c)(3)` badge
+after the tagline — set it only when the entity receiving the donation is a US
+501(c)(3), confirmed on the charity's own donate or FAQ page.
 
 ## Process
 

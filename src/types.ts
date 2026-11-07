@@ -46,6 +46,11 @@ export interface Charity {
   */
   urls: Record<string, string> & { en: string }
   tags: CharityTag[]
+  /**
+  True when the charity is a US 501(c)(3) public charity, so US donations are tax-deductible.
+  Renders a "501(c)(3)" badge after the tagline; omitted otherwise.
+  */
+  is501c3?: boolean
 }
 
 function parseLocalizedUrls(value: unknown): Record<string, string> & { en: string } {
@@ -69,12 +74,17 @@ function parseCharity(value: unknown): Charity {
   assertNonEmptyString(record.tagline, 'tagline')
   assert(Array.isArray(record.tags), 'tags must be an array')
   assert(record.tags.length > 0, 'tags must not be empty')
+  assert(
+    record.is501c3 === undefined || typeof record.is501c3 === 'boolean',
+    'is501c3 must be a boolean'
+  )
   return {
     id: record.id,
     name: record.name,
     tagline: record.tagline,
     urls: parseLocalizedUrls(record.urls),
-    tags: record.tags.map(tag => parseCharityTag(tag))
+    tags: record.tags.map(tag => parseCharityTag(tag)),
+    ...(record.is501c3 !== undefined && { is501c3: record.is501c3 })
   }
 }
 

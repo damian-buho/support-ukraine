@@ -21,6 +21,7 @@
 - id: razom-for-ukraine
   name: Razom for Ukraine
   tagline: Emergency response and humanitarian aid
+  is501c3: true
   urls:
     en: https://www.razomforukraine.org
     uk: https://www.razomforukraine.org/ua/
@@ -37,6 +38,7 @@
 - id: nova-ukraine
   name: Nova Ukraine
   tagline: Humanitarian aid and advocacy
+  is501c3: true
   urls:
     en: https://novaukraine.org
     uk: https://novaukraine.org.ua/
@@ -61,6 +63,7 @@
 - id: world-central-kitchen
   name: World Central Kitchen
   tagline: Fresh meals for people in conflict zones
+  is501c3: true
   urls:
     en: https://wck.org/relief/activation-chefs-for-ukraine/
   tags: [humanitarian]
@@ -143,6 +146,7 @@
 - id: leleka
   name: Leleka Foundation
   tagline: Tactical medical supplies for Ukraine's frontline medics
+  is501c3: true
   urls:
     en: https://leleka.care/en
     uk: https://leleka.care/ua
