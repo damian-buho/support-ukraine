@@ -82,7 +82,7 @@ import { supportUkraineBlock } from '@damian-buho/support-ukraine/es'
 await supportUkraineBlock()
 ```
 
-Available localized entry points: `ar`, `bg`, `bn`, `bs`, `cs`, `de`, `el`, `en`, `es`, `fr`, `he`, `hi`, `hr`, `hu`, `id`, `it`, `ja`, `ko`, `mk`, `nl`, `pl`, `pt`, `ro`, `sk`, `sl`, `sq`, `sr`, `sv`, `th`, `tr`, `uk`, `ur`, `vi`, `zh`. The `locale` option is ignored in these builds — they are already localized.
+Available localized entry points: `ar`, `az`, `be`, `bg`, `bn`, `bs`, `cs`, `da`, `de`, `el`, `en`, `es`, `et`, `fi`, `fr`, `he`, `hi`, `hr`, `hu`, `hy`, `id`, `it`, `ja`, `ka`, `kk`, `ko`, `ky`, `lt`, `lv`, `mk`, `nb`, `nl`, `pl`, `pt`, `ro`, `sk`, `sl`, `sq`, `sr`, `sv`, `tg`, `th`, `tk`, `tr`, `uk`, `ur`, `uz`, `vi`, `zh`. The `locale` option is ignored in these builds — they are already localized.
 
 If you still want to read `navigator.language` yourself and avoid the library’s chained fetch, detect the base
 language tag and load the matching bundle:
@@ -92,24 +92,36 @@ language tag and load the matching bundle:
   const base = navigator.language.split('-')[0]
   const supported = [
     'ar',
+    'az',
+    'be',
     'bg',
     'bn',
     'bs',
     'cs',
+    'da',
     'de',
     'el',
     'en',
     'es',
+    'et',
+    'fi',
     'fr',
     'he',
     'hi',
     'hr',
     'hu',
+    'hy',
     'id',
     'it',
     'ja',
+    'ka',
+    'kk',
     'ko',
+    'ky',
+    'lt',
+    'lv',
     'mk',
+    'nb',
     'nl',
     'pl',
     'pt',
@@ -119,10 +131,13 @@ language tag and load the matching bundle:
     'sq',
     'sr',
     'sv',
+    'tg',
     'th',
+    'tk',
     'tr',
     'uk',
     'ur',
+    'uz',
     'vi',
     'zh'
   ]
@@ -305,42 +320,57 @@ await supportUkraineBlock({ persistSeen: true })
 
 The banner is translated to the visitor's language automatically. The following locales are supported:
 
-| Language   | Code | RTL                |
-| ---------- | ---- | ------------------ |
-| Albanian   | `sq` |                    |
-| Arabic     | `ar` | Yes                |
-| Bengali    | `bn` |                    |
-| Bosnian    | `bs` |                    |
-| Bulgarian  | `bg` |                    |
-| Chinese    | `zh` |                    |
-| Croatian   | `hr` |                    |
-| Czech      | `cs` |                    |
-| Dutch      | `nl` |                    |
-| English    | `en` | (default fallback) |
-| French     | `fr` |                    |
-| German     | `de` |                    |
-| Greek      | `el` |                    |
-| Hebrew     | `he` | Yes                |
-| Hindi      | `hi` |                    |
-| Hungarian  | `hu` |                    |
-| Indonesian | `id` |                    |
-| Italian    | `it` |                    |
-| Japanese   | `ja` |                    |
-| Korean     | `ko` |                    |
-| Macedonian | `mk` |                    |
-| Polish     | `pl` |                    |
-| Portuguese | `pt` |                    |
-| Romanian   | `ro` |                    |
-| Serbian    | `sr` |                    |
-| Slovak     | `sk` |                    |
-| Slovenian  | `sl` |                    |
-| Spanish    | `es` |                    |
-| Swedish    | `sv` |                    |
-| Thai       | `th` |                    |
-| Turkish    | `tr` |                    |
-| Ukrainian  | `uk` |                    |
-| Urdu       | `ur` | Yes                |
-| Vietnamese | `vi` |                    |
+| Language         | Code | RTL                |
+| ---------------- | ---- | ------------------ |
+| Albanian         | `sq` |                    |
+| Arabic           | `ar` | Yes                |
+| Armenian         | `hy` |                    |
+| Azerbaijani      | `az` |                    |
+| Belarusian       | `be` |                    |
+| Bengali          | `bn` |                    |
+| Bosnian          | `bs` |                    |
+| Bulgarian        | `bg` |                    |
+| Chinese          | `zh` |                    |
+| Croatian         | `hr` |                    |
+| Czech            | `cs` |                    |
+| Danish           | `da` |                    |
+| Dutch            | `nl` |                    |
+| English          | `en` | (default fallback) |
+| Estonian         | `et` |                    |
+| Finnish          | `fi` |                    |
+| French           | `fr` |                    |
+| Georgian         | `ka` |                    |
+| German           | `de` |                    |
+| Greek            | `el` |                    |
+| Hebrew           | `he` | Yes                |
+| Hindi            | `hi` |                    |
+| Hungarian        | `hu` |                    |
+| Indonesian       | `id` |                    |
+| Italian          | `it` |                    |
+| Japanese         | `ja` |                    |
+| Kazakh           | `kk` |                    |
+| Korean           | `ko` |                    |
+| Kyrgyz           | `ky` |                    |
+| Latvian          | `lv` |                    |
+| Lithuanian       | `lt` |                    |
+| Macedonian       | `mk` |                    |
+| Norwegian Bokmål | `nb` |                    |
+| Polish           | `pl` |                    |
+| Portuguese       | `pt` |                    |
+| Romanian         | `ro` |                    |
+| Serbian          | `sr` |                    |
+| Slovak           | `sk` |                    |
+| Slovenian        | `sl` |                    |
+| Spanish          | `es` |                    |
+| Swedish          | `sv` |                    |
+| Tajik            | `tg` |                    |
+| Thai             | `th` |                    |
+| Turkish          | `tr` |                    |
+| Turkmen          | `tk` |                    |
+| Ukrainian        | `uk` |                    |
+| Urdu             | `ur` | Yes                |
+| Uzbek            | `uz` |                    |
+| Vietnamese       | `vi` |                    |
 
 RTL scripts are detected automatically and the banner direction is set accordingly.
 

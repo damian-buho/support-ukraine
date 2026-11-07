@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "Ukrainani qoʻllab-quvvatlang –"
+regionLabel: Ukrainani qoʻllab-quvvatlash banneri
+more: batafsil…
+donate: Xayriya qilish
+refresh: Keyingi tashkilotni koʻrsatish
+opensInNewTab: (yangi varaqda ochiladi)
+charities:
+  united24:
+    tagline: Ukrainaning rasmiy mablagʻ yigʻish platformasi
+  come-back-alive:
+    tagline: 2014-yildan beri Ukraina Qurolli Kuchlarini qoʻllab-quvvatlaydi
+  razom-for-ukraine:
+    tagline: Favqulodda yordam va insonparvarlik yordami
+  ukrainian-red-cross:
+    tagline: Mojaro hududlarida insonparvarlik yordami
+  nova-ukraine:
+    tagline: Insonparvarlik yordami va manfaatlarni himoya qilish
+  voices-of-children:
+    tagline: Urushdan jabr koʻrgan bolalarga psixologik yordam
+  prytula-foundation:
+    tagline: Ukraina uchun mudofaa texnologiyalari va jihozlari
+  world-central-kitchen:
+    tagline: Mojaro hududlaridagi odamlar uchun yangi tayyorlangan taom
+  cats-of-kyiv:
+    tagline: Kiyevda mushuklarni qutqarib, ularga yangi uy topadigan boshpana
+  uanimals:
+    tagline: Ukrainadagi hayvonlarni qutqarish va himoya qilish tashkiloti
+  hospitallers:
+    tagline: Birinchi yordam koʻrsatadigan va evakuatsiya qiladigan ukrainalik koʻngilli tibbiyot xodimlari
+  sternenko-fund:
+    tagline: Ukraina mudofaa kuchlari uchun FPV dronlar
+  life-robots-ukraine:
+    tagline: Ukrainani minalardan tozalash uchun robotlar
+  sirius-shelter:
+    tagline: Ukrainadagi itlar va mushuklar uchun eng yirik boshpana
+  dzygaspaw:
+    tagline: Ukrainalik himoyachilar hayotini saqlaydigan texnologiyalar
+  dignitas:
+    tagline: Ukrainalik himoyachilar va faxriylar uchun texnologiya va yordam
+  leleka:
+    tagline: Ukrainaning front chizigʻidagi tibbiyot xodimlari uchun taktik tibbiy jihozlar
+  superhumans:
+    tagline: Urushdan omon qolganlar uchun protezlash, jarrohlik va reabilitatsiya
+  nikopol-chance:
+    tagline: Front yaqinidagi Nikopolda daydi itlarni qutqarib, ularga uy topadigan boshpana
+  donorua:
+    tagline: Ukrainada koʻngilli qon donorligini muvofiqlashtiradi
+  army-sos:
+    tagline: Ukraina askarlari uchun oziq-ovqat va yordam
+  soloma-cats:
+    tagline: Taktik tibbiyot va minalardan tozalash
+  united-help-ukraine:
+    tagline: Yarador jangchilarni reabilitatsiya qilish va koʻchirilganlarga yordam
+  sprava-hromad:
+    tagline: Front boʻlinmalari uchun zirhli texnika, yuk mashinalari va PUA tizimlari

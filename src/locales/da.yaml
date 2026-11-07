@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: Støt Ukraine med
+regionLabel: Banner til støtte for Ukraine
+more: mere…
+donate: Donér
+refresh: Vis næste organisation
+opensInNewTab: (åbner i en ny fane)
+charities:
+  united24:
+    tagline: Ukraines officielle indsamlingsplatform
+  come-back-alive:
+    tagline: Støtter Ukraines væbnede styrker siden 2014
+  razom-for-ukraine:
+    tagline: Katastrofeberedskab og humanitær hjælp
+  ukrainian-red-cross:
+    tagline: Humanitær bistand i konfliktzoner
+  nova-ukraine:
+    tagline: Humanitær hjælp og fortalervirksomhed
+  voices-of-children:
+    tagline: Psykologisk støtte til børn ramt af krigen
+  prytula-foundation:
+    tagline: Forsvarsteknologi og udstyr til Ukraine
+  world-central-kitchen:
+    tagline: Friske måltider til mennesker i konfliktzoner
+  cats-of-kyiv:
+    tagline: Kattehjem, der redder og genhuser katte i Kyiv
+  uanimals:
+    tagline: Organisation for dyreredning og dyrs rettigheder i Ukraine
+  hospitallers:
+    tagline: Ukrainske frivillige paramedicinere, der yder førstehjælp og evakuering
+  sternenko-fund:
+    tagline: FPV-droner til Ukraines forsvarsstyrker
+  life-robots-ukraine:
+    tagline: Robotter til minerydning i Ukraine
+  sirius-shelter:
+    tagline: Ukraines største dyreinternat for hunde og katte
+  dzygaspaw:
+    tagline: Livreddende teknologi til ukrainske forsvarere
+  dignitas:
+    tagline: Teknologi og støtte til ukrainske forsvarere og veteraner
+  leleka:
+    tagline: Taktisk medicinsk udstyr til Ukraines sanitetsfolk ved fronten
+  superhumans:
+    tagline: Proteser, kirurgi og genoptræning for krigsoverlevere
+  nikopol-chance:
+    tagline: Hundeinternat, der redder og genhuser herreløse hunde i frontbyen Nikopol
+  donorua:
+    tagline: Koordinerer frivillig bloddonation i Ukraine
+  army-sos:
+    tagline: Mad og støtte til ukrainske tropper
+  soloma-cats:
+    tagline: Taktisk medicin og minerydning
+  united-help-ukraine:
+    tagline: Genoptræning af sårede soldater og støtte til fordrevne
+  sprava-hromad:
+    tagline: Pansrede køretøjer, lastbiler og dronesystemer til enheder ved fronten

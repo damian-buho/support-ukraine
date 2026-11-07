@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "Toeta Ukrainat –"
+regionLabel: Ukraina toetamise bänner
+more: veel…
+donate: Anneta
+refresh: Näita järgmist organisatsiooni
+opensInNewTab: (avaneb uuel vahelehel)
+charities:
+  united24:
+    tagline: Ukraina ametlik annetuste kogumise platvorm
+  come-back-alive:
+    tagline: Toetab Ukraina relvajõude alates 2014. aastast
+  razom-for-ukraine:
+    tagline: Hädaabi ja humanitaarabi
+  ukrainian-red-cross:
+    tagline: Humanitaarabi konfliktipiirkondades
+  nova-ukraine:
+    tagline: Humanitaarabi ja huvikaitse
+  voices-of-children:
+    tagline: Psühholoogiline tugi sõjast mõjutatud lastele
+  prytula-foundation:
+    tagline: Kaitsetehnoloogia ja varustus Ukrainale
+  world-central-kitchen:
+    tagline: Värsked toidukorrad konfliktipiirkondade inimestele
+  cats-of-kyiv:
+    tagline: Kassivarjupaik, mis päästab Kiievi kasse ja leiab neile uue kodu
+  uanimals:
+    tagline: Loomade päästmise ja loomakaitse organisatsioon Ukrainas
+  hospitallers:
+    tagline: Ukraina vabatahtlikud parameedikud, kes annavad esmaabi ja evakueerivad
+  sternenko-fund:
+    tagline: FPV-droonid Ukraina kaitsejõududele
+  life-robots-ukraine:
+    tagline: Robotid Ukraina demineerimiseks
+  sirius-shelter:
+    tagline: Ukraina suurim varjupaik koertele ja kassidele
+  dzygaspaw:
+    tagline: Elupäästev tehnoloogia Ukraina kaitsjatele
+  dignitas:
+    tagline: Tehnoloogia ja tugi Ukraina kaitsjatele ja veteranidele
+  leleka:
+    tagline: Taktikalised meditsiinitarbed Ukraina rindemeedikutele
+  superhumans:
+    tagline: Proteesid, kirurgia ja taastusravi sõjas ellujäänutele
+  nikopol-chance:
+    tagline: Koerte varjupaik, mis päästab rindelinna Nikopoli hulkuvaid koeri ja leiab neile kodu
+  donorua:
+    tagline: Koordineerib vabatahtlikku verdandmist Ukrainas
+  army-sos:
+    tagline: Toit ja tugi Ukraina vägedele
+  soloma-cats:
+    tagline: Taktikaline meditsiin ja demineerimine
+  united-help-ukraine:
+    tagline: Haavatud sõdurite taastusravi ja tugi ümberasustatutele
+  sprava-hromad:
+    tagline: Soomukid, veokid ja droonisüsteemid rindeüksustele

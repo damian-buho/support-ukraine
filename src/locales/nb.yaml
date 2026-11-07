@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: Støtt Ukraina med
+regionLabel: Banner til støtte for Ukraina
+more: mer…
+donate: Doner
+refresh: Vis neste organisasjon
+opensInNewTab: (åpnes i en ny fane)
+charities:
+  united24:
+    tagline: Ukrainas offisielle innsamlingsplattform
+  come-back-alive:
+    tagline: Har støttet Ukrainas væpnede styrker siden 2014
+  razom-for-ukraine:
+    tagline: Katastrofehjelp og humanitær bistand
+  ukrainian-red-cross:
+    tagline: Humanitær bistand i konfliktsoner
+  nova-ukraine:
+    tagline: Humanitær hjelp og påvirkningsarbeid
+  voices-of-children:
+    tagline: Psykologisk støtte til barn rammet av krigen
+  prytula-foundation:
+    tagline: Forsvarsteknologi og utstyr til Ukraina
+  world-central-kitchen:
+    tagline: Ferske måltider til mennesker i konfliktsoner
+  cats-of-kyiv:
+    tagline: Kattehjem som redder og omplasserer katter i Kyiv
+  uanimals:
+    tagline: Organisasjon for dyreredning og dyrs rettigheter i Ukraina
+  hospitallers:
+    tagline: Ukrainske frivillige sanitetsarbeidere som gir førstehjelp og evakuerer
+  sternenko-fund:
+    tagline: FPV-droner til Ukrainas forsvarsstyrker
+  life-robots-ukraine:
+    tagline: Roboter for minerydding i Ukraina
+  sirius-shelter:
+    tagline: Ukrainas største dyrehjem for hunder og katter
+  dzygaspaw:
+    tagline: Livreddende teknologi for ukrainske forsvarere
+  dignitas:
+    tagline: Teknologi og støtte til ukrainske forsvarere og veteraner
+  leleka:
+    tagline: Taktisk medisinsk utstyr til Ukrainas sanitetspersonell ved fronten
+  superhumans:
+    tagline: Proteser, kirurgi og rehabilitering for krigsoverlevende
+  nikopol-chance:
+    tagline: Hundehjem som redder og omplasserer gatehunder i frontbyen Nikopol
+  donorua:
+    tagline: Koordinerer frivillig blodgivning i Ukraina
+  army-sos:
+    tagline: Mat og støtte til ukrainske tropper
+  soloma-cats:
+    tagline: Taktisk medisin og minerydding
+  united-help-ukraine:
+    tagline: Rehabilitering av sårede soldater og støtte til fordrevne
+  sprava-hromad:
+    tagline: Pansrede kjøretøy, lastebiler og dronesystemer til avdelinger ved fronten

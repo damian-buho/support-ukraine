@@ -14,6 +14,14 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/ar.js"
     },
+    "./az": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/az.js"
+    },
+    "./be": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/be.js"
+    },
     "./bg": {
       "types": "./dist/index.d.ts",
       "import": "./dist/bg.js"
@@ -30,6 +38,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/cs.js"
     },
+    "./da": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/da.js"
+    },
     "./de": {
       "types": "./dist/index.d.ts",
       "import": "./dist/de.js"
@@ -45,6 +57,14 @@
     "./es": {
       "types": "./dist/index.d.ts",
       "import": "./dist/es.js"
+    },
+    "./et": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/et.js"
+    },
+    "./fi": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/fi.js"
     },
     "./fr": {
       "types": "./dist/index.d.ts",
@@ -66,6 +86,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/hu.js"
     },
+    "./hy": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/hy.js"
+    },
     "./id": {
       "types": "./dist/index.d.ts",
       "import": "./dist/id.js"
@@ -78,13 +102,37 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/ja.js"
     },
+    "./ka": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/ka.js"
+    },
+    "./kk": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/kk.js"
+    },
     "./ko": {
       "types": "./dist/index.d.ts",
       "import": "./dist/ko.js"
     },
+    "./ky": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/ky.js"
+    },
+    "./lt": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/lt.js"
+    },
+    "./lv": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/lv.js"
+    },
     "./mk": {
       "types": "./dist/index.d.ts",
       "import": "./dist/mk.js"
+    },
+    "./nb": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/nb.js"
     },
     "./nl": {
       "types": "./dist/index.d.ts",
@@ -122,9 +170,17 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/sv.js"
     },
+    "./tg": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/tg.js"
+    },
     "./th": {
       "types": "./dist/index.d.ts",
       "import": "./dist/th.js"
+    },
+    "./tk": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/tk.js"
     },
     "./tr": {
       "types": "./dist/index.d.ts",
@@ -137,6 +193,10 @@
     "./ur": {
       "types": "./dist/index.d.ts",
       "import": "./dist/ur.js"
+    },
+    "./uz": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/uz.js"
     },
     "./vi": {
       "types": "./dist/index.d.ts",
@@ -227,7 +287,7 @@
   "size-limit": [
     {
       "path": "./dist/index.js",
-      "limit": "41 kB"
+      "limit": "64 kB"
     }
   ]
 }

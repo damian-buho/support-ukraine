@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "Ukraina goldaw beriň –"
+regionLabel: Ukraina goldaw banneri
+more: has köp…
+donate: Haýyr-sahawat et
+refresh: Indiki guramany görkez
+opensInNewTab: (täze goýmada açylýar)
+charities:
+  united24:
+    tagline: Ukrainanyň resmi serişde ýygnamak platformasy
+  come-back-alive:
+    tagline: 2014-nji ýyldan bäri Ukrainanyň Ýaragly Güýçlerini goldaýar
+  razom-for-ukraine:
+    tagline: Gyssagly kömek we ynsanperwer kömek
+  ukrainian-red-cross:
+    tagline: Dawa sebitlerinde ynsanperwer kömek
+  nova-ukraine:
+    tagline: Ynsanperwer kömek we bähbitleri goramak
+  voices-of-children:
+    tagline: Urşy başdan geçiren çagalara psihologik goldaw
+  prytula-foundation:
+    tagline: Ukraina üçin gorag tehnologiýalary we enjamlar
+  world-central-kitchen:
+    tagline: Dawa sebitlerindäki adamlar üçin täze taýýarlanan nahar
+  cats-of-kyiv:
+    tagline: Kiýewde pişikleri halas edip, olara täze öý tapýan pena
+  uanimals:
+    tagline: Ukrainada haýwanlary halas etmek we goramak guramasy
+  hospitallers:
+    tagline: Ilkinji kömegi berýän we ewakuasiýa edýän ukrainaly meýletin lukmançylyk işgärleri
+  sternenko-fund:
+    tagline: Ukrainanyň gorag güýçleri üçin FPV dronlar
+  life-robots-ukraine:
+    tagline: Ukrainany minalardan arassalamak üçin robotlar
+  sirius-shelter:
+    tagline: Ukrainanyň itler we pişikler üçin iň uly penasy
+  dzygaspaw:
+    tagline: Ukrainaly goragçylaryň janyny halas edýän tehnologiýalar
+  dignitas:
+    tagline: Ukrainaly goragçylar we weteranlar üçin tehnologiýa we goldaw
+  leleka:
+    tagline: Ukrainanyň front lukmanlary üçin taktiki lukmançylyk serişdeleri
+  superhumans:
+    tagline: Urşdan diri galanlar üçin protezlemek, hirurgiýa we dikeltmek
+  nikopol-chance:
+    tagline: Front ýakasyndaky Nikopolda eýesiz itleri halas edip, olara öý tapýan pena
+  donorua:
+    tagline: Ukrainada meýletin gan donorlygyny utgaşdyrýar
+  army-sos:
+    tagline: Ukrainaly esgerler üçin azyk we goldaw
+  soloma-cats:
+    tagline: Taktiki lukmançylyk we minalardan arassalamak
+  united-help-ukraine:
+    tagline: Ýaralanan esgerleri dikeltmek we göçürilenlere goldaw
+  sprava-hromad:
+    tagline: Front bölümleri üçin sowutly tehnika, ýük awtoulaglary we pilotsyz uçar ulgamlary

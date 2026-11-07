@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: Падтрымай Украіну з
+regionLabel: Банер падтрымкі Украіны
+more: больш…
+donate: Ахвяраваць
+refresh: Паказаць наступную арганізацыю
+opensInNewTab: (адкрываецца ў новай укладцы)
+charities:
+  united24:
+    tagline: Афіцыйная платформа збору сродкаў Украіны
+  come-back-alive:
+    tagline: Падтрымка Узброеных сіл Украіны з 2014 года
+  razom-for-ukraine:
+    tagline: Экстранае рэагаванне і гуманітарная дапамога
+  ukrainian-red-cross:
+    tagline: Гуманітарная дапамога ў зонах канфліктаў
+  nova-ukraine:
+    tagline: Гуманітарная дапамога і абарона інтарэсаў
+  voices-of-children:
+    tagline: Псіхалагічная падтрымка дзяцей, якія пацярпелі ад вайны
+  prytula-foundation:
+    tagline: Абаронныя тэхналогіі і рыштунак для Украіны
+  world-central-kitchen:
+    tagline: Свежая ежа для людзей у зонах канфліктаў
+  cats-of-kyiv:
+    tagline: Прытулак, які ратуе катоў у Кіеве і шукае ім новы дом
+  uanimals:
+    tagline: Арганізацыя па выратаванні і абароне правоў жывёл ва Украіне
+  hospitallers:
+    tagline: Украінскія добраахвотнікі-парамедыкі, якія аказваюць першую дапамогу і эвакуююць
+  sternenko-fund:
+    tagline: FPV-дроны для сіл абароны Украіны
+  life-robots-ukraine:
+    tagline: Робаты для размініравання Украіны
+  sirius-shelter:
+    tagline: Найбуйнейшы ва Украіне прытулак для сабак і катоў
+  dzygaspaw:
+    tagline: Тэхналогіі, што ратуюць жыцці ўкраінскіх абаронцаў
+  dignitas:
+    tagline: Тэхналогіі і падтрымка для ўкраінскіх абаронцаў і ветэранаў
+  leleka:
+    tagline: Тактычныя медыкаменты для ўкраінскіх медыкаў на фронце
+  superhumans:
+    tagline: Пратэзаванне, хірургія і рэабілітацыя для тых, хто перажыў вайну
+  nikopol-chance:
+    tagline: Прытулак, які ратуе бяздомных сабак у прыфрантавым Нікаполі і шукае ім дом
+  donorua:
+    tagline: Каардынуе добраахвотнае донарства крыві ва Украіне
+  army-sos:
+    tagline: Ежа і падтрымка для ўкраінскіх войскаў
+  soloma-cats:
+    tagline: Тактычная медыцына і размініраванне
+  united-help-ukraine:
+    tagline: Рэабілітацыя параненых вайскоўцаў і падтрымка перамешчаных асоб
+  sprava-hromad:
+    tagline: Браніраваная тэхніка, грузавікі і сістэмы БПЛА для франтавых падраздзяленняў
