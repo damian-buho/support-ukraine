@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "Támogasd Ukrajnát -"
+regionLabel: "Ukrajnát támogató banner"
+more: "továbbiak…"
+donate: "Adományozás"
+refresh: "Következő szervezet megjelenítése"
+opensInNewTab: "(új lapon nyílik meg)"
+charities:
+  united24:
+    tagline: "Ukrajna hivatalos adománygyűjtő platformja"
+  come-back-alive:
+    tagline: "Az ukrán fegyveres erők támogatása 2014 óta"
+  razom-for-ukraine:
+    tagline: "Katasztrófareagálás és humanitárius segítségnyújtás"
+  ukrainian-red-cross:
+    tagline: "Humanitárius segítség konfliktusövezetekben"
+  nova-ukraine:
+    tagline: "Humanitárius segítség és érdekérvényesítés"
+  voices-of-children:
+    tagline: "Pszichológiai támogatás a háború által érintett gyermekeknek"
+  prytula-foundation:
+    tagline: "Védelmi technológia és felszerelés Ukrajnának"
+  world-central-kitchen:
+    tagline: "Friss ételek a konfliktusövezetekben élőknek"
+  cats-of-kyiv:
+    tagline: "Macskamenhely, amely Kijevben macskákat ment és új otthonra találtat nekik"
+  uanimals:
+    tagline: "Állatmentő és érdekvédelmi szervezet Ukrajnában"
+  hospitallers:
+    tagline: "Ukrán önkéntes mentősök, akik elsősegélyt nyújtanak és evakuálnak"
+  sternenko-fund:
+    tagline: "FPV drónok szállítása az ukrán védelmi erőknek"
+  life-robots-ukraine:
+    tagline: "Robotok Ukrajna aknamentesítéséhez"
+  sirius-shelter:
+    tagline: "Ukrajna legnagyobb kutya- és macskamenhelye"
+  dignitas:
+    tagline: "Életmentő technológia az ukrán védőknek"
+  leleka:
+    tagline: "Technológia és támogatás az ukrán védőknek és veteránoknak"
+  superhumans:
+    tagline: "Taktikai orvosi felszerelés Ukrajna fronton szolgáló egészségügyi dolgozóinak"
+  nikopol-chance:
+    tagline: "Protézisek, sebészet és rehabilitáció a háborút túlélőknek"
+  dzygaspaw:
+    tagline: "Kutyamenhely, amely a frontvonalbeli Nikopolban kóbor kutyákat ment és új gazdát keres nekik"
+  donorua:
+    tagline: "Az önkéntes vérátömlesztések koordinálása Ukrajnában"
+  army-sos:
+    tagline: "Élelmiszer és támogatás az ukrán katonáknak"
+  soloma-cats:
+    tagline: "Taktikai orvoslás és aknamentesítés"
+  united-help-ukraine:
+    tagline: "Rehabilitáció sebesült harcosoknak és támogatás a lakóhelyüket elhagyni kényszerültek számára"
+  sprava-hromad:
+    tagline: "Páncélozott járművek, teherautók és UAV-rendszerek a frontvonalbeli egységeknek"
