@@ -491,6 +491,14 @@ describe('charityUrlFor', () => {
     assert.equal(charityUrlFor(charity, 'es'), 'https://dzygaspaw.com')
   })
 
+  it('resolves the DonorUA localized variants', () => {
+    const charity = DEFAULT_CHARITIES.find(c => c.id === 'donorua')
+    assert.ok(charity)
+    assert.equal(charityUrlFor(charity, 'en'), 'https://www.donor.ua/en')
+    assert.equal(charityUrlFor(charity, 'uk'), 'https://www.donor.ua')
+    assert.equal(charityUrlFor(charity, 'de'), 'https://www.donor.ua/en')
+  })
+
   it('falls back to english when the language variant is missing', () => {
     const charity = DEFAULT_CHARITIES.find(c => c.id === 'hospitallers')
     assert.ok(charity)

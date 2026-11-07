@@ -175,3 +175,11 @@
     uk: https://dzygaspaw.com/uk
     de: https://dzygaspaw.com/de
   tags: [military]
+
+- id: donorua
+  name: DonorUA
+  tagline: Coordinates voluntary blood transfusions in Ukraine
+  urls:
+    en: https://www.donor.ua/en
+    uk: https://www.donor.ua
+  tags: [humanitarian]
