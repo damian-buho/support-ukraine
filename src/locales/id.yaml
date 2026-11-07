@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Damián Búho <damian.buho@proton.me>
+#
+# SPDX-License-Identifier: MIT
+
+supportUkraine: "Dukung Ukraina bersama"
+regionLabel: "Spanduk dukungan untuk Ukraina"
+more: "selengkapnya…"
+donate: "Donasi"
+refresh: "Tampilkan lembaga berikutnya"
+opensInNewTab: "(dibuka di tab baru)"
+charities:
+  united24:
+    tagline: "Platform penggalangan dana resmi Ukraina"
+  come-back-alive:
+    tagline: "Mendukung Angkatan Bersenjata Ukraina sejak 2014"
+  razom-for-ukraine:
+    tagline: "Tanggap darurat dan bantuan kemanusiaan"
+  ukrainian-red-cross:
+    tagline: "Bantuan kemanusiaan di zona konflik"
+  nova-ukraine:
+    tagline: "Bantuan kemanusiaan dan advokasi"
+  voices-of-children:
+    tagline: "Dukungan psikologis bagi anak-anak yang terdampak perang"
+  prytula-foundation:
+    tagline: "Teknologi dan perlengkapan pertahanan untuk Ukraina"
+  world-central-kitchen:
+    tagline: "Makanan segar untuk masyarakat di zona konflik"
+  cats-of-kyiv:
+    tagline: "Penampungan kucing yang menyelamatkan dan mencarikan rumah baru bagi kucing di Kyiv"
+  uanimals:
+    tagline: "Organisasi penyelamatan dan advokasi hewan di Ukraina"
+  hospitallers:
+    tagline: "Paramedis sukarela Ukraina yang memberikan pertolongan pertama dan evakuasi"
+  sternenko-fund:
+    tagline: "Pasokan drone FPV untuk pasukan pertahanan Ukraina"
+  life-robots-ukraine:
+    tagline: "Robot untuk pembersihan ranjau di Ukraina"
+  sirius-shelter:
+    tagline: "Penampungan hewan terbesar di Ukraina untuk anjing dan kucing"
+  dignitas:
+    tagline: "Teknologi penyelamat nyawa bagi para pembela Ukraina"
+  leleka:
+    tagline: "Teknologi dan dukungan bagi para pembela dan veteran Ukraina"
+  superhumans:
+    tagline: "Perlengkapan medis taktis bagi tenaga medis garis depan Ukraina"
+  nikopol-chance:
+    tagline: "Prostetik, operasi, dan rehabilitasi bagi penyintas perang"
+  dzygaspaw:
+    tagline: "Penampungan anjing yang menyelamatkan dan mencarikan rumah bagi anjing liar di Nikopol, garis depan"
+  donorua:
+    tagline: "Mengoordinasikan transfusi darah sukarela di Ukraina"
+  army-sos:
+    tagline: "Makanan dan dukungan bagi pasukan Ukraina"
+  soloma-cats:
+    tagline: "Medis taktis dan pembersihan ranjau"
+  united-help-ukraine:
+    tagline: "Rehabilitasi bagi prajurit yang terluka dan dukungan bagi pengungsi internal"
+  sprava-hromad:
+    tagline: "Kendaraan lapis baja, truk, dan sistem UAV untuk satuan garis depan"
