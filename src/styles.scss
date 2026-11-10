@@ -328,6 +328,9 @@ section.#{$prefix} {
   :host-context([data-theme="light"]) section.#{$prefix} {
     background-color: #003580;
   }
+  :host-context([data-theme="light"]) section.#{$prefix} .#{$prefix}__badge {
+    color: #003580;
+  }
   :host-context([data-theme="light"]) section.#{$prefix} .#{$prefix}__link,
   :host-context([data-theme="light"]) section.#{$prefix} .#{$prefix}__more,
   :host-context([data-theme="light"]) section.#{$prefix} .#{$prefix}__refresh,
