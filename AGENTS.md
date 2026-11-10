@@ -180,11 +180,13 @@ test that cannot fail.
 
 ## CI/CD
 
+GitHub (remote `origin`) is the reference and the only CI; `kiota` and `codeberg` are plain mirrors with Actions off, pushed after it. Pipeline starts on no `dev` push, so check a `dev` commit with `gh workflow run pipeline.yaml --ref dev`.
+
 Two GitHub Actions workflows:
 
 - **pipeline.yaml** — runs on PRs and pushes to `main`:
   - `checks` job: lint, format:check, audit (Node 24, ubuntu)
-  - `test` job: Node 24, ubuntu-26.04
+  - `test` job: Node 24, ubuntu-26.04: build, size-limit, a11y (installs Chromium headless shell), tests
 - **release.yaml** — fires via `workflow_run` after Pipeline succeeds:
   - `gate` job: resolves tag at HEAD, deduplicates
   - `publish-npm` job: OIDC trusted publishing, creates GitHub release
