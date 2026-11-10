@@ -57,7 +57,10 @@ update:
 audit:
     npm run audit
 
-pipeline: format lint build check-size build-test test
+a11y:
+    npm run a11y
+
+pipeline: format lint build check-size a11y build-test test
 
 serve:
     npm run serve

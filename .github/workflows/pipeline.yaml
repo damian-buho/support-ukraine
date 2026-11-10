@@ -73,4 +73,10 @@ jobs:
       - name: Size check
         run: npx size-limit --silent
 
+      - name: Install Chromium
+        run: npx playwright-core install --with-deps chromium-headless-shell
+
+      - name: Accessibility check
+        run: npm run a11y
+
       - run: npm test
