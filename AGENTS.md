@@ -30,8 +30,9 @@ just format        # Prettier write
 just format-check  # Prettier check (CI)
 just test          # node --test 'dist/test/index.test.js'
 just audit         # npm run audit
+just a11y          # axe colour contrast of dist/en.js in every theme × scheme × contrast (Playwright Chromium)
 just pages         # regenerate pages/index.html from src/ (the charity listing)
-just pipeline      # format → lint → build → build-test → test  (full CI gate)
+just pipeline      # format → lint → build → check-size → a11y → build-test → test  (full CI gate)
 ```
 
 ## Adding a charity
