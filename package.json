@@ -278,7 +278,7 @@
     "globals": "17.14.0",
     "playwright-core": "1.65.0",
     "prettier": "3.10.1",
-    "sass": "1.108.1",
+    "sass": "1.108.2",
     "size-limit": "14.3.0",
     "tsup": "9.0.0",
     "typescript": "6.0.3",
