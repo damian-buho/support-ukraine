@@ -276,7 +276,7 @@
     "eslint-plugin-tsdoc": "0.5.4",
     "eslint-plugin-unicorn": "79.0.0",
     "globals": "17.14.0",
-    "playwright-core": "1.65.0",
+    "playwright-core": "1.65.1",
     "prettier": "3.10.1",
     "sass": "1.108.2",
     "size-limit": "14.3.0",
