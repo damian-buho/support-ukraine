@@ -266,7 +266,7 @@
     "@types/eslint": "9.6.1",
     "@types/node": "26.6.6",
     "audit-ci": "7.1.0",
-    "axe-core": "4.14.0",
+    "axe-core": "4.14.1",
     "esbuild": "0.28.2",
     "eslint": "10.15.0",
     "eslint-config-prettier": "10.1.8",
