@@ -804,7 +804,7 @@ class MockElement {
     if (isAttributeMatch) {
       return this._children.find(child => child._attrs.has('data-support-ukraine')) ?? undefined
     }
-    const classMatch = selector.match(/^\.([\w-]+)$/)
+    const classMatch = /^\.([\w-]+)$/.exec(selector)
     if (!classMatch) return
     const className = classMatch[1]
     return this._children.find(child => child.className === className) ?? undefined
@@ -851,7 +851,7 @@ class MockBody {
   }
 
   querySelector(selector: string) {
-    const idMatch = selector.match(/^#(.+)$/)
+    const idMatch = /^#(.+)$/.exec(selector)
     if (idMatch) {
       return head.children.find(child => child.id === idMatch[1]) ?? undefined
     }
@@ -863,7 +863,7 @@ class MockBody {
         ) ?? undefined
       )
     }
-    const classMatch = selector.match(/^(\w*)\.([\w-]+(?:\.[\w-]+)*)$/)
+    const classMatch = /^(\w*)\.([\w-]+(?:\.[\w-]+)*)$/.exec(selector)
     if (!classMatch) return
     const [, tag, classChain] = classMatch
     const classes = classChain.split('.')
@@ -910,7 +910,7 @@ class MockShadowRoot {
   }
 
   querySelector(selector: string) {
-    const idMatch = selector.match(/^#(.+)$/)
+    const idMatch = /^#(.+)$/.exec(selector)
     if (idMatch) {
       return this._children.find(child => child.id === idMatch[1]) ?? undefined
     }
@@ -1136,11 +1136,11 @@ function setupDom(): void {
           return element
         },
         querySelector(selector: string) {
-          const idMatch = selector.match(/^#(.+)$/)
+          const idMatch = /^#(.+)$/.exec(selector)
           if (idMatch) {
             return head.children.find(child => child.id === idMatch[1]) ?? undefined
           }
-          const attributeMatch = selector.match(/^\[([^\]]+)\]$/)
+          const attributeMatch = /^\[([^\]]+)\]$/.exec(selector)
           if (attributeMatch && attributeMatch[1] === 'data-support-ukraine') {
             return body.children.find(child => child.dataset.supportUkraine !== '') ?? undefined
           }
