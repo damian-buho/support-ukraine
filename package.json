@@ -264,7 +264,7 @@
     "@size-limit/preset-small-lib": "14.3.0",
     "@stryker-mutator/core": "10.1.1",
     "@types/eslint": "9.6.1",
-    "@types/node": "26.6.10",
+    "@types/node": "26.6.11",
     "audit-ci": "7.1.0",
     "axe-core": "4.14.1",
     "esbuild": "0.28.2",
